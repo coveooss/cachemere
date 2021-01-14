@@ -80,7 +80,7 @@ template<class Key, class Value> auto EvictionLRU<Key, Value>::victim_begin() co
     return VictimIterator{m_keys.rbegin()};
 }
 
-template<class Key, class Value> EvictionLRU<Key, Value>::victim_end() const->VictimIterator
+template<class Key, class Value> auto EvictionLRU<Key, Value>::victim_end() const -> VictimIterator
 {
     return VictimIterator{m_keys.rend()};
 }
