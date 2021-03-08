@@ -5,17 +5,13 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-list(APPEND CMAKE_MODULE_PATH "FindTBB.cmake")
-
 find_package(Boost 1.65 REQUIRED)
-find_package(TBB REQUIRED)
 
 add_library(cachemere INTERFACE)
 
 target_link_libraries(cachemere
     INTERFACE
         Boost::boost
-        tbb
 )
 
 target_include_directories(cachemere

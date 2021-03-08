@@ -10,7 +10,7 @@ template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::on_cac
     touch_item(key);
 }
 
-template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::reserve(uint32_t cardinality)
+template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::set_cardinality(uint32_t cardinality)
 {
     m_gatekeeper       = detail::BloomFilter<Key>(cardinality);
     m_frequency_sketch = detail::CountingBloomFilter<Key>(cardinality);
@@ -24,11 +24,6 @@ template<typename Key, typename Value> bool InsertionTinyLFU<Key, Value>::should
 template<typename Key, typename Value> bool InsertionTinyLFU<Key, Value>::should_replace(const Key& victim, const Key& candidate)
 {
     return estimate_count_for_key(candidate) > estimate_count_for_key(victim);
-}
-
-template<typename Key, typename Value> size_t InsertionTinyLFU<Key, Value>::memory_used() const noexcept
-{
-    return m_frequency_sketch.memory_used() + m_gatekeeper.memory_used();
 }
 
 template<typename Key, typename Value> uint32_t InsertionTinyLFU<Key, Value>::estimate_count_for_key(const Key& key) const

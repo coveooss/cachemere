@@ -16,9 +16,14 @@
 #include "detail/item.h"
 #include "measurement.h"
 
+/// @brief Root namespace
 namespace cachemere {
 
-/// @brief Generic memory-restricted cache.
+/// @brief Thread-safe memory-restricted cache.
+/// @details This class keeps the inserted items alive, and it handles
+///          the bulk of the Insert/Evict logic while respecting the size constraints.
+///
+///          Some logic is delegated to the insertion and eviction policies. For details, see the \ref index "Main Page".
 /// @tparam Key The type of the key used for retrieving items.
 /// @tparam Value The type of the items stored in the cache.
 /// @tparam InsertionPolicy A template parameterized by `Key` and `Value` implementing the insertion policy interface.
@@ -62,9 +67,18 @@ public:
     /// @return Whether the item was inserted in cache.
     bool insert(const Key& key, const Value& value);
 
-    [[nodiscard]] size_t size() const;
-    [[nodiscard]] size_t memory_used() const;
+    /// @brief Get the number of items currently stored in the cache.
+    /// @warning This method acquires an internal mutex to grab the number of items.
+    ///          Calling this excessively while the cache is under contention will be detrimental to performance.
+    /// @return How many items are in cache.
     [[nodiscard]] size_t number_of_items() const;
+
+    /// @brief Get the amount of memory currently being used by cache items.
+    /// @details This method returns the size of the data stored by the cache itself:
+    ///          * The size of the key and the value, as defined by the `MeasureKey` and `MeasureValue` functors
+    ///          * A copy of the key
+    /// @return The current memory usage, in bytes.
+    [[nodiscard]] size_t size() const;
 
     /// @brief Get the maximum amount of memory that can be used by the cache.
     /// @details Once this size is reached, any future successful insertions will trigger

@@ -59,7 +59,6 @@ bool Cache<K, V, I, E, SV, SK>::insert(const K& key, const V& value)
     const size_t item_size_overhead = item_size + key_size;
 
     const bool should_insert = compare_evict(key, item_size_overhead);
-    bool       did_insert    = false;
 
     if (should_insert) {
         auto key_and_item = m_data.find(key);
@@ -79,7 +78,6 @@ bool Cache<K, V, I, E, SV, SK>::insert(const K& key, const V& value)
             key_and_item->second.m_total_size = item_size;
 
             on_update(key_and_item->second);
-            did_insert = true;
         } else {
             // Insert.
             const auto it_and_ok =
@@ -89,25 +87,10 @@ bool Cache<K, V, I, E, SV, SK>::insert(const K& key, const V& value)
             on_insert(item);
 
             m_current_size += item_size_overhead;
-
-            did_insert = true;
         }
     }
 
-    // TODO:  Return should_insert directly here?
-    return did_insert;
-}
-
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline size_t Cache<K, V, I, E, SV, SK>::size() const
-{
-    return m_current_size;
-}
-
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline size_t Cache<K, V, I, E, SV, SK>::memory_used() const
-{
-    return m_current_size + m_insertion_policy->memory_used() + m_eviction_policy->memory_used();
+    return should_insert;
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
@@ -115,6 +98,12 @@ inline size_t Cache<K, V, I, E, SV, SK>::number_of_items() const
 {
     std::lock_guard<std::mutex> guard{m_mutex};
     return m_data.size();
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
+inline size_t Cache<K, V, I, E, SV, SK>::size() const
+{
+    return m_current_size;
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>

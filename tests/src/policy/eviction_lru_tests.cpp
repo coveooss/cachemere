@@ -36,7 +36,6 @@ TEST(EvictionLRU, EvictionsWithoutReordering)
     policy.on_evict(victim);
 
     EXPECT_EQ(42, victim);
-    EXPECT_EQ(2 * TestLRU::item_overhead_size, policy.memory_used());
 }
 
 TEST(EvictionLRU, NoOpReordering)
@@ -62,7 +61,6 @@ TEST(EvictionLRU, NoOpReordering)
 
     const std::vector<int32_t> expected_victims{42, 18, 1337};
     EXPECT_EQ(expected_victims, victims);
-    EXPECT_EQ(0, policy.memory_used());
 }
 
 TEST(EvictionLRU, EvictionsWithReordering)
@@ -86,5 +84,4 @@ TEST(EvictionLRU, EvictionsWithReordering)
 
     const std::vector<int32_t> expected_victims{18, 1337, 42};
     EXPECT_EQ(expected_victims, victims);
-    EXPECT_EQ(0, policy.memory_used());
 }

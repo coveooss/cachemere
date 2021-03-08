@@ -33,7 +33,7 @@ TEST(InsertionTinyLFU, ReplacementPreferenceBasic)
 TEST(InsertionTinyLFU, ResetWhenReachedCardinality)
 {
     TestPolicy policy;
-    policy.reserve(5);
+    policy.set_cardinality(5);
 
     policy.on_cache_miss(3);
     policy.on_cache_miss(3);

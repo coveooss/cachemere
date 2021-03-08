@@ -1,13 +1,9 @@
 namespace cachemere::policy {
 
-template<class Key, class Value> EvictionSegmentedLRU<Key, Value>::KeyInfo::KeyInfo(const Key& key, size_t overhead) : m_key{key}, m_overhead{overhead}
-{
-}
-
 template<class Key, class Value>
-EvictionSegmentedLRU<Key, Value>::VictimIterator::VictimIterator(const KeyInfoReverseIt& probation_iterator,
-                                                                 const KeyInfoReverseIt& probation_end_iterator,
-                                                                 const KeyInfoReverseIt& protected_iterator)
+EvictionSegmentedLRU<Key, Value>::VictimIterator::VictimIterator(const KeyRefReverseIt& probation_iterator,
+                                                                 const KeyRefReverseIt& probation_end_iterator,
+                                                                 const KeyRefReverseIt& protected_iterator)
  : m_probation_iterator{probation_iterator},
    m_probation_end_iterator{probation_end_iterator},
    m_protected_iterator{protected_iterator},
@@ -18,7 +14,7 @@ EvictionSegmentedLRU<Key, Value>::VictimIterator::VictimIterator(const KeyInfoRe
 template<class Key, class Value> const Key& EvictionSegmentedLRU<Key, Value>::VictimIterator::operator*() const
 {
     const auto it = m_done_with_probation ? m_protected_iterator : m_probation_iterator;
-    return it->m_key;
+    return *it;
 }
 
 template<class Key, class Value> class EvictionSegmentedLRU<Key, Value>::VictimIterator& EvictionSegmentedLRU<Key, Value>::VictimIterator::operator++()
@@ -61,10 +57,8 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_inser
 {
     assert(m_probation_nodes.find(item.m_key) == m_probation_nodes.end());
 
-    const size_t memory_overhead = sizeof(KeyRef) + sizeof(KeyInfoIt);
-    m_probation_list.emplace_front(item.m_key, memory_overhead);
+    m_probation_list.emplace_front(std::ref(item.m_key));
     m_probation_nodes.emplace(std::ref(item.m_key), m_probation_list.begin());
-    m_size += memory_overhead;
 }
 
 template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_update(const CacheItem& item)
@@ -101,19 +95,17 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache
 
 template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_evict(const Key& key)
 {
-    assert((m_probation_list.empty() && !m_protected_list.empty() && m_protected_list.back().m_key == key) ||
-           (!m_probation_list.empty() && m_probation_list.back().m_key == key));
+    assert((m_probation_list.empty() && !m_protected_list.empty() && m_protected_list.back() == key) ||
+           (!m_probation_list.empty() && m_probation_list.back() == key));
 
-    if (!m_probation_list.empty() && m_probation_list.back().m_key == key) {
+    if (!m_probation_list.empty() && m_probation_list.back() == key) {
         // There are items in the probation list, these should be evicted first.
         assert(m_probation_nodes.find(key) != m_probation_nodes.end());
-        m_size -= m_protected_list.back().m_overhead;
         m_probation_nodes.erase(key);
         m_probation_list.pop_back();
     } else {
         // The probation list is empty, evict from the protected list.
         assert(m_protected_nodes.find(key) != m_protected_nodes.end());
-        m_size -= m_protected_list.back().m_overhead;
         m_protected_nodes.erase(key);
         m_protected_list.pop_back();
     }
@@ -127,11 +119,6 @@ template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::victim_b
 template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::victim_end() const -> VictimIterator
 {
     return VictimIterator{m_probation_list.rend(), m_probation_list.rend(), m_protected_list.rend()};
-}
-
-template<class Key, class Value> size_t EvictionSegmentedLRU<Key, Value>::memory_used() const noexcept
-{
-    return m_size;
 }
 
 template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::move_to_protected(const Key& key)
@@ -154,8 +141,8 @@ template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::pop_to_p
     }
 
     m_probation_list.splice(m_probation_list.begin(), m_protected_list, --m_protected_list.end());
-    m_protected_nodes.erase(m_probation_list.begin()->m_key);
-    m_probation_nodes.emplace(m_probation_list.begin()->m_key, m_probation_list.begin());
+    m_protected_nodes.erase(*m_probation_list.begin());
+    m_probation_nodes.emplace(*m_probation_list.begin(), m_probation_list.begin());
     return true;
 }
 
