@@ -95,10 +95,10 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache
 
 template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_evict(const Key& key)
 {
-    assert((m_probation_list.empty() && !m_protected_list.empty() && m_protected_list.back() == key) ||
-           (!m_probation_list.empty() && m_probation_list.back() == key));
+    assert((m_probation_list.empty() && !m_protected_list.empty() && m_protected_list.back().get() == key) ||
+           (!m_probation_list.empty() && m_probation_list.back().get() == key));
 
-    if (!m_probation_list.empty() && m_probation_list.back() == key) {
+    if (!m_probation_list.empty() && m_probation_list.back().get() == key) {
         // There are items in the probation list, these should be evicted first.
         assert(m_probation_nodes.find(key) != m_probation_nodes.end());
         m_probation_nodes.erase(key);

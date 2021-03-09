@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <string>
 #include <map>
 
 #include "cachemere/detail/item.h"
@@ -7,14 +8,14 @@
 
 using namespace cachemere;
 
-using TestSLRU = policy::EvictionSegmentedLRU<int32_t, int32_t>;
-using TestItem = detail::Item<int32_t, int32_t>;
-using ItemMap  = std::map<int32_t, TestItem>;
+using TestSLRU = policy::EvictionSegmentedLRU<std::string, int32_t>;
+using TestItem = detail::Item<std::string, int32_t>;
+using ItemMap  = std::map<std::string, TestItem>;
 
-void insert_item(int32_t key, TestSLRU& policy, ItemMap& item_map)
+void insert_item(std::string key, int32_t value, TestSLRU& policy, ItemMap& item_map)
 {
     const auto key_and_item =
-        item_map.emplace(std::piecewise_construct, std::forward_as_tuple(key), std::forward_as_tuple(key, sizeof(int32_t), key, sizeof(int32_t))).first;
+        item_map.emplace(std::piecewise_construct, std::forward_as_tuple(key), std::forward_as_tuple(key, key.size(), value, sizeof(int32_t))).first;
 
     policy.on_insert(key_and_item->second);
 }
@@ -26,26 +27,28 @@ TEST(EvictionSegmentedLRU, BasicInsertEvict)
 
     ItemMap item_store;
 
+    const std::vector<std::string> keys{"a", "b", "c", "d", "e"};
+
     for (int32_t i = 0; i < 5; ++i) {
-        insert_item(i, policy, item_store);
+        insert_item(keys[i], i, policy, item_store);
     }
 
-    // After the loop, "0" is the coldest item in cache, and is in the probation segment because it wasn't ever loaded.
-    // The first victim should be 0.
-    EXPECT_EQ(0, *policy.victim_begin());
+    // After the loop, "a" is the coldest item in cache, and is in the probation segment because it wasn't ever loaded.
+    // The first victim should be a.
+    EXPECT_EQ("a", *policy.victim_begin());
 
-    // If we touch 0, it should be promoted to the protected segment.
-    // The first victim should now be 1.
-    policy.on_cache_hit(item_store.find(0)->second);
-    EXPECT_EQ(1, *policy.victim_begin());
+    // If we touch a, it should be promoted to the protected segment.
+    // The first victim should now be b.
+    policy.on_cache_hit(item_store.find("a")->second);
+    EXPECT_EQ("b", *policy.victim_begin());
 
-    // Before this loop, the probation segment contains [4, 3, 2, 1] and the protected segment contains [0].
+    // Before this loop, the probation segment contains [e, d, c, b] and the protected segment contains [a].
     for (auto i = 4; i > 0; --i) {
-        policy.on_cache_hit(item_store.find(i)->second);
+        policy.on_cache_hit(item_store.find(keys[i])->second);
     }
 
-    // After the last loop, the protected segment should contain [1, 2, 3, 4] and the probation segment should contain [0].
-    // This means that requesting an eviction should return 0.
-    EXPECT_EQ(0, *policy.victim_begin());
-    EXPECT_EQ(4, *++policy.victim_begin());
+    // After the last loop, the protected segment should contain [b, c, d, e] and the probation segment should contain [a].
+    // This means that requesting an eviction should return a, and then e.
+    EXPECT_EQ("a", *policy.victim_begin());
+    EXPECT_EQ("e", *++policy.victim_begin());
 }

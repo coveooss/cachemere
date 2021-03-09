@@ -63,3 +63,22 @@ TEST(InsertionTinyLFU, ResetWhenReachedCardinality)
     }
     EXPECT_TRUE(policy.should_replace(42, 3));
 }
+
+TEST(InsertionTinyLFU, ResetLeavesNonZeroValues)
+{
+    TestPolicy policy;
+    policy.set_cardinality(5);
+
+    policy.on_cache_miss(3);
+    policy.on_cache_miss(3);
+
+    // Touch 42 until we trigger a reset.
+    for (auto i = 0; i < 7; ++i) {
+        policy.on_cache_miss(42);
+    }
+
+    policy.on_cache_miss(1);
+
+    // If the reset left a non-zero counter value, the policy should still prefer 42 over 1.
+    EXPECT_FALSE(policy.should_replace(42, 1));
+}

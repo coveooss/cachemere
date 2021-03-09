@@ -19,7 +19,7 @@ template<typename Key, typename Value> class EvictionSegmentedLRU
 private:
     using KeyRef    = std::reference_wrapper<const Key>;
     using KeyRefIt  = typename std::list<KeyRef>::iterator;
-    using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<>>;
+    using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<const Key>>;
 
 public:
     using CacheItem = cachemere::detail::Item<Key, Value>;

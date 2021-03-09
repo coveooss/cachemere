@@ -39,7 +39,7 @@ template<typename Key, typename Value> uint32_t InsertionTinyLFU<Key, Value>::es
 template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::reset()
 {
     m_gatekeeper.clear();
-    m_frequency_sketch.clear();
+    m_frequency_sketch.decay();
 }
 
 template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::touch_item(const Key& key)

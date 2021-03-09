@@ -63,7 +63,7 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::on_evict(const Ke
 {
     assert(!m_nodes.empty());
     assert(!m_keys.empty());
-    assert(m_keys.back() == key);
+    assert(m_keys.back().get() == key);
 
     m_nodes.erase(key);
     m_keys.pop_back();
