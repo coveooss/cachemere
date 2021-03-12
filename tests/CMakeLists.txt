@@ -1,7 +1,6 @@
 enable_testing()
 
 find_package(GTest REQUIRED)
-find_package(TBB REQUIRED)
 
 add_executable(cachemere_tests)
 
@@ -9,7 +8,6 @@ target_link_libraries(cachemere_tests
     PRIVATE
         GTest::GTest
         GTest::Main
-        tbb
 
         cachemere
 )
