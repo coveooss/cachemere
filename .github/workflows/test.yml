@@ -15,11 +15,6 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl ninja-build libboost-all-dev libgtest-dev
 
-      - name: Install CMake
-        run: |
-          curl -XGET -L https://github.com/Kitware/CMake/releases/download/v3.19.6/cmake-3.19.6-Linux-x86_64.sh > cmake.sh
-          bash cmake.sh --skip-license --exclude-subdir --prefix=/usr/local
-
       - name: Build Tests
         run: |
           mkdir -p build/
