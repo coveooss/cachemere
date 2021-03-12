@@ -6,7 +6,7 @@ on:
 jobs:
   unit:
     # TODO: Add different compilers to the matrix.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
@@ -16,6 +16,8 @@ jobs:
           sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl ninja-build libboost-all-dev libgtest-dev
 
       - name: Build Tests
+        env:
+          CXX: /usr/bin/clang++
         run: |
           mkdir -p build/
           cd build/
