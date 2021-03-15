@@ -74,7 +74,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Space-efficient probalistic datastructure to estimate the number of times an item was inserted in a set in a space-efficient manner.  
+<p>Space-efficient probalistic datastructure to estimate the number of times an item was inserted in a set.  
  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="counting__bloom__filter_8h_source.html">counting_bloom_filter.h</a>&gt;</code></p>
@@ -111,7 +111,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="textblock"><h3>template&lt;typename Key, typename KeyHash = std::hash&lt;Key&gt;&gt;<br />
 class cachemere::policy::detail::CountingBloomFilter&lt; Key, KeyHash &gt;</h3>
 
-<p>Space-efficient probalistic datastructure to estimate the number of times an item was inserted in a set in a space-efficient manner. </p>
+<p>Space-efficient probalistic datastructure to estimate the number of times an item was inserted in a set. </p>
 <p>A counting bloom filter is a constant-sized datastructure, which means that insertions will never make the filter allocate more memory. However, too many inserts will severly impact the accuracy of counter estimates. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0b9f675868bf121d51dc33bd05f81cc9"></a>
@@ -215,7 +215,7 @@ template&lt;typename Key , typename KeyHash &gt; </div>
 </div><div class="memdoc">
 
 <p>Divide counter values by two. </p>
-<p>If your application doesn't rely on the absolute value of the counters, calling this regularly will decrease the saturation of your filter by removing items that are very rarely seen. </p>
+<p>If the user of this filter doesn't rely on the absolute value of the counters, calling this regularly will decrease the saturation of the filter by removing items that are very rarely seen. </p>
 
 </div>
 </div>

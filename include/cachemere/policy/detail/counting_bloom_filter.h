@@ -9,7 +9,7 @@
 namespace cachemere::policy::detail {
 
 /// @brief Space-efficient probalistic datastructure to estimate the number of times
-///        an item was inserted in a set in a space-efficient manner.
+///        an item was inserted in a set.
 /// @details A counting bloom filter is a constant-sized datastructure, which means that insertions will never
 ///          make the filter allocate more memory. However, too many inserts will severly impact the accuracy
 ///          of counter estimates.
@@ -34,8 +34,8 @@ public:
     void clear();
 
     /// @brief Divide counter values by two.
-    /// @details If your application doesn't rely on the absolute value of the counters, calling this
-    ///          regularly will decrease the saturation of your filter by removing items that are very
+    /// @details If the user of this filter doesn't rely on the absolute value of the counters, calling this
+    ///          regularly will decrease the saturation of the filter by removing items that are very
     ///          rarely seen.
     void decay();
 

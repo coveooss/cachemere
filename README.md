@@ -42,18 +42,23 @@ int main()
 
 ## Design Overview
 ### Background
-At its core, a cache has much in common with a hash map - both are datastructures used for associating a key with a value.
+At its core, a cache has much in common with a hash map; both are datastructures used for associating a key with a value.
 The main difference between the two structures is that a cache usually introduces an additional set of constraints to prevent it
 from growing too much in memory.
 Some implementations restrict the _number_ of items allowed at once in the cache, others restrict the
 total amount of _memory used_ by the cache, while some do away with the size constraints entirely and instead restrict the _amount of time_ an item can stay
-in the cache before expiring. With these constraints in mind, it follows that the main goal of a good caching algorithm is to identify
-as accurately as possible the _best_ items to keep in cache, as well as to provide some kind of ordering mechanism to select which item
-should be evicted first if need be.
+in the cache before expiring.
+
+A **caching scheme** is the set of algorithms used to select which items should be kept in cache over others.
+Since many different metrics can be prioritized when implementing a cache, there is no _one-size-fits-all_ caching scheme (e.g. a CPU cache usually only needs to prioritize the cache hit ratio, while a web server cache also needs to consider latency on cache miss).
+
+Because of this impossiblity to get a single well-performing and reusable caching scheme, many organizations and products fall back on using a simple [Least-Recently Used (LRU)](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)) cache everywhere. Although LRU is certainly _suitable_ for most use cases it is far from optimal, and using it without an afterthought might lead to excessive memory usage or degraded performance.
+
+Cachemere is designed with the explicit goal of providing a single reusable cache that can be customized to use different schemes, allowing applications to get the maintability benefits of a single cache implementation, while at the same time getting all the performance benefits of a purpose-built cache.
 
 ### Modular Policy Design
 
-Cachemere tries to tackle this goal in a modular fashion with the concept of _policies_. A `cachemere::Cache` is parameterized
+Cachemere tackles this goal in a modular fashion with the concept of _policies_. A `cachemere::Cache` is parameterized
 by an **Insertion Policy** and an **Eviction Policy**.
 
 Broadly speaking, the job of an **Insertion Policy** is to determine whether an item should be inserted or kept in cache, while the job of an **Eviction
@@ -63,9 +68,9 @@ decision on whether an item should be added or excluded.
 This modular design allows for bi-directional code reuse and customization: the core cache implementation can be used with different policies, and the
 policies can also be used with different cache implementations.
 
-For instance, if instead of using more common policies like Least-Recently Used (LRU)
-or Least-Frequently Used (LFU), you wanted to implement a custom cache that takes the frequency of access **as well as** the size of the item into
-consideration when establishing which item to evict, you could simply implement a `SizeBasedEvictionPolicy` and use it with the existing `cachemere::Cache`.
+For instance, if instead of using more common policies like Least-Recently Used (LRU),
+a product required the use of a custom cache that takes the frequency of access as well as the size of the item into
+consideration when establishing which item to evict. To solve this, one could implement a `SizeBasedEvictionPolicy` and use it with the existing `cachemere::Cache` without issues.
 
 Similarly, if a use case required the cache to be constrained by its number of items instead of by the amount of memory it uses (which is the current
-implementation), one could implement a new `Cache` object parameterized by two policies, and re-use Cachemere's implementation of LRU, for instance.
+implementation), one could implement a new `Cache` object parameterized by two policies, and reuse Cachemere's implementation of LRU with it.

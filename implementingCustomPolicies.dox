@@ -1,7 +1,7 @@
 Implementing Custom Policies {#implementingCustomPolicies}
 ============================
 
-This page is about implementing custom policies.
+This page is about guiding the implementation of custom policies.
 ## Shared Characteristics
 ### Construction Requirements
 Both types of policies _must_ be default-constructible, because the cache is responsible for instanciating them.
