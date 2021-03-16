@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cachemere: cachemere::policy::detail::CountingBloomFilter&lt; Key, KeyHash &gt; Class Template Reference</title>
+<title>Cachemere: cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,60 +70,60 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cachemere::policy::detail::CountingBloomFilter&lt; Key, KeyHash &gt; Class Template Reference</div>  </div>
+<div class="title">cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Space-efficient probalistic datastructure to estimate the number of times an item was inserted in a set.  
+<p>Space-efficient probalistic data structure to estimate the number of times an item was inserted in a set.  
  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="counting__bloom__filter_8h_source.html">counting_bloom_filter.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0b9f675868bf121d51dc33bd05f81cc9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a0b9f675868bf121d51dc33bd05f81cc9">CountingBloomFilter</a> (uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a1fd956cbbfa86a8181432870acec7496">cardinality</a>)</td></tr>
-<tr class="memdesc:a0b9f675868bf121d51dc33bd05f81cc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a0b9f675868bf121d51dc33bd05f81cc9">More...</a><br /></td></tr>
-<tr class="separator:a0b9f675868bf121d51dc33bd05f81cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a855295597feba73e8b19614ec9c32aa9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a855295597feba73e8b19614ec9c32aa9">add</a> (const Key &amp;key)</td></tr>
-<tr class="memdesc:a855295597feba73e8b19614ec9c32aa9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increment the count for a given key by one.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a855295597feba73e8b19614ec9c32aa9">More...</a><br /></td></tr>
-<tr class="separator:a855295597feba73e8b19614ec9c32aa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79cc3443288fa2622424f2ee2105e7ba"><td class="memItemLeft" align="right" valign="top"><a id="a79cc3443288fa2622424f2ee2105e7ba"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a79cc3443288fa2622424f2ee2105e7ba">clear</a> ()</td></tr>
-<tr class="memdesc:a79cc3443288fa2622424f2ee2105e7ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the filter while keeping the allocated memory. <br /></td></tr>
-<tr class="separator:a79cc3443288fa2622424f2ee2105e7ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe822425bf90783de7a36148a772a317"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#abe822425bf90783de7a36148a772a317">decay</a> ()</td></tr>
-<tr class="memdesc:abe822425bf90783de7a36148a772a317"><td class="mdescLeft">&#160;</td><td class="mdescRight">Divide counter values by two.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#abe822425bf90783de7a36148a772a317">More...</a><br /></td></tr>
-<tr class="separator:abe822425bf90783de7a36148a772a317"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5370ce6dc4811d9fe914babf001e438"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#af5370ce6dc4811d9fe914babf001e438">estimate</a> (const Key &amp;key) const</td></tr>
-<tr class="memdesc:af5370ce6dc4811d9fe914babf001e438"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the counter estimate for a given key.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#af5370ce6dc4811d9fe914babf001e438">More...</a><br /></td></tr>
-<tr class="separator:af5370ce6dc4811d9fe914babf001e438"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fd956cbbfa86a8181432870acec7496"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a1fd956cbbfa86a8181432870acec7496">cardinality</a> () const noexcept</td></tr>
-<tr class="memdesc:a1fd956cbbfa86a8181432870acec7496"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the cardinality of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a1fd956cbbfa86a8181432870acec7496">More...</a><br /></td></tr>
-<tr class="separator:a1fd956cbbfa86a8181432870acec7496"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adee2ddb86576b1b22dd81bd61951d9a4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#adee2ddb86576b1b22dd81bd61951d9a4">memory_used</a> () const noexcept</td></tr>
-<tr class="memdesc:adee2ddb86576b1b22dd81bd61951d9a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an estimate of the memory consumption of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#adee2ddb86576b1b22dd81bd61951d9a4">More...</a><br /></td></tr>
-<tr class="separator:adee2ddb86576b1b22dd81bd61951d9a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad17b0e9fd8fde84fa641d512b86daed4"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ad17b0e9fd8fde84fa641d512b86daed4">saturation</a> () const noexcept</td></tr>
-<tr class="memdesc:ad17b0e9fd8fde84fa641d512b86daed4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the saturation of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ad17b0e9fd8fde84fa641d512b86daed4">More...</a><br /></td></tr>
-<tr class="separator:ad17b0e9fd8fde84fa641d512b86daed4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7efe8a340699f70aafec2160dd8d3fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ab7efe8a340699f70aafec2160dd8d3fd">CountingBloomFilter</a> (uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a310c3a6073af77a01a7630fb548f80a5">cardinality</a>)</td></tr>
+<tr class="memdesc:ab7efe8a340699f70aafec2160dd8d3fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ab7efe8a340699f70aafec2160dd8d3fd">More...</a><br /></td></tr>
+<tr class="separator:ab7efe8a340699f70aafec2160dd8d3fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b5989d61ca6f3223ed68a8b8de8365b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a2b5989d61ca6f3223ed68a8b8de8365b">add</a> (const Item &amp;item)</td></tr>
+<tr class="memdesc:a2b5989d61ca6f3223ed68a8b8de8365b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increment the count for a given item by one.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a2b5989d61ca6f3223ed68a8b8de8365b">More...</a><br /></td></tr>
+<tr class="separator:a2b5989d61ca6f3223ed68a8b8de8365b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb787b9a19a9690554764b2cf1d2a633"><td class="memItemLeft" align="right" valign="top"><a id="adb787b9a19a9690554764b2cf1d2a633"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#adb787b9a19a9690554764b2cf1d2a633">clear</a> ()</td></tr>
+<tr class="memdesc:adb787b9a19a9690554764b2cf1d2a633"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the filter while keeping the allocated memory. <br /></td></tr>
+<tr class="separator:adb787b9a19a9690554764b2cf1d2a633"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae87c3892ae6e4ceeb9cadf42a0057320"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ae87c3892ae6e4ceeb9cadf42a0057320">decay</a> ()</td></tr>
+<tr class="memdesc:ae87c3892ae6e4ceeb9cadf42a0057320"><td class="mdescLeft">&#160;</td><td class="mdescRight">Divide counter values by two.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ae87c3892ae6e4ceeb9cadf42a0057320">More...</a><br /></td></tr>
+<tr class="separator:ae87c3892ae6e4ceeb9cadf42a0057320"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a836f02f188ca1523dff0613c50824739"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a836f02f188ca1523dff0613c50824739">estimate</a> (const Item &amp;item) const</td></tr>
+<tr class="memdesc:a836f02f188ca1523dff0613c50824739"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the counter estimate for a given item.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a836f02f188ca1523dff0613c50824739">More...</a><br /></td></tr>
+<tr class="separator:a836f02f188ca1523dff0613c50824739"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a310c3a6073af77a01a7630fb548f80a5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a310c3a6073af77a01a7630fb548f80a5">cardinality</a> () const noexcept</td></tr>
+<tr class="memdesc:a310c3a6073af77a01a7630fb548f80a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the cardinality of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a310c3a6073af77a01a7630fb548f80a5">More...</a><br /></td></tr>
+<tr class="separator:a310c3a6073af77a01a7630fb548f80a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a627f550d6fae75ffd18d1cf49bc0bee2"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a627f550d6fae75ffd18d1cf49bc0bee2">memory_used</a> () const noexcept</td></tr>
+<tr class="memdesc:a627f550d6fae75ffd18d1cf49bc0bee2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an estimate of the memory consumption of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a627f550d6fae75ffd18d1cf49bc0bee2">More...</a><br /></td></tr>
+<tr class="separator:a627f550d6fae75ffd18d1cf49bc0bee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a436caf91ba2a7c0babef3a73992c71"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a6a436caf91ba2a7c0babef3a73992c71">saturation</a> () const noexcept</td></tr>
+<tr class="memdesc:a6a436caf91ba2a7c0babef3a73992c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the saturation of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a6a436caf91ba2a7c0babef3a73992c71">More...</a><br /></td></tr>
+<tr class="separator:a6a436caf91ba2a7c0babef3a73992c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Key, typename KeyHash = std::hash&lt;Key&gt;&gt;<br />
-class cachemere::policy::detail::CountingBloomFilter&lt; Key, KeyHash &gt;</h3>
+<div class="textblock"><h3>template&lt;typename Item, typename ItemHash = std::hash&lt;Item&gt;&gt;<br />
+class cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt;</h3>
 
-<p>Space-efficient probalistic datastructure to estimate the number of times an item was inserted in a set. </p>
-<p>A counting bloom filter is a constant-sized datastructure, which means that insertions will never make the filter allocate more memory. However, too many inserts will severly impact the accuracy of counter estimates. </p>
+<p>Space-efficient probalistic data structure to estimate the number of times an item was inserted in a set. </p>
+<p>A counting bloom filter is a constant-sized data structure, which means that insertions will never make the filter allocate more memory. However, too many inserts will severly impact the accuracy of counter estimates. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a0b9f675868bf121d51dc33bd05f81cc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b9f675868bf121d51dc33bd05f81cc9">&#9670;&nbsp;</a></span>CountingBloomFilter()</h2>
+<a id="ab7efe8a340699f70aafec2160dd8d3fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7efe8a340699f70aafec2160dd8d3fd">&#9670;&nbsp;</a></span>CountingBloomFilter()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename KeyHash &gt; </div>
+template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Key, KeyHash &gt;::<a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">CountingBloomFilter</a> </td>
+          <td class="memname"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::<a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">CountingBloomFilter</a> </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>cardinality</em></td><td>)</td>
@@ -133,7 +133,7 @@ template&lt;typename Key , typename KeyHash &gt; </div>
 </div><div class="memdoc">
 
 <p>Constructor. </p>
-<p>To use this datastructure at its full potential, it's very important to have a good estimate for the cardinality of the set to be inserted.</p>
+<p>To use this data structure at its full potential, it's very important to have a good estimate for the cardinality of the set to be inserted.</p>
 <dl class="section warning"><dt>Warning</dt><dd>Having an estimate much higher than the real cardinality will result in excessive memory usage, while having an estimate that is too low will drastically reduce the accuracy of the filter.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -145,47 +145,47 @@ template&lt;typename Key , typename KeyHash &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a855295597feba73e8b19614ec9c32aa9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a855295597feba73e8b19614ec9c32aa9">&#9670;&nbsp;</a></span>add()</h2>
+<a id="a2b5989d61ca6f3223ed68a8b8de8365b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b5989d61ca6f3223ed68a8b8de8365b">&#9670;&nbsp;</a></span>add()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename KeyHash &gt; </div>
+template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Key, KeyHash &gt;::add </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::add </td>
           <td>(</td>
-          <td class="paramtype">const Key &amp;&#160;</td>
-          <td class="paramname"><em>key</em></td><td>)</td>
+          <td class="paramtype">const Item &amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Increment the count for a given key by one. </p>
+<p>Increment the count for a given item by one. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">key</td><td>The key of the counter to increment. </td></tr>
+    <tr><td class="paramname">item</td><td>The item of the counter to increment. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a1fd956cbbfa86a8181432870acec7496"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fd956cbbfa86a8181432870acec7496">&#9670;&nbsp;</a></span>cardinality()</h2>
+<a id="a310c3a6073af77a01a7630fb548f80a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a310c3a6073af77a01a7630fb548f80a5">&#9670;&nbsp;</a></span>cardinality()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename KeyHash &gt; </div>
+template&lt;typename Item , typename ItemHash &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Key, KeyHash &gt;::cardinality</td>
+          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::cardinality</td>
         </tr>
       </table>
   </td>
@@ -200,16 +200,16 @@ template&lt;typename Key , typename KeyHash &gt; </div>
 
 </div>
 </div>
-<a id="abe822425bf90783de7a36148a772a317"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe822425bf90783de7a36148a772a317">&#9670;&nbsp;</a></span>decay()</h2>
+<a id="ae87c3892ae6e4ceeb9cadf42a0057320"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae87c3892ae6e4ceeb9cadf42a0057320">&#9670;&nbsp;</a></span>decay()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename KeyHash &gt; </div>
+template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Key, KeyHash &gt;::decay</td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::decay</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -219,48 +219,48 @@ template&lt;typename Key , typename KeyHash &gt; </div>
 
 </div>
 </div>
-<a id="af5370ce6dc4811d9fe914babf001e438"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5370ce6dc4811d9fe914babf001e438">&#9670;&nbsp;</a></span>estimate()</h2>
+<a id="a836f02f188ca1523dff0613c50824739"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a836f02f188ca1523dff0613c50824739">&#9670;&nbsp;</a></span>estimate()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename KeyHash &gt; </div>
+template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Key, KeyHash &gt;::estimate </td>
+          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::estimate </td>
           <td>(</td>
-          <td class="paramtype">const Key &amp;&#160;</td>
-          <td class="paramname"><em>key</em></td><td>)</td>
+          <td class="paramtype">const Item &amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the counter estimate for a given key. </p>
+<p>Get the counter estimate for a given item. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">key</td><td>The key of the counter to estimate.</td></tr>
+    <tr><td class="paramname">item</td><td>The item for which to estimate the count.</td></tr>
   </table>
   </dd>
 </dl>
-<p>Similarly to the way a bloom filter can return false positives, but not false negatives, the counter estimation produced by a counting bloom filter is actually an upper bound of the real counter value - the real count is guaranteed to be less or equal to the estimate returned. </p><dl class="section return"><dt>Returns</dt><dd>The counter estimate for the key. </dd></dl>
+<p>Similarly to the way a bloom filter can return false positives, but not false negatives, the counter estimation produced by a counting bloom filter is actually an upper bound of the real counter value - the real count is guaranteed to be less or equal to the estimate returned. </p><dl class="section return"><dt>Returns</dt><dd>The counter estimate for the item. </dd></dl>
 
 </div>
 </div>
-<a id="adee2ddb86576b1b22dd81bd61951d9a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adee2ddb86576b1b22dd81bd61951d9a4">&#9670;&nbsp;</a></span>memory_used()</h2>
+<a id="a627f550d6fae75ffd18d1cf49bc0bee2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a627f550d6fae75ffd18d1cf49bc0bee2">&#9670;&nbsp;</a></span>memory_used()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename KeyHash &gt; </div>
+template&lt;typename Item , typename ItemHash &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Key, KeyHash &gt;::memory_used</td>
+          <td class="memname">size_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::memory_used</td>
         </tr>
       </table>
   </td>
@@ -275,19 +275,19 @@ template&lt;typename Key , typename KeyHash &gt; </div>
 
 </div>
 </div>
-<a id="ad17b0e9fd8fde84fa641d512b86daed4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad17b0e9fd8fde84fa641d512b86daed4">&#9670;&nbsp;</a></span>saturation()</h2>
+<a id="a6a436caf91ba2a7c0babef3a73992c71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a436caf91ba2a7c0babef3a73992c71">&#9670;&nbsp;</a></span>saturation()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename KeyHash &gt; </div>
+template&lt;typename Item , typename ItemHash &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Key, KeyHash &gt;::saturation</td>
+          <td class="memname">double <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::saturation</td>
         </tr>
       </table>
   </td>

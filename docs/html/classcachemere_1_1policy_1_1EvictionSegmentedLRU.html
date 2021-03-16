@@ -282,7 +282,7 @@ template&lt;typename Key , typename Value &gt; </div>
 </div><div class="memdoc">
 
 <p>Get an iterator to the first item that should be evicted. </p>
-<dl class="section return"><dt>Returns</dt><dd>An item iterator. </dd></dl>
+<p>Considering that the keys are ordered internally from most-recently used to least-recently used, this iterator will effectively walk the internal structure backwards. </p><dl class="section return"><dt>Returns</dt><dd>An item iterator. </dd></dl>
 
 </div>
 </div>

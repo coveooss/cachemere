@@ -4,17 +4,17 @@
 
 namespace cachemere::policy::detail {
 
-template<typename Key, typename KeyHash>
-BloomFilter<Key, KeyHash>::BloomFilter(uint32_t cardinality)
+template<typename Item, typename ItemHash>
+BloomFilter<Item, ItemHash>::BloomFilter(uint32_t cardinality)
  : m_cardinality{cardinality},
    m_filter{optimal_filter_size(cardinality), false},
    m_nb_hashes{optimal_nb_of_hash_functions(cardinality, m_filter.size())}
 {
 }
 
-template<typename Key, typename KeyHash> void BloomFilter<Key, KeyHash>::add(const Key& key)
+template<typename Item, typename ItemHash> void BloomFilter<Item, ItemHash>::add(const Item& item)
 {
-    Mixer mixer{key, m_filter.size()};
+    Mixer mixer{item, m_filter.size()};
 
     for (size_t i = 0; i < m_nb_hashes; ++i) {
         const size_t filter_idx = mixer();
@@ -24,14 +24,14 @@ template<typename Key, typename KeyHash> void BloomFilter<Key, KeyHash>::add(con
     }
 }
 
-template<typename Key, typename KeyHash> void BloomFilter<Key, KeyHash>::clear()
+template<typename Item, typename ItemHash> void BloomFilter<Item, ItemHash>::clear()
 {
     m_filter.reset();
 }
 
-template<typename Key, typename KeyHash> bool BloomFilter<Key, KeyHash>::maybe_contains(const Key& key) const
+template<typename Item, typename ItemHash> bool BloomFilter<Item, ItemHash>::maybe_contains(const Item& item) const
 {
-    Mixer mixer{key, m_filter.size()};
+    Mixer mixer{item, m_filter.size()};
 
     for (size_t i = 0; i < m_nb_hashes; ++i) {
         const size_t filter_idx = mixer();
@@ -45,12 +45,12 @@ template<typename Key, typename KeyHash> bool BloomFilter<Key, KeyHash>::maybe_c
     return true;
 }
 
-template<typename Key, typename KeyHash> size_t BloomFilter<Key, KeyHash>::memory_used() const noexcept
+template<typename Item, typename ItemHash> size_t BloomFilter<Item, ItemHash>::memory_used() const noexcept
 {
     return m_filter.num_blocks() * sizeof(BitsetBlock) + sizeof(m_nb_hashes);
 }
 
-template<typename Key, typename KeyHash> double BloomFilter<Key, KeyHash>::saturation() const noexcept
+template<typename Item, typename ItemHash> double BloomFilter<Item, ItemHash>::saturation() const noexcept
 {
     assert(m_filter.size() > 0);
     return static_cast<double>(m_filter.count()) / static_cast<double>(m_filter.size());

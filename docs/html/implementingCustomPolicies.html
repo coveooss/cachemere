@@ -66,15 +66,15 @@ $(function() {
 <div class="title">Implementing Custom Policies </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This page is about guiding the implementation of custom policies. </p>
+<div class="textblock"><p>This page is meant to guide you through the implementation of custom policies. </p>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Shared Characteristics</h1>
 <h2><a class="anchor" id="autotoc_md7"></a>
 Construction Requirements</h2>
-<p>Both types of policies <em>must</em> be default-constructible, because the cache is responsible for instanciating them. </p>
+<p>Both types of policies <em>must</em> be <a href="http://www.cplusplus.com/reference/type_traits/is_default_constructible/">default-constructible</a>, because the cache is responsible for instanciating them. </p>
 <h2><a class="anchor" id="autotoc_md8"></a>
 Event Handlers</h2>
-<p>The policies <em>may</em> define the following event handlers to be notified of changes in the cache. These handlers will only be called if implemented.</p><ul>
+<p>The policies <em>may</em> define the following event handlers to be notified of changes in the cache. These handlers do not all need to be implemented; a policy only needs to define the handlers that are relevant to its implementation. The cache will detect available handlers on its policies at compile-time, and will only call those that are defined.</p><ul>
 <li><p class="startli"><code>void on_insert(<a class="el" href="structcachemere_1_1detail_1_1Item.html" title="A wrapper for items stored in the cache.">cachemere::detail::Item</a>&lt;K, V&gt;&amp; item)</code></p>
 <p class="startli">Called immediately after a successful insertion in cache.</p>
 </li>
@@ -82,10 +82,10 @@ Event Handlers</h2>
 <p class="startli">Called immediately after an insertion of an item that was already in cache (which has the effect of updating its value).</p>
 </li>
 <li><p class="startli"><code>void on_cache_hit(<a class="el" href="structcachemere_1_1detail_1_1Item.html" title="A wrapper for items stored in the cache.">cachemere::detail::Item</a>&lt;K, V&gt;&amp; item)</code></p>
-<p class="startli">Called immediately after a cache hit (a successful call to <code><a class="el" href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126" title="Find a given key in cache, optionally returning the associated value.">cachemere::Cache::find</a></code>).</p>
+<p class="startli">Called immediately after a cache hit (a successful call to <code><a class="el" href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
 </li>
 <li><p class="startli"><code>void on_cache_miss(K&amp; key)</code></p>
-<p class="startli">Called immediately after a cache miss (an unsuccessful call to <code><a class="el" href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126" title="Find a given key in cache, optionally returning the associated value.">cachemere::Cache::find</a></code>).</p>
+<p class="startli">Called immediately after a cache miss (an unsuccessful call to <code><a class="el" href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
 </li>
 <li><p class="startli"><code>void on_evict(K&amp; key)</code></p>
 <p class="startli">Called immediately <em>before</em> dropping the provided key from the cache. The call is done this way to allow policies to keep references to cached items instead of copies.</p>
@@ -107,7 +107,7 @@ Insertion Policy</h1>
 <p class="startli">Should return <code>true</code> if the policy allows the specified key to be inserted in cache. </p><dl class="section note"><dt>Note</dt><dd>Returning <code>true</code> guarantees that the object matching the key will be inserted in cache.</dd></dl>
 </li>
 <li><p class="startli"><code>bool should_replace(const Key&amp; victim, const Key&amp; candidate)</code></p>
-<p class="startli">Should return <code>true</code> if the policy believes that the candidate should replace the victim in cache. </p><dl class="section note"><dt>Note</dt><dd>Returning <code>true</code> guarantees that the object matching the <code>candidate</code> key will be inserted in cache.</dd></dl>
+<p class="startli">Should return <code>true</code> if the policy states that the candidate should replace the victim in cache. </p><dl class="section note"><dt>Note</dt><dd>Returning <code>true</code> guarantees that the object matching the <code>candidate</code> key will be inserted in cache.</dd></dl>
 </li>
 </ul>
 <h1><a class="anchor" id="autotoc_md12"></a>
