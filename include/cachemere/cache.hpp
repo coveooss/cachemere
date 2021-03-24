@@ -21,8 +21,8 @@ Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey>::Ca
    m_measure_value{},
    m_mutex{},
    m_data{},
-   m_hit_ratio_acc(boost::accumulators::tag::rolling_window::window_size = statistics_window_size),
-   m_byte_hit_ratio_acc(boost::accumulators::tag::rolling_window::window_size = statistics_window_size)
+   m_hit_rate_acc(boost::accumulators::tag::rolling_window::window_size = statistics_window_size),
+   m_byte_hit_rate_acc(boost::accumulators::tag::rolling_window::window_size = statistics_window_size)
 {
 }
 
@@ -140,15 +140,15 @@ inline E<K, V>& Cache<K, V, I, E, SV, SK>::eviction_policy()
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline double Cache<K, V, I, E, SV, SK>::hit_ratio() const
+inline double Cache<K, V, I, E, SV, SK>::hit_rate() const
 {
-    return boost::accumulators::rolling_mean(m_hit_ratio_acc);
+    return boost::accumulators::rolling_mean(m_hit_rate_acc);
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline double Cache<K, V, I, E, SV, SK>::byte_hit_ratio() const
+inline double Cache<K, V, I, E, SV, SK>::byte_hit_rate() const
 {
-    return boost::accumulators::rolling_mean(m_byte_hit_ratio_acc);
+    return boost::accumulators::rolling_mean(m_byte_hit_rate_acc);
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
@@ -296,9 +296,9 @@ void Cache<K, V, I, E, SV, SK>::on_update(const CacheItem& item) const
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
 void Cache<K, V, I, E, SV, SK>::on_cache_hit(const CacheItem& item) const
 {
-    // Update the cache hit ratio accumulators.
-    m_hit_ratio_acc(1);
-    m_byte_hit_ratio_acc(static_cast<uint32_t>(item.m_value_size));
+    // Update the cache hit rate accumulators.
+    m_hit_rate_acc(1);
+    m_byte_hit_rate_acc(static_cast<uint32_t>(item.m_value_size));
 
     // Call event handler iif the method is defined in the policy.
     static auto has_oncachehit = boost::hana::is_valid([](auto& p) -> decltype(p.on_cache_hit(std::declval<CacheItem>())) {});
@@ -317,9 +317,9 @@ void Cache<K, V, I, E, SV, SK>::on_cache_hit(const CacheItem& item) const
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
 void Cache<K, V, I, E, SV, SK>::on_cache_miss(const K& key) const
 {
-    // Update the cache hit ratio accumulators.
-    m_hit_ratio_acc(0);
-    m_byte_hit_ratio_acc(0);
+    // Update the cache hit rate accumulators.
+    m_hit_rate_acc(0);
+    m_byte_hit_rate_acc(0);
 
     // Call event handler iif the method is defined in the policy.
     static auto has_oncachemiss = boost::hana::is_valid([](auto& p) -> decltype(p.on_cache_miss(std::declval<K>())) {});

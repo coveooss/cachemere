@@ -6,17 +6,17 @@
 
 namespace cachemere::policy::detail {
 
-template<typename Key, typename KeyHash>
-CountingBloomFilter<Key, KeyHash>::CountingBloomFilter(uint32_t cardinality)
+template<typename Item, typename ItemHash>
+CountingBloomFilter<Item, ItemHash>::CountingBloomFilter(uint32_t cardinality)
  : m_cardinality{cardinality},
    m_filter(optimal_filter_size(cardinality), 0),
    m_nb_hashes{optimal_nb_of_hash_functions(cardinality, m_filter.size())}
 {
 }
 
-template<typename Key, typename KeyHash> void CountingBloomFilter<Key, KeyHash>::add(const Key& key)
+template<typename Item, typename ItemHash> void CountingBloomFilter<Item, ItemHash>::add(const Item& item)
 {
-    Mixer mixer{key, m_filter.size()};
+    Mixer mixer{item, m_filter.size()};
 
     std::vector<size_t> indices;
     indices.reserve(m_nb_hashes);
@@ -45,13 +45,13 @@ template<typename Key, typename KeyHash> void CountingBloomFilter<Key, KeyHash>:
     }
 }
 
-template<typename Key, typename KeyHash> void CountingBloomFilter<Key, KeyHash>::clear()
+template<typename Item, typename ItemHash> void CountingBloomFilter<Item, ItemHash>::clear()
 {
     std::fill(m_filter.begin(), m_filter.end(), 0);
     m_nb_nonzero = 0;
 }
 
-template<typename Key, typename KeyHash> void CountingBloomFilter<Key, KeyHash>::decay()
+template<typename Item, typename ItemHash> void CountingBloomFilter<Item, ItemHash>::decay()
 {
     for (auto& counter : m_filter) {
         if (counter == 1) {
@@ -61,11 +61,11 @@ template<typename Key, typename KeyHash> void CountingBloomFilter<Key, KeyHash>:
     }
 }
 
-template<typename Key, typename KeyHash> uint32_t CountingBloomFilter<Key, KeyHash>::estimate(const Key& key) const
+template<typename Item, typename ItemHash> uint32_t CountingBloomFilter<Item, ItemHash>::estimate(const Item& item) const
 {
     assert(m_nb_hashes > 0);
 
-    Mixer mixer{key, m_filter.size()};
+    Mixer mixer{item, m_filter.size()};
 
     uint32_t minimum_val = std::numeric_limits<uint32_t>::max();
     for (size_t i = 0; i < m_nb_hashes; ++i) {
@@ -78,12 +78,12 @@ template<typename Key, typename KeyHash> uint32_t CountingBloomFilter<Key, KeyHa
     return minimum_val;
 }
 
-template<typename Key, typename KeyHash> uint32_t CountingBloomFilter<Key, KeyHash>::cardinality() const noexcept
+template<typename Item, typename ItemHash> uint32_t CountingBloomFilter<Item, ItemHash>::cardinality() const noexcept
 {
     return m_cardinality;
 }
 
-template<typename Key, typename KeyHash> size_t CountingBloomFilter<Key, KeyHash>::memory_used() const noexcept
+template<typename Item, typename ItemHash> size_t CountingBloomFilter<Item, ItemHash>::memory_used() const noexcept
 {
     // Note:
     //  The amount of memory could be reduced by using variable-length counters.
@@ -93,7 +93,7 @@ template<typename Key, typename KeyHash> size_t CountingBloomFilter<Key, KeyHash
     return m_filter.size() * sizeof(uint32_t) + sizeof(m_cardinality) + sizeof(m_nb_hashes) + sizeof(m_nb_nonzero);
 }
 
-template<typename Key, typename KeyHash> double CountingBloomFilter<Key, KeyHash>::saturation() const noexcept
+template<typename Item, typename ItemHash> double CountingBloomFilter<Item, ItemHash>::saturation() const noexcept
 {
     assert(m_filter.size() > 0);
     return static_cast<double>(m_nb_nonzero) / static_cast<double>(m_filter.size());

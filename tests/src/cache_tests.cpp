@@ -36,8 +36,8 @@ template<class CacheT> void test_single_thread()
         }
     }
 
-    const double hit_ratio = my_cache.hit_ratio();
-    EXPECT_GT(hit_ratio, 0.8);
+    const double hit_rate = my_cache.hit_rate();
+    EXPECT_GT(hit_rate, 0.8);
 }
 
 template<class CacheT> void test_multi_thread()
@@ -98,8 +98,8 @@ template<class CacheT> void test_multi_thread()
 
     EXPECT_EQ(0, errors);
 
-    std::cout << "Total of " << op_count << " operations in 10.0s";
-    std::cout << "Hit ratio: " << cache->hit_ratio() << std::endl;
+    std::cout << "Total of " << op_count << " operatens in 10.0s";
+    std::cout << "Hit rate: " << cache->hit_rate() << std::endl;
 }
 
 TEST(Cache, LRUSingleThread)

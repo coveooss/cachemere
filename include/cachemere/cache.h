@@ -49,12 +49,12 @@ public:
     /// @param statistics_window_size The length of the cache history to be kept for statistics.
     Cache(size_t maximum_size, uint32_t statistics_window_size = 1000);
 
-    /// @brief Check if a given key is stored in the cache.
-    /// @param key The key whose presence needs to be tested.
+    /// @brief Check whether a given key is stored in the cache.
+    /// @param key The key whose presence to test.
     /// @return Whether the key is in cache.
     bool contains(const Key& key) const;
 
-    /// @brief Find a given key in cache, optionally returning the associated value.
+    /// @brief Find a given key in cache returning the associated value when it exists.
     /// @param key The key to lookup.
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
     std::optional<Value> find(const Key& key) const;
@@ -68,15 +68,15 @@ public:
     bool insert(const Key& key, const Value& value);
 
     /// @brief Get the number of items currently stored in the cache.
-    /// @warning This method acquires an internal mutex to grab the number of items.
+    /// @warning This method acquires a mutual exclusion lock to secure the item count.
     ///          Calling this excessively while the cache is under contention will be detrimental to performance.
     /// @return How many items are in cache.
     [[nodiscard]] size_t number_of_items() const;
 
     /// @brief Get the amount of memory currently being used by cache items.
-    /// @details This method returns the size of the data stored by the cache itself:
-    ///          * The size of the key and the value, as defined by the `MeasureKey` and `MeasureValue` functors
-    ///          * A copy of the key
+    /// @details This method returns the amount of memory used by the cache. For every item,
+    ///          the cache stores the key and its value, along with an additional copy of the key.
+    ///          This brings the total memory used by an item to `2 * MeasureKey(key) + MeasureValue(value)`.
     /// @return The current memory usage, in bytes.
     [[nodiscard]] size_t size() const;
 
@@ -98,18 +98,18 @@ public:
     /// @brief Get a reference to the eviction policy used by the cache.
     [[nodiscard]] MyEvictionPolicy& eviction_policy();
 
-    /// @brief Compute and return the running hit ratio of the cache.
-    /// @details The hit ratio is computed using a sliding window determined by the sliding window
+    /// @brief Compute and return the running hit rate of the cache.
+    /// @details The hit rate is computed using a sliding window determined by the sliding window
     ///          size passed to the constructor.
-    /// @return The hit ratio, as a fraction.
-    [[nodiscard]] double hit_ratio() const;
+    /// @return The hit rate, as a fraction.
+    [[nodiscard]] double hit_rate() const;
 
-    /// @brief Compute and return the running byte hit ratio of the cache, in bytes.
-    /// @details The byte hit ratio represents the average amount of data saved by cache accesses.
+    /// @brief Compute and return the running byte hit rate of the cache, in bytes.
+    /// @details The byte hit rate represents the average amount of data saved by cache accesses.
     ///          This is a very useful metric in applications where item load times scale
     ///          linearly with item size, for instance in a web server.
-    /// @return The byte hit ratio, in bytes.
-    [[nodiscard]] double byte_hit_ratio() const;
+    /// @return The byte hit rate, in bytes.
+    [[nodiscard]] double byte_hit_rate() const;
 
 private:
     using CacheItem = detail::Item<Key, Value>;
@@ -134,8 +134,8 @@ private:
     mutable std::mutex m_mutex;
     DataMap            m_data;
 
-    mutable MeanAccumulator m_hit_ratio_acc;
-    mutable MeanAccumulator m_byte_hit_ratio_acc;
+    mutable MeanAccumulator m_hit_rate_acc;
+    mutable MeanAccumulator m_byte_hit_rate_acc;
 
     bool   compare_evict(const Key& candidate_key, size_t candidate_size);
     size_t free_amount(size_t amount_to_free);

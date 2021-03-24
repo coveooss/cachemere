@@ -119,10 +119,10 @@ Public Member Functions</h2></td></tr>
 class cachemere::policy::EvictionLRU&lt; Key, Value &gt;</h3>
 
 <p>Least Recently Used (LRU) eviction policy. </p>
-<p>Implemented using an internal linked list. Only stores references to keys kept alive by the cache. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Implemented internally using a linked list. The keys are ordered from most-recently used to least-recently used. Only stores references to keys kept alive by the cache. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Key</td><td>The key used to identify items in the cache. </td></tr>
-    <tr><td class="paramname">Value</td><td>The values stored in the cache. </td></tr>
+    <tr><td class="paramname">Key</td><td>The type of the keys used to identify an items in the cache. </td></tr>
+    <tr><td class="paramname">Value</td><td>The type of the values stored in the cache. </td></tr>
   </table>
   </dd>
 </dl>
@@ -257,7 +257,7 @@ template&lt;typename Key , typename Value &gt; </div>
 </div><div class="memdoc">
 
 <p>Get an iterator to the first item that should be evicted. </p>
-<dl class="section return"><dt>Returns</dt><dd>An item iterator. </dd></dl>
+<p>Considering that the keys are ordered internally from most-recently used to least-recently used, this iterator will effectively walk the internal structure backwards. </p><dl class="section return"><dt>Returns</dt><dd>An item iterator. </dd></dl>
 
 </div>
 </div>

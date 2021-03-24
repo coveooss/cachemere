@@ -75,6 +75,9 @@ public:
     void on_evict(const Key& item);
 
     /// @brief Get an iterator to the first item that should be evicted.
+    /// @details Considering that the keys are ordered internally from most-recently used
+    ///          to least-recently used, this iterator will effectively walk the internal
+    ///          structure backwards.
     /// @return An item iterator.
     [[nodiscard]] VictimIterator victim_begin() const;
 

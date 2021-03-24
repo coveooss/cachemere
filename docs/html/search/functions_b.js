@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['saturation_109',['saturation',['../classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#aac87cf9d8f32a4b8894b66accb6059c0',1,'cachemere::policy::detail::BloomFilter::saturation()'],['../classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ad17b0e9fd8fde84fa641d512b86daed4',1,'cachemere::policy::detail::CountingBloomFilter::saturation()']]],
+  ['saturation_109',['saturation',['../classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a293de916fbfef6a7f2d1de03cf364a18',1,'cachemere::policy::detail::BloomFilter::saturation()'],['../classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a6a436caf91ba2a7c0babef3a73992c71',1,'cachemere::policy::detail::CountingBloomFilter::saturation()']]],
   ['set_5fcardinality_110',['set_cardinality',['../classcachemere_1_1policy_1_1InsertionTinyLFU.html#a28cc61a4dfecb2b1713514c8e2251c9d',1,'cachemere::policy::InsertionTinyLFU']]],
   ['set_5fmaximum_5fsize_111',['set_maximum_size',['../classcachemere_1_1Cache.html#af63da99d6c09774c8583ecc9a94a3435',1,'cachemere::Cache']]],
   ['set_5fprotected_5fsegment_5fsize_112',['set_protected_segment_size',['../classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ae27e735292643a89a0f2257750ab30ae',1,'cachemere::policy::EvictionSegmentedLRU']]],

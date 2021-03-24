@@ -95,10 +95,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ab4c26af3c808c44d35fefc3cc6f703bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple constructor.  <a href="classcachemere_1_1Cache.html#ab4c26af3c808c44d35fefc3cc6f703bd">More...</a><br /></td></tr>
 <tr class="separator:ab4c26af3c808c44d35fefc3cc6f703bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad43ea72ed782225ea027cde1f8d0bcac"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ad43ea72ed782225ea027cde1f8d0bcac">contains</a> (const Key &amp;key) const</td></tr>
-<tr class="memdesc:ad43ea72ed782225ea027cde1f8d0bcac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a given key is stored in the cache.  <a href="classcachemere_1_1Cache.html#ad43ea72ed782225ea027cde1f8d0bcac">More...</a><br /></td></tr>
+<tr class="memdesc:ad43ea72ed782225ea027cde1f8d0bcac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a given key is stored in the cache.  <a href="classcachemere_1_1Cache.html#ad43ea72ed782225ea027cde1f8d0bcac">More...</a><br /></td></tr>
 <tr class="separator:ad43ea72ed782225ea027cde1f8d0bcac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa64c50ed24eacc441053795bcb672126"><td class="memItemLeft" align="right" valign="top">std::optional&lt; Value &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126">find</a> (const Key &amp;key) const</td></tr>
-<tr class="memdesc:aa64c50ed24eacc441053795bcb672126"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a given key in cache, optionally returning the associated value.  <a href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126">More...</a><br /></td></tr>
+<tr class="memdesc:aa64c50ed24eacc441053795bcb672126"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a given key in cache returning the associated value when it exists.  <a href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126">More...</a><br /></td></tr>
 <tr class="separator:aa64c50ed24eacc441053795bcb672126"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24f986ccc851d66e7e2d2cf4923a0e79"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a24f986ccc851d66e7e2d2cf4923a0e79">insert</a> (const Key &amp;key, const Value &amp;value)</td></tr>
 <tr class="memdesc:a24f986ccc851d66e7e2d2cf4923a0e79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a key/value pair in the cache.  <a href="classcachemere_1_1Cache.html#a24f986ccc851d66e7e2d2cf4923a0e79">More...</a><br /></td></tr>
@@ -123,12 +123,12 @@ MyInsertionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a cl
 MyEvictionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a9417671e0ab58299a99b690aec575757">eviction_policy</a> ()</td></tr>
 <tr class="memdesc:a9417671e0ab58299a99b690aec575757"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the eviction policy used by the cache. <br /></td></tr>
 <tr class="separator:a9417671e0ab58299a99b690aec575757"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a278f658ad422f22db6adf491325e0c76"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a278f658ad422f22db6adf491325e0c76">hit_ratio</a> () const</td></tr>
-<tr class="memdesc:a278f658ad422f22db6adf491325e0c76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running hit ratio of the cache.  <a href="classcachemere_1_1Cache.html#a278f658ad422f22db6adf491325e0c76">More...</a><br /></td></tr>
-<tr class="separator:a278f658ad422f22db6adf491325e0c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e49af2c593830a745866d61221026e7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a3e49af2c593830a745866d61221026e7">byte_hit_ratio</a> () const</td></tr>
-<tr class="memdesc:a3e49af2c593830a745866d61221026e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running byte hit ratio of the cache, in bytes.  <a href="classcachemere_1_1Cache.html#a3e49af2c593830a745866d61221026e7">More...</a><br /></td></tr>
-<tr class="separator:a3e49af2c593830a745866d61221026e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92132bedcff8bd9d1a6d4c9e42e981a3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a92132bedcff8bd9d1a6d4c9e42e981a3">hit_rate</a> () const</td></tr>
+<tr class="memdesc:a92132bedcff8bd9d1a6d4c9e42e981a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running hit rate of the cache.  <a href="classcachemere_1_1Cache.html#a92132bedcff8bd9d1a6d4c9e42e981a3">More...</a><br /></td></tr>
+<tr class="separator:a92132bedcff8bd9d1a6d4c9e42e981a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a871709fd819460e2a5d06151d675c8d5"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a871709fd819460e2a5d06151d675c8d5">byte_hit_rate</a> () const</td></tr>
+<tr class="memdesc:a871709fd819460e2a5d06151d675c8d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running byte hit rate of the cache, in bytes.  <a href="classcachemere_1_1Cache.html#a871709fd819460e2a5d06151d675c8d5">More...</a><br /></td></tr>
+<tr class="separator:a871709fd819460e2a5d06151d675c8d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename Key, typename Value, template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, typename MeasureValue = measurement::Size&lt;Value&gt;, typename MeasureKey = measurement::Size&lt;Key&gt;&gt;<br />
@@ -188,8 +188,8 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3e49af2c593830a745866d61221026e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e49af2c593830a745866d61221026e7">&#9670;&nbsp;</a></span>byte_hit_ratio()</h2>
+<a id="a871709fd819460e2a5d06151d675c8d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a871709fd819460e2a5d06151d675c8d5">&#9670;&nbsp;</a></span>byte_hit_rate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -200,7 +200,7 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, SV, SK &gt;::byte_hit_ratio</td>
+          <td class="memname">double <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, SV, SK &gt;::byte_hit_rate</td>
         </tr>
       </table>
   </td>
@@ -210,8 +210,8 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 </table>
 </div><div class="memdoc">
 
-<p>Compute and return the running byte hit ratio of the cache, in bytes. </p>
-<p>The byte hit ratio represents the average amount of data saved by cache accesses. This is a very useful metric in applications where item load times scale linearly with item size, for instance in a web server. </p><dl class="section return"><dt>Returns</dt><dd>The byte hit ratio, in bytes. </dd></dl>
+<p>Compute and return the running byte hit rate of the cache, in bytes. </p>
+<p>The byte hit rate represents the average amount of data saved by cache accesses. This is a very useful metric in applications where item load times scale linearly with item size, for instance in a web server. </p><dl class="section return"><dt>Returns</dt><dd>The byte hit rate, in bytes. </dd></dl>
 
 </div>
 </div>
@@ -241,10 +241,10 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 </table>
 </div><div class="memdoc">
 
-<p>Check if a given key is stored in the cache. </p>
+<p>Check whether a given key is stored in the cache. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">key</td><td>The key whose presence needs to be tested. </td></tr>
+    <tr><td class="paramname">key</td><td>The key whose presence to test. </td></tr>
   </table>
   </dd>
 </dl>
@@ -270,7 +270,7 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
       </table>
 </div><div class="memdoc">
 
-<p>Find a given key in cache, optionally returning the associated value. </p>
+<p>Find a given key in cache returning the associated value when it exists. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key to lookup. </td></tr>
@@ -281,8 +281,8 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 
 </div>
 </div>
-<a id="a278f658ad422f22db6adf491325e0c76"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a278f658ad422f22db6adf491325e0c76">&#9670;&nbsp;</a></span>hit_ratio()</h2>
+<a id="a92132bedcff8bd9d1a6d4c9e42e981a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92132bedcff8bd9d1a6d4c9e42e981a3">&#9670;&nbsp;</a></span>hit_rate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -293,7 +293,7 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, SV, SK &gt;::hit_ratio</td>
+          <td class="memname">double <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, SV, SK &gt;::hit_rate</td>
         </tr>
       </table>
   </td>
@@ -303,8 +303,8 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 </table>
 </div><div class="memdoc">
 
-<p>Compute and return the running hit ratio of the cache. </p>
-<p>The hit ratio is computed using a sliding window determined by the sliding window size passed to the constructor. </p><dl class="section return"><dt>Returns</dt><dd>The hit ratio, as a fraction. </dd></dl>
+<p>Compute and return the running hit rate of the cache. </p>
+<p>The hit rate is computed using a sliding window determined by the sliding window size passed to the constructor. </p><dl class="section return"><dt>Returns</dt><dd>The hit rate, as a fraction. </dd></dl>
 
 </div>
 </div>
@@ -398,7 +398,7 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 </div><div class="memdoc">
 
 <p>Get the number of items currently stored in the cache. </p>
-<dl class="section warning"><dt>Warning</dt><dd>This method acquires an internal mutex to grab the number of items. Calling this excessively while the cache is under contention will be detrimental to performance. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This method acquires a mutual exclusion lock to secure the item count. Calling this excessively while the cache is under contention will be detrimental to performance. </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>How many items are in cache. </dd></dl>
 
 </div>
@@ -462,11 +462,7 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 </div><div class="memdoc">
 
 <p>Get the amount of memory currently being used by cache items. </p>
-<p>This method returns the size of the data stored by the cache itself:</p><ul>
-<li>The size of the key and the value, as defined by the <code>MeasureKey</code> and <code>MeasureValue</code> functors</li>
-<li>A copy of the key <dl class="section return"><dt>Returns</dt><dd>The current memory usage, in bytes. </dd></dl>
-</li>
-</ul>
+<p>This method returns the amount of memory used by the cache. For every item, the cache stores the key and its value, along with an additional copy of the key. This brings the total memory used by an item to <code>2 * MeasureKey(key) + MeasureValue(value)</code>. </p><dl class="section return"><dt>Returns</dt><dd>The current memory usage, in bytes. </dd></dl>
 
 </div>
 </div>

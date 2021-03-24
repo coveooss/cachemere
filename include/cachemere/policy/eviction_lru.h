@@ -10,10 +10,11 @@
 namespace cachemere::policy {
 
 /// @brief Least Recently Used (LRU) eviction policy.
-/// @details Implemented using an internal linked list. Only stores references to keys
-///          kept alive by the cache.
-/// @tparam Key The key used to identify items in the cache.
-/// @tparam Value The values stored in the cache.
+/// @details Implemented internally using a linked list.
+///          The keys are ordered from most-recently used to least-recently used.
+///          Only stores references to keys kept alive by the cache.
+/// @tparam Key The type of the keys used to identify an items in the cache.
+/// @tparam Value The type of the values stored in the cache.
 template<typename Key, typename Value> class EvictionLRU
 {
 private:
@@ -64,6 +65,9 @@ public:
     void on_evict(const Key& item);
 
     /// @brief Get an iterator to the first item that should be evicted.
+    /// @details Considering that the keys are ordered internally from most-recently used
+    ///          to least-recently used, this iterator will effectively walk the internal
+    ///          structure backwards.
     /// @return An item iterator.
     [[nodiscard]] VictimIterator victim_begin() const;
 
