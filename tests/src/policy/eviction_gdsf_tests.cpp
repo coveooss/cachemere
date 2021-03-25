@@ -48,7 +48,7 @@ TEST(EvictionGDSF, MaximizesCostPerByteWithConstantCost)
     insert_item(short_key, 42, policy, item_store);
     insert_item(long_key, 42, policy, item_store);
 
-    // Since GDSF gives priority to items with a higher cost per byte, using a constant cost gives favorizes small items.
+    // Since GDSF gives priority to items with a higher cost per byte, using a constant cost favors small items.
     // This means that short_key should be favored over long_key
     EXPECT_EQ(*policy.victim_begin(), long_key);
 

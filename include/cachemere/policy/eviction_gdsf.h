@@ -24,14 +24,9 @@ private:
     using KeyRef = std::reference_wrapper<const Key>;
 
     struct PriorityEntry {
-        PriorityEntry(KeyRef key, double coeff) : m_key(key), m_h_coefficient(coeff)
-        {
-        }
+        PriorityEntry(KeyRef key, double coefficient);
 
-        bool operator<(const PriorityEntry& other) const
-        {
-            return m_h_coefficient < other.m_h_coefficient;
-        }
+        bool operator<(const PriorityEntry& other) const;
 
         KeyRef m_key;
         double m_h_coefficient;

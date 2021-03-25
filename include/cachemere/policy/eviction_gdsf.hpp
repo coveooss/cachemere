@@ -1,6 +1,17 @@
 namespace cachemere::policy {
 
 template<class Key, class Value, class Cost>
+EvictionGDSF<Key, Value, Cost>::PriorityEntry::PriorityEntry(KeyRef key, double coefficient) : m_key(key),
+                                                                                               m_h_coefficient(coefficient)
+{
+}
+
+template<class Key, class Value, class Cost> bool EvictionGDSF<Key, Value, Cost>::PriorityEntry::operator<(const PriorityEntry& other) const
+{
+    return m_h_coefficient < other.m_h_coefficient;
+}
+
+template<class Key, class Value, class Cost>
 EvictionGDSF<Key, Value, Cost>::VictimIterator::VictimIterator(PrioritySetIt iterator) : m_iterator(std::move(iterator))
 {
 }
