@@ -17,7 +17,7 @@ template<class Key, class Value> const Key& EvictionSegmentedLRU<Key, Value>::Vi
     return *it;
 }
 
-template<class Key, class Value> class EvictionSegmentedLRU<Key, Value>::VictimIterator& EvictionSegmentedLRU<Key, Value>::VictimIterator::operator++()
+template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::VictimIterator::operator++() -> VictimIterator&
 {
     if (m_done_with_probation) {
         ++m_protected_iterator;
@@ -28,16 +28,14 @@ template<class Key, class Value> class EvictionSegmentedLRU<Key, Value>::VictimI
     return *this;
 }
 
-template<class Key, class Value>
-class EvictionSegmentedLRU<Key, Value>::VictimIterator EvictionSegmentedLRU<Key, Value>::VictimIterator::operator++(int)
+template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::VictimIterator::operator++(int) -> VictimIterator
 {
     auto tmp = *this;
     ++*this;
     return tmp;
 }
 
-template<class Key, class Value>
-bool EvictionSegmentedLRU<Key, Value>::VictimIterator::operator==(const VictimIterator& other) const
+template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::VictimIterator::operator==(const VictimIterator& other) const
 {
     return m_protected_iterator == other.m_protected_iterator && m_probation_iterator == other.m_probation_iterator &&
            m_probation_end_iterator == other.m_probation_end_iterator && m_done_with_probation == other.m_done_with_probation;

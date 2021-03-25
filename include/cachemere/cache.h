@@ -13,7 +13,7 @@
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/hana.hpp>
 
-#include "detail/item.h"
+#include "item.h"
 #include "measurement.h"
 
 /// @brief Root namespace
@@ -112,7 +112,7 @@ public:
     [[nodiscard]] double byte_hit_rate() const;
 
 private:
-    using CacheItem = detail::Item<Key, Value>;
+    using CacheItem = Item<Key, Value>;
     using DataMap   = std::map<Key, CacheItem>;
 
     using MyInsertionPolicySP = std::unique_ptr<MyInsertionPolicy>;

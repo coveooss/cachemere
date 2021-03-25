@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "cachemere/detail/item.h"
+#include "cachemere/item.h"
 
 #include "detail/bloom_filter.h"
 #include "detail/counting_bloom_filter.h"
@@ -18,7 +18,7 @@ namespace cachemere::policy {
 template<typename Key, typename Value> class InsertionTinyLFU
 {
 public:
-    using CacheItem = cachemere::detail::Item<Key, Value>;
+    using CacheItem = cachemere::Item<Key, Value>;
 
     /// @brief Cache hit event handler.
     /// @details Updates the internal frequency sketches for the given item.
@@ -52,8 +52,8 @@ public:
 
 private:
     const static uint32_t            DEFAULT_CACHE_CARDINALITY = 2000;
-    detail::BloomFilter<Key>         m_gatekeeper{DEFAULT_CACHE_CARDINALITY};
-    detail::CountingBloomFilter<Key> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};
+    detail::BloomFilter<Key>         m_gatekeeper{DEFAULT_CACHE_CARDINALITY};        // TODO: Investigate using cuckoo filter here instead.
+    detail::CountingBloomFilter<Key> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};  // TODO: Replace with count-min sketch to get rid of cardinality param.
 
     uint32_t estimate_count_for_key(const Key& key) const;
     void     reset();

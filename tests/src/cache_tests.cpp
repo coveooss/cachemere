@@ -19,6 +19,18 @@ using namespace cachemere;
 using TestLRUCache  = presets::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 using TestTLFUCache = presets::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 
+struct RandomCost {
+    double operator()(const Item<uint32_t, Point3D>& item)
+    {
+        const int min = 0;
+        const int max = 100;
+
+        return static_cast<double>(min + (rand() % static_cast<int>(max - min + 1)));
+    }
+};
+
+using TestCustomCostCache = presets::CustomCostCache<uint32_t, Point3D, RandomCost, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+
 template<class CacheT> void test_single_thread()
 {
     CacheT my_cache{150};
@@ -98,7 +110,7 @@ template<class CacheT> void test_multi_thread()
 
     EXPECT_EQ(0, errors);
 
-    std::cout << "Total of " << op_count << " operatens in 10.0s";
+    std::cout << "Total of " << op_count << " operations in 10.0s";
     std::cout << "Hit rate: " << cache->hit_rate() << std::endl;
 }
 
@@ -110,6 +122,11 @@ TEST(Cache, LRUSingleThread)
 TEST(Cache, TLFUSingleThread)
 {
     test_single_thread<TestTLFUCache>();
+}
+
+TEST(Cache, CustomCostSingleThread)
+{
+    test_single_thread<TestCustomCostCache>();
 }
 
 TEST(Cache, Resize)
@@ -137,4 +154,9 @@ TEST(Cache, LRUMultiThreadLong)
 TEST(Cache, TLFUMultiThreadLong)
 {
     test_multi_thread<TestTLFUCache>();
+}
+
+TEST(Cache, CustomCostMultiThreadLong)
+{
+    test_multi_thread<TestCustomCostCache>();
 }

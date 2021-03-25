@@ -17,6 +17,7 @@ target_sources(cachemere_tests
         src/cache_tests.cpp
         src/measurement_tests.cpp
         src/policy/eviction_lru_tests.cpp
+        src/policy/eviction_gdsf_tests.cpp
         src/policy/eviction_segmented_lru_tests.cpp
         src/policy/insertion_always_tests.cpp
         src/policy/insertion_tinylfu_tests.cpp

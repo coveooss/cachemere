@@ -3,7 +3,7 @@
 
 #include <cstring>
 
-namespace cachemere::detail {
+namespace cachemere {
 
 /// @brief A wrapper for items stored in the cache.
 template<typename Key, typename Value> struct Item {
@@ -27,6 +27,6 @@ template<typename Key, typename Value> struct Item {
     size_t m_total_size;  //!< The total size of the item (`m_key_size + m_value_size`)
 };
 
-}  // namespace cachemere::detail
+}  // namespace cachemere
 
 #endif

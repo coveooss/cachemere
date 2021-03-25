@@ -3,13 +3,13 @@
 #include <string>
 #include <map>
 
-#include "cachemere/detail/item.h"
+#include "cachemere/item.h"
 #include "cachemere/policy/eviction_segmented_lru.h"
 
 using namespace cachemere;
 
 using TestSLRU = policy::EvictionSegmentedLRU<std::string, int32_t>;
-using TestItem = detail::Item<std::string, int32_t>;
+using TestItem = Item<std::string, int32_t>;
 using ItemMap  = std::map<std::string, TestItem>;
 
 void insert_item(std::string key, int32_t value, TestSLRU& policy, ItemMap& item_map)

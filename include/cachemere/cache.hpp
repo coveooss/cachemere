@@ -222,7 +222,7 @@ bool Cache<K, V, I, E, SV, SK>::compare_evict(const K& candidate_key, size_t can
             const auto total_size_and_overhead = key_and_item->second.m_key_size + key_and_item->second.m_total_size;
             m_current_size -= total_size_and_overhead;
 
-            on_evict(key_and_item->first);
+            on_evict(key_and_item->second.m_key);
             m_data.erase(key_and_item->first);
         }
 

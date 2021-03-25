@@ -25,12 +25,14 @@ target_sources(cachemere
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/cache.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/cache.hpp>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/item.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/measurement.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/measurement.hpp>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/presets.h>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/detail/item.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_lru.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_lru.hpp>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_gdsf.h>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_gdsf.hpp>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_segmented_lru.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_segmented_lru.hpp>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/insertion_always.h>
