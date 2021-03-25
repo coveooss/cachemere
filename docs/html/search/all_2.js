@@ -8,7 +8,8 @@ var searchData=
   ['contains_9',['contains',['../classcachemere_1_1Cache.html#ad43ea72ed782225ea027cde1f8d0bcac',1,'cachemere::Cache']]],
   ['countingbloomfilter_10',['CountingBloomFilter',['../classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html',1,'cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt;'],['../classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ab7efe8a340699f70aafec2160dd8d3fd',1,'cachemere::policy::detail::CountingBloomFilter::CountingBloomFilter()']]],
   ['countingbloomfilter_3c_20key_20_3e_11',['CountingBloomFilter&lt; Key &gt;',['../classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html',1,'cachemere::policy::detail']]],
-  ['cachemere_12',['Cachemere',['../index.html',1,'']]],
-  ['measurement_13',['measurement',['../namespacecachemere_1_1measurement.html',1,'cachemere']]],
-  ['presets_14',['presets',['../namespacecachemere_1_1presets.html',1,'cachemere']]]
+  ['customcostcache_12',['CustomCostCache',['../namespacecachemere_1_1presets.html#ade9d0c56258e5bc0a85c58258b7fa559',1,'cachemere::presets']]],
+  ['cachemere_13',['Cachemere',['../index.html',1,'']]],
+  ['measurement_14',['measurement',['../namespacecachemere_1_1measurement.html',1,'cachemere']]],
+  ['presets_15',['presets',['../namespacecachemere_1_1presets.html',1,'cachemere']]]
 ];

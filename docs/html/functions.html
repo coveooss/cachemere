@@ -148,19 +148,19 @@ $(function() {
 
 <h3><a id="index_m"></a>- m -</h3><ul>
 <li>m_key
-: <a class="el" href="structcachemere_1_1detail_1_1Item.html#a7c89c6598848a6eba753a0406a8fad30">cachemere::detail::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#aedb225a72b07b2c6fca422b8e48f2592">cachemere::Item&lt; Key, Value &gt;</a>
 </li>
 <li>m_key_size
-: <a class="el" href="structcachemere_1_1detail_1_1Item.html#ad9845a25a9c7f291156a767624b84b42">cachemere::detail::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#a030cd2638a41282a76202b20a2114765">cachemere::Item&lt; Key, Value &gt;</a>
 </li>
 <li>m_total_size
-: <a class="el" href="structcachemere_1_1detail_1_1Item.html#ab417ffe00272e4daa27b805f1605e8c5">cachemere::detail::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#a895433f7a68b0f48b5ef8860a975454d">cachemere::Item&lt; Key, Value &gt;</a>
 </li>
 <li>m_value
-: <a class="el" href="structcachemere_1_1detail_1_1Item.html#a9a645d977d126c9129f0fabe1a41de0d">cachemere::detail::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#af316cde32b203cab940612995300d73d">cachemere::Item&lt; Key, Value &gt;</a>
 </li>
 <li>m_value_size
-: <a class="el" href="structcachemere_1_1detail_1_1Item.html#a90e6c198cd0e3ebe4037b37557c1a3b7">cachemere::detail::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#a9406db7b53687268c0390624aae571e1">cachemere::Item&lt; Key, Value &gt;</a>
 </li>
 <li>maximum_size()
 : <a class="el" href="classcachemere_1_1Cache.html#a919d4cf8aacd2f3a5f7815d103261af9">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey &gt;</a>
@@ -184,7 +184,8 @@ $(function() {
 
 <h3><a id="index_o"></a>- o -</h3><ul>
 <li>on_cache_hit()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#ad02589d2e871775ea77fa48d72610421">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a5109e5d0271c939c93c00afaf30f9d83">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#ad02589d2e871775ea77fa48d72610421">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a66203a81f3e53fdb901ace9d9bd1c12f">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#aa693c74bd2381a46befe7c248f818888">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
 </li>
@@ -192,15 +193,18 @@ $(function() {
 : <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a38f2786111b95130d48c9b518aa2211c">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
 </li>
 <li>on_evict()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#a56b7e151fcd9bfa0a723d163884f5d47">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a34afb911f31e1ba6c0f859ef67b6b2f5">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#a56b7e151fcd9bfa0a723d163884f5d47">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a09c434294c5b48d50fbb17f920bf3f7b">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
 <li>on_insert()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#ac3e011835a562e9c2059ea72f4ce979c">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#ae8adfb25809521d6776619101eb8a2ec">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#ac3e011835a562e9c2059ea72f4ce979c">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#aed349d9266d38c9f5ab3851a0a57aba8">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
 <li>on_update()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#a8925052de1b9e8318b2f8e49f78ee120">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a1d50cb9cfe5704916478bc9900617135">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#a8925052de1b9e8318b2f8e49f78ee120">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a0a5f6be75f07d9212a3acf070d43428b">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
 <li>operator()()
@@ -215,7 +219,8 @@ $(function() {
 , <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a6a436caf91ba2a7c0babef3a73992c71">cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt;</a>
 </li>
 <li>set_cardinality()
-: <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a28cc61a4dfecb2b1713514c8e2251c9d">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a03a8d67d1c18cdd6ca28ee4060f1fbb1">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a28cc61a4dfecb2b1713514c8e2251c9d">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
 </li>
 <li>set_maximum_size()
 : <a class="el" href="classcachemere_1_1Cache.html#af63da99d6c09774c8583ecc9a94a3435">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey &gt;</a>
@@ -239,12 +244,14 @@ $(function() {
 
 <h3><a id="index_v"></a>- v -</h3><ul>
 <li>victim_begin()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#a0f106be385324e1cc5bd312c340bf971">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#acb15dfa19b3c89c7136da5da581766ed">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a7a7370a90d1ea463f3028ad8b3c086cd">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#ae74a929d5fe45749c9301af427d1c613">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#aef43c4049dca7d3168dc3bf0b9508f25">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
 <li>victim_end()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#ac42ec1741f4df21088889a5c02b4c21b">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ae2178dc8f62d24643dc5f95c81632159">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a98743edafca906d21676d9d368afa7b3">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#af9e14658f9cec2d5b1b1c9564c8c44b2">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ac9067d9e691137fa793525470db7c4c5">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->
