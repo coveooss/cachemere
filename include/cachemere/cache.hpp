@@ -119,8 +119,8 @@ inline void Cache<K, V, I, E, SV, SK>::set_maximum_size(size_t max_size)
     m_maximum_size = max_size;
 
     if (m_maximum_size < m_current_size) {
-        const size_t amount_to_free = m_current_size - m_maximum_size;
-        const size_t amount_freed   = free_amount(amount_to_free);
+        const size_t                  amount_to_free = m_current_size - m_maximum_size;
+        [[maybe_unused]] const size_t amount_freed   = free_amount(amount_to_free);
 
         assert(amount_freed >= amount_to_free);
     }

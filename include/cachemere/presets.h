@@ -42,7 +42,7 @@ private:
     template<typename K, typename V> using MyGDSF = policy::EvictionGDSF<K, V, Cost>;
 
 public:
-    using type = Cache<Key, Value, policy::InsertionTinyLFU, MyGDSF, MeasureValue, MeasureKey>;
+    using type = Cache<Key, Value, policy::InsertionAlways, MyGDSF, MeasureValue, MeasureKey>;
 };
 
 }  // namespace detail

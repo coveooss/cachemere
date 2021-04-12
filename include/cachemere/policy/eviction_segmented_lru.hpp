@@ -77,12 +77,12 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache
         }
     } else {
         // If the node is in probation, move it to the protected segment.
-        const bool promotion_ok = move_to_protected(item.m_key);
+        [[maybe_unused]] const bool promotion_ok = move_to_protected(item.m_key);
         assert(promotion_ok);
     }
 
     while (m_protected_list.size() > m_protected_segment_size) {
-        const bool demotion_ok = pop_to_probation();
+        [[maybe_unused]] const bool demotion_ok = pop_to_probation();
         assert(demotion_ok);
         assert(m_protected_list.size() == m_protected_segment_size);
     }

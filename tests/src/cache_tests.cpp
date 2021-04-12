@@ -16,8 +16,8 @@ struct Point3D {
 
 using namespace cachemere;
 
-using TestLRUCache  = presets::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
-using TestTLFUCache = presets::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using LRUCache     = presets::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using TinyLFUCache = presets::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 
 struct RandomCost {
     double operator()(const Item<uint32_t, Point3D>& item)
@@ -29,30 +29,42 @@ struct RandomCost {
     }
 };
 
-using TestCustomCostCache = presets::CustomCostCache<uint32_t, Point3D, RandomCost, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using CustomCostCache = presets::CustomCostCache<uint32_t, Point3D, RandomCost, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 
-template<class CacheT> void test_single_thread()
+template<typename CacheT> class CacheTest : public testing::Test
 {
-    CacheT my_cache{150};
+public:
+    std::shared_ptr<CacheT> new_cache(size_t size)
+    {
+        return std::make_shared<CacheT>(size);
+    }
+};
 
+using TestTypes = testing::Types<LRUCache, TinyLFUCache, CustomCostCache>;
+
+TYPED_TEST_SUITE(CacheTest, TestTypes);
+
+TYPED_TEST(CacheTest, SingleThread)
+{
+    auto cache = TestFixture::new_cache(150);
     for (auto i = 0; i < 50; ++i) {
         for (uint32_t point_id = 0; point_id < 4; ++point_id) {
-            auto fetched = my_cache.find(point_id);
+            auto fetched = cache->find(point_id);
 
             if (fetched.has_value()) {
                 EXPECT_EQ(point_id, (*fetched).x);
             } else {
                 Point3D point{point_id, point_id, point_id};
-                my_cache.insert(point_id, point);
+                cache->insert(point_id, point);
             }
         }
     }
 
-    const double hit_rate = my_cache.hit_rate();
+    const double hit_rate = cache->hit_rate();
     EXPECT_GT(hit_rate, 0.8);
 }
 
-template<class CacheT> void test_multi_thread()
+TYPED_TEST(CacheTest, MultiThreadLong)
 {
     const size_t item_count          = 10000;
     const size_t nb_inserter_threads = 5;
@@ -69,7 +81,7 @@ template<class CacheT> void test_multi_thread()
     std::atomic<bool>        is_running = true;
     std::atomic<uint32_t>    op_count   = 0;
     std::atomic<uint32_t>    errors     = 0;
-    auto                     cache      = std::make_shared<CacheT>(3000);
+    auto                     cache      = TestFixture::new_cache(3000);
 
     std::cout << "Starting workers" << std::endl;
     for (size_t i = 0; i < nb_inserter_threads; ++i) {
@@ -114,49 +126,20 @@ template<class CacheT> void test_multi_thread()
     std::cout << "Hit rate: " << cache->hit_rate() << std::endl;
 }
 
-TEST(Cache, LRUSingleThread)
+TYPED_TEST(CacheTest, Resize)
 {
-    test_single_thread<TestLRUCache>();
-}
-
-TEST(Cache, TLFUSingleThread)
-{
-    test_single_thread<TestTLFUCache>();
-}
-
-TEST(Cache, CustomCostSingleThread)
-{
-    test_single_thread<TestCustomCostCache>();
-}
-
-TEST(Cache, Resize)
-{
-    TestLRUCache my_cache{10 * sizeof(Point3D)};
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
 
     // Insert all items and make sure they all fit in cache.
     const uint32_t number_of_items = 5;
     for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
-        my_cache.insert(point_id, Point3D{point_id, point_id, point_id});
+        cache->find(point_id);  // Trigger a cache miss so TinyLFU has seen the item once.
+        cache->insert(point_id, Point3D{point_id, point_id, point_id});
     }
-    EXPECT_EQ(my_cache.number_of_items(), number_of_items);
+    EXPECT_EQ(cache->number_of_items(), number_of_items);
 
     // Resize the cache, make sure some were evicted.
-    my_cache.set_maximum_size(4 * sizeof(Point3D));
-    EXPECT_LE(my_cache.size(), 4 * sizeof(Point3D));
-    EXPECT_EQ(my_cache.number_of_items(), 2);  // Only two items fit because of the cache overhead.
-}
-
-TEST(Cache, LRUMultiThreadLong)
-{
-    test_multi_thread<TestLRUCache>();
-}
-
-TEST(Cache, TLFUMultiThreadLong)
-{
-    test_multi_thread<TestTLFUCache>();
-}
-
-TEST(Cache, CustomCostMultiThreadLong)
-{
-    test_multi_thread<TestCustomCostCache>();
+    cache->set_maximum_size(4 * sizeof(Point3D));
+    EXPECT_LE(cache->size(), 4 * sizeof(Point3D));
+    EXPECT_EQ(cache->number_of_items(), 2);  // Only two items fit because of the cache overhead.
 }

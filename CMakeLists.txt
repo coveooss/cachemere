@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Boost 1.65 REQUIRED)
 
 add_library(cachemere INTERFACE)
+add_compile_options("-Wall")
 
 target_link_libraries(cachemere
     INTERFACE
@@ -49,4 +50,5 @@ target_sources(cachemere
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/detail/hash_mixer.hpp>
 )
 
+add_subdirectory(benchmarks)
 add_subdirectory(tests)
