@@ -67,6 +67,19 @@ public:
     /// @return Whether the item was inserted in cache.
     bool insert(const Key& key, const Value& value);
 
+    /// @brief Remove a key and its value from the cache.
+    /// @details If the key is not present in cache, no operation is taken.
+    /// @param key The key to remove from the cache.
+    /// @return Whether the key was present in cache.
+    bool remove(const Key& key);
+
+    /// @brief Retain all objects matching a predicate.
+    /// @details Removes all items for which `predicate_fn` returns false.
+    /// @param predicate_fn The predicate function.
+    /// @tparam P The type of the predicate function.
+    ///           The predicate should have the signature `bool fn(const Key& key, const Value& value)`.
+    template<typename P> void retain(P predicate_fn);
+
     /// @brief Get the number of items currently stored in the cache.
     /// @warning This method acquires a mutual exclusion lock to secure the item count.
     ///          Calling this excessively while the cache is under contention will be detrimental to performance.
@@ -114,6 +127,7 @@ public:
 private:
     using CacheItem = Item<Key, Value>;
     using DataMap   = std::map<Key, CacheItem>;
+    using DataMapIt = typename DataMap::iterator;
 
     using MyInsertionPolicySP = std::unique_ptr<MyInsertionPolicy>;
     using MyEvictionPolicySP  = std::unique_ptr<MyEvictionPolicy>;
@@ -139,6 +153,7 @@ private:
 
     bool   compare_evict(const Key& candidate_key, size_t candidate_size);
     size_t free_amount(size_t amount_to_free);
+    void   remove(DataMapIt it);
 
     void on_insert(const CacheItem& item) const;
     void on_update(const CacheItem& item) const;

@@ -93,19 +93,27 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache
 
 template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_evict(const Key& key)
 {
-    assert((m_probation_list.empty() && !m_protected_list.empty() && m_protected_list.back().get() == key) ||
-           (!m_probation_list.empty() && m_probation_list.back().get() == key));
+    assert((m_probation_list.empty() && !m_protected_list.empty()) || !m_probation_list.empty());
 
-    if (!m_probation_list.empty() && m_probation_list.back().get() == key) {
+    auto evict_from = [&key](std::list<KeyRef>& key_list, KeyRefMap& nodes_map) {
+        assert(nodes_map.find(key) != nodes_map.end());
+
+        if (key_list.back().get() == key) {
+            nodes_map.erase(key);
+            key_list.pop_back();
+        } else {
+            auto it = nodes_map.find(key);
+            assert(it != nodes_map.end());
+            nodes_map.erase(it);
+        }
+    };
+
+    if (!m_probation_list.empty()) {
         // There are items in the probation list, these should be evicted first.
-        assert(m_probation_nodes.find(key) != m_probation_nodes.end());
-        m_probation_nodes.erase(key);
-        m_probation_list.pop_back();
+        evict_from(m_probation_list, m_probation_nodes);
     } else {
         // The probation list is empty, evict from the protected list.
-        assert(m_protected_nodes.find(key) != m_protected_nodes.end());
-        m_protected_nodes.erase(key);
-        m_protected_list.pop_back();
+        evict_from(m_protected_list, m_protected_nodes);
     }
 }
 

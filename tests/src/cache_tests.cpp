@@ -143,3 +143,42 @@ TYPED_TEST(CacheTest, Resize)
     EXPECT_LE(cache->size(), 4 * sizeof(Point3D));
     EXPECT_EQ(cache->number_of_items(), 2);  // Only two items fit because of the cache overhead.
 }
+
+TYPED_TEST(CacheTest, RemoveWhenKeyPresent)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+
+    cache->find(0);
+    cache->insert(0, Point3D{0, 0, 0});
+
+    EXPECT_TRUE(cache->contains(0));
+    EXPECT_TRUE(cache->remove(0));
+    EXPECT_FALSE(cache->contains(0));
+}
+
+TYPED_TEST(CacheTest, RemoveWhenKeyAbsent)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+    EXPECT_FALSE(cache->remove(0));
+}
+
+TYPED_TEST(CacheTest, Retain)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+
+    const uint32_t number_of_items = 5;
+    for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
+        cache->find(point_id);
+        cache->insert(point_id, Point3D{point_id, point_id, point_id});
+    }
+
+    cache->retain([](const uint32_t& key, const Point3D& value) { return key % 2 == 0; });
+
+    for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
+        if (point_id % 2 == 0) {
+            EXPECT_TRUE(cache->contains(point_id));
+        } else {
+            EXPECT_FALSE(cache->contains(point_id));
+        }
+    }
+}

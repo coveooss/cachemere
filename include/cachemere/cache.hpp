@@ -94,6 +94,36 @@ bool Cache<K, V, I, E, SV, SK>::insert(const K& key, const V& value)
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
+bool Cache<K, V, I, E, SV, SK>::remove(const K& key)
+{
+    std::lock_guard<std::mutex> guard{m_mutex};
+
+    auto key_and_item = m_data.find(key);
+    if (key_and_item != m_data.end()) {
+        remove(key_and_item);
+        return true;
+    }
+    return false;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
+template<class P>
+void Cache<K, V, I, E, SV, SK>::retain(P predicate_fn)
+{
+    std::lock_guard<std::mutex> guard{m_mutex};
+
+    for (auto it = m_data.begin(); it != m_data.end();) {
+        const CacheItem& item = it->second;
+
+        if (!predicate_fn(item.m_key, item.m_value)) {
+            remove(it++);
+        } else {
+            ++it;
+        }
+    }
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
 inline size_t Cache<K, V, I, E, SV, SK>::number_of_items() const
 {
     std::lock_guard<std::mutex> guard{m_mutex};
@@ -188,8 +218,8 @@ bool Cache<K, V, I, E, SV, SK>::compare_evict(const K& candidate_key, size_t can
         // Those two ways could even be used together: we could change the insertion policy interface *and* provide a
         // new count-limited cache for improved performance, while keeping the memory-limited cache for when required.
 
-        std::vector<typename DataMap::iterator> keys_to_evict;
-        size_t                                  freed_amount = 0;
+        std::vector<DataMapIt> keys_to_evict;
+        size_t                 freed_amount = 0;
 
         auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && freed_amount <= candidate_size; };
 
@@ -219,11 +249,7 @@ bool Cache<K, V, I, E, SV, SK>::compare_evict(const K& candidate_key, size_t can
 
         // Perform the eviction(s).
         for (auto key_and_item : keys_to_evict) {
-            const auto total_size_and_overhead = key_and_item->second.m_key_size + key_and_item->second.m_total_size;
-            m_current_size -= total_size_and_overhead;
-
-            on_evict(key_and_item->second.m_key);
-            m_data.erase(key_and_item->first);
+            remove(key_and_item);
         }
 
         return true;
@@ -244,12 +270,8 @@ size_t Cache<K, V, I, E, SV, SK>::free_amount(size_t amount_to_free)
 
         if (key_and_item != m_data.end()) {
             auto total_size_and_overhead = key_and_item->second.m_key_size + key_and_item->second.m_total_size;
-
             freed_amount += total_size_and_overhead;
-            m_current_size -= total_size_and_overhead;
-
-            on_evict(key_and_item->first);
-            m_data.erase(key_and_item->first);
+            remove(key_and_item);
         } else {
             // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the cache are out of sync.
             assert(false);
@@ -257,6 +279,16 @@ size_t Cache<K, V, I, E, SV, SK>::free_amount(size_t amount_to_free)
     }
 
     return freed_amount;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
+void Cache<K, V, I, E, SV, SK>::remove(DataMapIt it)
+{
+    const auto total_size_and_overhead = it->second.m_key_size + it->second.m_total_size;
+    m_current_size -= total_size_and_overhead;
+
+    on_evict(it->second.m_key);
+    m_data.erase(it);
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
