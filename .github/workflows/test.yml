@@ -7,21 +7,25 @@ jobs:
   unit:
     # TODO: Add different compilers to the matrix.
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        # the compiler to use
+        compiler: ["/usr/bin/g++", "/usr/bin/clang"]
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Install apt dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl ninja-build libboost-all-dev libgtest-dev
+          sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl libboost-all-dev libgtest-dev
 
       - name: Build Tests
         env:
-          CXX: /usr/bin/clang++
+          CXX: ${{ matrix.compiler }}
         run: |
           mkdir -p build/
           cd build/
-          cmake -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug ..
+          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug ..
           cmake --build .
 
       - name: Run Tests
