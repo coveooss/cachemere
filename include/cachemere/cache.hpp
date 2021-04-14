@@ -13,8 +13,9 @@ template<typename Key,
          template<class, class>
          class EvictionPolicy,
          typename MeasureValue,
-         typename MeasureKey>
-Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey>::Cache(size_t maximum_size, uint32_t statistics_window_size)
+         typename MeasureKey,
+         bool ThreadSafe>
+Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe>::Cache(size_t maximum_size, uint32_t statistics_window_size)
  : m_current_size{0},
    m_maximum_size{maximum_size},
    m_insertion_policy(std::make_unique<InsertionPolicy<Key, Value>>()),
@@ -28,17 +29,17 @@ Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey>::Ca
 {
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline bool Cache<K, V, I, E, SV, SK>::contains(const K& key) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline bool Cache<K, V, I, E, SV, SK, TS>::contains(const K& key) const
 {
-    std::lock_guard<std::mutex> guard{m_mutex};
+    std::unique_lock<std::mutex> guard(lock());
     return m_data.find(key) != m_data.end();
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-std::optional<V> Cache<K, V, I, E, SV, SK>::find(const K& key) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+std::optional<V> Cache<K, V, I, E, SV, SK, TS>::find(const K& key) const
 {
-    std::lock_guard<std::mutex> guard{m_mutex};
+    std::unique_lock<std::mutex> guard(lock());
 
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
@@ -50,9 +51,9 @@ std::optional<V> Cache<K, V, I, E, SV, SK>::find(const K& key) const
     return std::nullopt;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 template<class C>
-void Cache<K, V, I, E, SV, SK>::collect_into(C& container) const
+void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
 {
     using namespace boost;
     using namespace detail;
@@ -63,7 +64,7 @@ void Cache<K, V, I, E, SV, SK>::collect_into(C& container) const
         [](auto& seq_container, const auto& item) { seq_container.emplace_back(item.m_key, item.m_value); },
         [](auto& assoc_container, const auto& item) { assoc_container.emplace(item.m_key, item.m_value); });
 
-    std::lock_guard<std::mutex> guard{m_mutex};
+    std::unique_lock<std::mutex> guard(lock());
 
     // Reserve space if the container has a reserve() method and a size method().
     hana::if_(
@@ -77,10 +78,10 @@ void Cache<K, V, I, E, SV, SK>::collect_into(C& container) const
     }
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-bool Cache<K, V, I, E, SV, SK>::insert(const K& key, const V& value)
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+bool Cache<K, V, I, E, SV, SK, TS>::insert(const K& key, const V& value)
 {
-    std::lock_guard<std::mutex> guard{m_mutex};
+    std::unique_lock<std::mutex> guard(lock());
 
     const auto   key_size           = static_cast<size_t>(m_measure_key(key));
     const auto   value_size         = static_cast<size_t>(m_measure_value(value));
@@ -122,10 +123,10 @@ bool Cache<K, V, I, E, SV, SK>::insert(const K& key, const V& value)
     return should_insert;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-bool Cache<K, V, I, E, SV, SK>::remove(const K& key)
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+bool Cache<K, V, I, E, SV, SK, TS>::remove(const K& key)
 {
-    std::lock_guard<std::mutex> guard{m_mutex};
+    std::unique_lock<std::mutex> guard(lock());
 
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
@@ -135,11 +136,11 @@ bool Cache<K, V, I, E, SV, SK>::remove(const K& key)
     return false;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 template<class P>
-void Cache<K, V, I, E, SV, SK>::retain(P predicate_fn)
+void Cache<K, V, I, E, SV, SK, TS>::retain(P predicate_fn)
 {
-    std::lock_guard<std::mutex> guard{m_mutex};
+    std::unique_lock<std::mutex> guard(lock());
 
     for (auto it = m_data.begin(); it != m_data.end();) {
         const CacheItem& item = it->second;
@@ -152,12 +153,12 @@ void Cache<K, V, I, E, SV, SK>::retain(P predicate_fn)
     }
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-void Cache<K, V, I, E, SV, SK>::swap(CacheType& other)
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
 {
     // Acquire both cache locks.
-    std::lock_guard<std::mutex> me_guard{m_mutex};
-    std::lock_guard<std::mutex> other_guard{other.m_mutex};
+    std::unique_lock<std::mutex> me_guard(lock());
+    std::unique_lock<std::mutex> other_guard(other.lock());
 
     using std::swap;
 
@@ -176,29 +177,29 @@ void Cache<K, V, I, E, SV, SK>::swap(CacheType& other)
     swap(m_hit_rate_acc, other.m_hit_rate_acc);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline size_t Cache<K, V, I, E, SV, SK>::number_of_items() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline size_t Cache<K, V, I, E, SV, SK, TS>::number_of_items() const
 {
-    std::lock_guard<std::mutex> guard{m_mutex};
+    std::unique_lock<std::mutex> guard(lock());
     return m_data.size();
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline size_t Cache<K, V, I, E, SV, SK>::size() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline size_t Cache<K, V, I, E, SV, SK, TS>::size() const
 {
     return m_current_size;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline size_t Cache<K, V, I, E, SV, SK>::maximum_size() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline size_t Cache<K, V, I, E, SV, SK, TS>::maximum_size() const
 {
     return m_maximum_size;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline void Cache<K, V, I, E, SV, SK>::set_maximum_size(size_t max_size)
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline void Cache<K, V, I, E, SV, SK, TS>::set_maximum_size(size_t max_size)
 {
-    std::lock_guard<std::mutex> guard{m_mutex};
+    std::unique_lock<std::mutex> guard(lock());
     m_maximum_size = max_size;
 
     if (m_maximum_size < m_current_size) {
@@ -210,32 +211,44 @@ inline void Cache<K, V, I, E, SV, SK>::set_maximum_size(size_t max_size)
     assert(m_current_size <= m_maximum_size);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline I<K, V>& Cache<K, V, I, E, SV, SK>::insertion_policy()
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline I<K, V>& Cache<K, V, I, E, SV, SK, TS>::insertion_policy()
 {
     return *m_insertion_policy;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline E<K, V>& Cache<K, V, I, E, SV, SK>::eviction_policy()
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline E<K, V>& Cache<K, V, I, E, SV, SK, TS>::eviction_policy()
 {
     return *m_eviction_policy;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline double Cache<K, V, I, E, SV, SK>::hit_rate() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline double Cache<K, V, I, E, SV, SK, TS>::hit_rate() const
 {
     return boost::accumulators::rolling_mean(m_hit_rate_acc);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-inline double Cache<K, V, I, E, SV, SK>::byte_hit_rate() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+inline double Cache<K, V, I, E, SV, SK, TS>::byte_hit_rate() const
 {
     return boost::accumulators::rolling_mean(m_byte_hit_rate_acc);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-bool Cache<K, V, I, E, SV, SK>::compare_evict(const K& candidate_key, size_t candidate_size)
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+std::unique_lock<std::mutex> Cache<K, V, I, E, SV, SK, TS>::lock() const
+{
+    if constexpr (TS) {
+        std::unique_lock<std::mutex> guard{m_mutex};
+        return guard;
+    } else {
+        std::unique_lock<std::mutex> guard;
+        return guard;
+    }
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+bool Cache<K, V, I, E, SV, SK, TS>::compare_evict(const K& candidate_key, size_t candidate_size)
 {
     if (m_current_size + candidate_size <= m_maximum_size) {
         // We have enough room. Insert if the policy agrees.
@@ -309,8 +322,8 @@ bool Cache<K, V, I, E, SV, SK>::compare_evict(const K& candidate_key, size_t can
     }
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-size_t Cache<K, V, I, E, SV, SK>::free_amount(size_t amount_to_free)
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+size_t Cache<K, V, I, E, SV, SK, TS>::free_amount(size_t amount_to_free)
 {
     assert(amount_to_free <= m_current_size);
     size_t freed_amount = 0;
@@ -334,8 +347,8 @@ size_t Cache<K, V, I, E, SV, SK>::free_amount(size_t amount_to_free)
     return freed_amount;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-void Cache<K, V, I, E, SV, SK>::remove(DataMapIt it)
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::remove(DataMapIt it)
 {
     const auto total_size_and_overhead = it->second.m_key_size + it->second.m_total_size;
     m_current_size -= total_size_and_overhead;
@@ -344,8 +357,8 @@ void Cache<K, V, I, E, SV, SK>::remove(DataMapIt it)
     m_data.erase(it);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-void Cache<K, V, I, E, SV, SK>::on_insert(const CacheItem& item) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::on_insert(const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
@@ -359,8 +372,8 @@ void Cache<K, V, I, E, SV, SK>::on_insert(const CacheItem& item) const
         [](auto&) {})(*m_eviction_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-void Cache<K, V, I, E, SV, SK>::on_update(const CacheItem& item) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::on_update(const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
@@ -374,8 +387,8 @@ void Cache<K, V, I, E, SV, SK>::on_update(const CacheItem& item) const
         [](auto&) {})(*m_eviction_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-void Cache<K, V, I, E, SV, SK>::on_cache_hit(const CacheItem& item) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::on_cache_hit(const CacheItem& item) const
 {
     // Update the cache hit rate accumulators.
     m_hit_rate_acc(1);
@@ -393,8 +406,8 @@ void Cache<K, V, I, E, SV, SK>::on_cache_hit(const CacheItem& item) const
         [](auto&) {})(*m_eviction_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-void Cache<K, V, I, E, SV, SK>::on_cache_miss(const K& key) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::on_cache_miss(const K& key) const
 {
     // Update the cache hit rate accumulators.
     m_hit_rate_acc(0);
@@ -412,8 +425,8 @@ void Cache<K, V, I, E, SV, SK>::on_cache_miss(const K& key) const
         [](auto&) {})(*m_eviction_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
-void Cache<K, V, I, E, SV, SK>::on_evict(const K& key) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::on_evict(const K& key) const
 {
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
@@ -427,8 +440,8 @@ void Cache<K, V, I, E, SV, SK>::on_evict(const K& key) const
         [](auto&) {})(*m_eviction_policy);
 }
 
-template<typename K, typename V, template<class, class> class I, template<class, class> class E, typename SV, typename SK>
-void swap(Cache<K, V, I, E, SV, SK>& lhs, Cache<K, V, I, E, SV, SK>& rhs)
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void swap(Cache<K, V, I, E, SV, SK, TS>& lhs, Cache<K, V, I, E, SV, SK, TS>& rhs)
 {
     lhs.swap(rhs);
 }

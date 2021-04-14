@@ -29,6 +29,7 @@ namespace cachemere {
 /// @tparam EvictionPolicy A template parameterized by `Key` and `Value` implementing the eviction policy interface.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam ThreadSafe Whether to enable locking. When true, all cache operations will be protected by a lock. `true` by default.
 template<typename Key,
          typename Value,
          template<class, class>
@@ -36,7 +37,8 @@ template<typename Key,
          template<class, class>
          class EvictionPolicy,
          typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>>
+         typename MeasureKey   = measurement::Size<Key>,
+         bool ThreadSafe       = true>
 class Cache
 {
 public:
@@ -89,6 +91,8 @@ public:
     ///           The predicate should have the signature `bool fn(const Key& key, const Value& value)`.
     template<typename P> void retain(P predicate_fn);
 
+    /// @brief Swaps the current cache with another cache of the same type.
+    /// @param other The cache to swap this instance with.
     void swap(CacheType& other);
 
     /// @brief Get the number of items currently stored in the cache.
@@ -162,6 +166,8 @@ private:
     mutable MeanAccumulator m_hit_rate_acc;
     mutable MeanAccumulator m_byte_hit_rate_acc;
 
+    std::unique_lock<std::mutex> lock() const;
+
     bool   compare_evict(const Key& candidate_key, size_t candidate_size);
     size_t free_amount(size_t amount_to_free);
     void   remove(DataMapIt it);
@@ -173,8 +179,8 @@ private:
     void on_evict(const Key& key) const;
 };
 
-template<typename K, typename V, template<class, class> class I, template<class, class> class E, typename SV, typename SK>
-void swap(Cache<K, V, I, E, SV, SK>& lhs, Cache<K, V, I, E, SV, SK>& rhs);
+template<typename K, typename V, template<class, class> class I, template<class, class> class E, typename SV, typename SK, bool TS>
+void swap(Cache<K, V, I, E, SV, SK, TS>& lhs, Cache<K, V, I, E, SV, SK, TS>& rhs);
 
 }  // namespace cachemere
 
