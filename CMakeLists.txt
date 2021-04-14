@@ -30,6 +30,7 @@ target_sources(cachemere
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/measurement.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/measurement.hpp>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/presets.h>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/detail/traits.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_lru.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_lru.hpp>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/eviction_gdsf.h>

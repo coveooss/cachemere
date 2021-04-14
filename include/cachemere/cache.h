@@ -11,7 +11,6 @@
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
-#include <boost/hana.hpp>
 
 #include "item.h"
 #include "measurement.h"
@@ -43,6 +42,7 @@ class Cache
 public:
     using MyInsertionPolicy = InsertionPolicy<Key, Value>;
     using MyEvictionPolicy  = EvictionPolicy<Key, Value>;
+    using CacheType         = Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey>;
 
     /// @brief Simple constructor.
     /// @param maximum_size The maximum amount memory to be used by the cache (in bytes).
@@ -58,6 +58,15 @@ public:
     /// @param key The key to lookup.
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
     std::optional<Value> find(const Key& key) const;
+
+    /// @brief Copy the cache contents in the provided container.
+    /// @details The container should conform to either of the STL's interfaces for associative
+    ///          containers or for sequence containers.
+    ///          Uses `emplace_back` for sequence containers, and `emplace` for associative containers.
+    ///          If the provided container has `size()` and `reserve()` methods, `collect_into` will reserve
+    ///          the appropriate amount of space in the container before inserting.
+    /// @param container The container in which to insert the items.
+    template<typename C> void collect_into(C& container) const;
 
     /// @brief Insert a key/value pair in the cache.
     /// @details If the key is new, the key/value pair will be inserted.
@@ -79,6 +88,8 @@ public:
     /// @tparam P The type of the predicate function.
     ///           The predicate should have the signature `bool fn(const Key& key, const Value& value)`.
     template<typename P> void retain(P predicate_fn);
+
+    void swap(CacheType& other);
 
     /// @brief Get the number of items currently stored in the cache.
     /// @warning This method acquires a mutual exclusion lock to secure the item count.
@@ -161,6 +172,9 @@ private:
     void on_cache_miss(const Key& key) const;
     void on_evict(const Key& key) const;
 };
+
+template<typename K, typename V, template<class, class> class I, template<class, class> class E, typename SV, typename SK>
+void swap(Cache<K, V, I, E, SV, SK>& lhs, Cache<K, V, I, E, SV, SK>& rhs);
 
 }  // namespace cachemere
 

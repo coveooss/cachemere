@@ -2,6 +2,8 @@
 
 #include <boost/hana.hpp>
 
+#include "detail/traits.h"
+
 namespace cachemere {
 
 template<typename Key,
@@ -46,6 +48,33 @@ std::optional<V> Cache<K, V, I, E, SV, SK>::find(const K& key) const
 
     on_cache_miss(key);
     return std::nullopt;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
+template<class C>
+void Cache<K, V, I, E, SV, SK>::collect_into(C& container) const
+{
+    using namespace boost;
+    using namespace detail;
+
+    // Use emplace_back if container is a sequence container, or emplace if container is an associative container.
+    constexpr auto emplace_fn = hana::if_(
+        traits::stl::has_emplace_back<C, K, V>,
+        [](auto& seq_container, const auto& item) { seq_container.emplace_back(item.m_key, item.m_value); },
+        [](auto& assoc_container, const auto& item) { assoc_container.emplace(item.m_key, item.m_value); });
+
+    std::lock_guard<std::mutex> guard{m_mutex};
+
+    // Reserve space if the container has a reserve() method and a size method().
+    hana::if_(
+        hana::and_(traits::stl::has_reserve<C>, traits::stl::has_size<C>),
+        [&](auto& c) { c.reserve(c.size() + m_data.size()); },
+        [](auto&) {})(container);
+
+    // Copy the cache contents to the container.
+    for (const auto& [_, cached_item] : m_data) {
+        emplace_fn(container, cached_item);
+    }
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
@@ -121,6 +150,30 @@ void Cache<K, V, I, E, SV, SK>::retain(P predicate_fn)
             ++it;
         }
     }
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
+void Cache<K, V, I, E, SV, SK>::swap(CacheType& other)
+{
+    // Acquire both cache locks.
+    std::lock_guard<std::mutex> me_guard{m_mutex};
+    std::lock_guard<std::mutex> other_guard{other.m_mutex};
+
+    using std::swap;
+
+    // Atomics don't implement swap, we can do it manually because we currently hold the lock.
+    size_t value         = m_current_size;
+    m_current_size       = other.m_current_size.load();
+    other.m_current_size = value;
+    value                = m_maximum_size;
+    m_maximum_size       = other.m_maximum_size.load();
+    other.m_maximum_size = value;
+
+    // Swap the rest of the members.
+    swap(m_measure_key, other.m_measure_key);
+    swap(m_measure_value, other.m_measure_value);
+    swap(m_data, other.m_data);
+    swap(m_hit_rate_acc, other.m_hit_rate_acc);
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK>
@@ -295,15 +348,13 @@ template<class K, class V, template<class, class> class I, template<class, class
 void Cache<K, V, I, E, SV, SK>::on_insert(const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
-    static auto has_oninsert = boost::hana::is_valid([](auto& p) -> decltype(p.on_insert(std::declval<CacheItem>())) {});
-
     boost::hana::if_(
-        has_oninsert(*m_insertion_policy),
+        detail::traits::event::has_on_insert<K, V, I>,
         [&](auto& x) { return x.on_insert(item); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
-        has_oninsert(*m_eviction_policy),
+        detail::traits::event::has_on_insert<K, V, E>,
         [&](auto& x) { return x.on_insert(item); },
         [](auto&) {})(*m_eviction_policy);
 }
@@ -312,15 +363,13 @@ template<class K, class V, template<class, class> class I, template<class, class
 void Cache<K, V, I, E, SV, SK>::on_update(const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
-    static auto has_onupdate = boost::hana::is_valid([](auto& p) -> decltype(p.on_update(std::declval<CacheItem>())) {});
-
     boost::hana::if_(
-        has_onupdate(*m_insertion_policy),
+        detail::traits::event::has_on_update<K, V, I>,
         [&](auto& x) { return x.on_update(item); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
-        has_onupdate(*m_eviction_policy),
+        detail::traits::event::has_on_update<K, V, E>,
         [&](auto& x) { return x.on_update(item); },
         [](auto&) {})(*m_eviction_policy);
 }
@@ -333,15 +382,13 @@ void Cache<K, V, I, E, SV, SK>::on_cache_hit(const CacheItem& item) const
     m_byte_hit_rate_acc(static_cast<uint32_t>(item.m_value_size));
 
     // Call event handler iif the method is defined in the policy.
-    static auto has_oncachehit = boost::hana::is_valid([](auto& p) -> decltype(p.on_cache_hit(std::declval<CacheItem>())) {});
-
     boost::hana::if_(
-        has_oncachehit(*m_insertion_policy),
+        detail::traits::event::has_on_cachehit<K, V, I>,
         [&](auto& x) { return x.on_cache_hit(item); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
-        has_oncachehit(*m_eviction_policy),
+        detail::traits::event::has_on_cachehit<K, V, E>,
         [&](auto& x) { return x.on_cache_hit(item); },
         [](auto&) {})(*m_eviction_policy);
 }
@@ -354,15 +401,13 @@ void Cache<K, V, I, E, SV, SK>::on_cache_miss(const K& key) const
     m_byte_hit_rate_acc(0);
 
     // Call event handler iif the method is defined in the policy.
-    static auto has_oncachemiss = boost::hana::is_valid([](auto& p) -> decltype(p.on_cache_miss(std::declval<K>())) {});
-
     boost::hana::if_(
-        has_oncachemiss(*m_insertion_policy),
+        detail::traits::event::has_on_cachemiss<K, V, I>,
         [&](auto& x) { return x.on_cache_miss(key); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
-        has_oncachemiss(*m_eviction_policy),
+        detail::traits::event::has_on_cachemiss<K, V, E>,
         [&](auto& x) { return x.on_cache_miss(key); },
         [](auto&) {})(*m_eviction_policy);
 }
@@ -371,17 +416,21 @@ template<class K, class V, template<class, class> class I, template<class, class
 void Cache<K, V, I, E, SV, SK>::on_evict(const K& key) const
 {
     // Call event handler iif the method is defined in the policy.
-    static auto has_onevict = boost::hana::is_valid([](auto& p) -> decltype(p.on_evict(std::declval<K>())) {});
-
     boost::hana::if_(
-        has_onevict(*m_insertion_policy),
+        detail::traits::event::has_on_evict<K, V, I>,
         [&](auto& x) { return x.on_evict(key); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
-        has_onevict(*m_eviction_policy),
+        detail::traits::event::has_on_evict<K, V, E>,
         [&](auto& x) { return x.on_evict(key); },
         [](auto&) {})(*m_eviction_policy);
+}
+
+template<typename K, typename V, template<class, class> class I, template<class, class> class E, typename SV, typename SK>
+void swap(Cache<K, V, I, E, SV, SK>& lhs, Cache<K, V, I, E, SV, SK>& rhs)
+{
+    lhs.swap(rhs);
 }
 
 }  // namespace cachemere
