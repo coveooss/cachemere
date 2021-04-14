@@ -5,12 +5,11 @@ on:
 
 jobs:
   unit:
-    # TODO: Add different compilers to the matrix.
     runs-on: ubuntu-20.04
     strategy:
       matrix:
         # the compiler to use
-        compiler: ["/usr/bin/g++", "/usr/bin/clang"]
+        compiler: ["/usr/bin/g++", "/usr/bin/clang++"]
 
     steps:
       - uses: actions/checkout@v2
