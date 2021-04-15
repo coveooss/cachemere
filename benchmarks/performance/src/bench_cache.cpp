@@ -82,7 +82,8 @@ template<template<class, class> class Insertion, template<class, class> class Ev
 
     for (auto _ : state) {
         const auto start = std::chrono::high_resolution_clock::now();
-        cache->find("0");
+        auto       value = cache->find("0");
+        benchmark::DoNotOptimize(value);
         const auto end = std::chrono::high_resolution_clock::now();
 
         const auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
