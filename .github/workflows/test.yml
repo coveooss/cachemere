@@ -5,28 +5,56 @@ on:
 
 jobs:
   unit:
-    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        # the compiler to use
-        compiler: ["/usr/bin/g++", "/usr/bin/clang++"]
+        config:
+          - {
+              name: "Windows x64 (msvc)",
+              os: windows-latest,
+              compiler: "cl.exe",
+              extension: "exe"
+           }
+          - {
+              name: "Linux x64 (gcc)",
+              os: ubuntu-20.04,
+              compiler: "/usr/bin/g++",
+              extension: ""
+           }
+          - {
+              name: "Linux x64 (clang)",
+              os: ubuntu-20.04,
+              compiler: "/usr/bin/clang++",
+              extension: ""
+           }
+    runs-on: ${{ matrix.config.os }}
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - uses: ilammy/msvc-dev-cmd@d39d8f7626e5667b00caa504eaefd7c24c9ba49d
+
+      - name: Enable vcpkg cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache
+            ./vcpkg_installed
+          key: ${{ runner.os }}-cachemere
 
       - name: Install apt dependencies
+        if: matrix.config.os == 'ubuntu-20.04'
         run: |
-          sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl libboost-all-dev libgtest-dev
+          sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl
 
       - name: Build Tests
         env:
-          CXX: ${{ matrix.compiler }}
+          CXX: ${{ matrix.config.compiler }}
         run: |
-          mkdir -p build/
-          cd build/
-          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug ..
-          cmake --build .
+          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug
+          cmake --build build/
 
       - name: Run Tests
         run: |
-          ./build/tests/cachemere_tests
+          ./build/tests/cachemere_tests${{ matrix.config.extension }}
