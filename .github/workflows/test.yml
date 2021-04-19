@@ -12,7 +12,7 @@ jobs:
               name: "Windows x64 (msvc)",
               os: windows-latest,
               compiler: "cl.exe",
-              extension: "exe"
+              extension: ".exe"
            }
           - {
               name: "Linux x64 (gcc)",
