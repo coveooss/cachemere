@@ -9,20 +9,18 @@ template<class Key, class Value> const Key& EvictionLRU<Key, Value>::VictimItera
     return *m_iterator;
 }
 
-template<class Key, class Value> class EvictionLRU<Key, Value>::VictimIterator& EvictionLRU<Key, Value>::VictimIterator::operator++()
+template<class Key, class Value> typename EvictionLRU<Key, Value>::VictimIterator& EvictionLRU<Key, Value>::VictimIterator::operator++()
 {
     ++m_iterator;
     return *this;
 }
 
-template<class Key, class Value>
-class EvictionLRU<Key, Value>::VictimIterator EvictionLRU<Key, Value>::VictimIterator::operator++(int)
+template<class Key, class Value> typename EvictionLRU<Key, Value>::VictimIterator EvictionLRU<Key, Value>::VictimIterator::operator++(int)
 {
     return (*this)++;
 }
 
-template<class Key, class Value>
-bool EvictionLRU<Key, Value>::VictimIterator::operator==(const VictimIterator& other) const
+template<class Key, class Value> bool EvictionLRU<Key, Value>::VictimIterator::operator==(const VictimIterator& other) const
 {
     return m_iterator == other.m_iterator;
 }
