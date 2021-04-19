@@ -57,5 +57,6 @@ jobs:
           cmake --build build/
 
       - name: Run Tests
+        shell: bash
         run: |
           ./build/tests/cachemere_tests${{ matrix.config.extension }}
