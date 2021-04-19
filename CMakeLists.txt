@@ -1,10 +1,10 @@
-project(cachemere)
-
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
+
+project(cachemere)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
