@@ -6,8 +6,8 @@ add_executable(cachemere_tests)
 
 target_link_libraries(cachemere_tests
     PRIVATE
-        GTest::GTest
-        GTest::Main
+        GTest::gtest
+        GTest::gtest_main
 
         cachemere
 )

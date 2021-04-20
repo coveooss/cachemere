@@ -51,12 +51,12 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl
 
-      - name: Build Tests
+      - name: Build Tests & Benchmarks
         env:
           CXX: ${{ matrix.config.compiler }}
         shell: bash
         run: |
-          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug
+          cmake -B build -S . -DUSE_VCPKG=ON -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug
           cmake --build build/
 
       - name: Run Tests

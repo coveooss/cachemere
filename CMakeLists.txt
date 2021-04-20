@@ -1,8 +1,26 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
+option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_BENCHMARKS "Build benchmarks" OFF)
+option(USE_VCPKG "Use vcpkg for dependencies" OFF)
+
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
+
+if (USE_VCPKG)
+    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
+    CACHE STRING "Vcpkg toolchain file")
+
+    if (BUILD_TESTS)
+        list(APPEND VCPKG_MANIFEST_FEATURES "tests")
+    endif()
+
+    if (BUILD_BENCHMARKS)
+        list(APPEND VCPKG_MANIFEST_FEATURES "benchmarks")
+    endif()
+endif()
+
 
 project(cachemere)
 
@@ -57,5 +75,10 @@ target_sources(cachemere
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/detail/hash_mixer.hpp>
 )
 
-add_subdirectory(benchmarks)
-add_subdirectory(tests)
+if (BUILD_BENCHMARKS)
+    add_subdirectory(benchmarks)
+endif()
+
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

@@ -2,9 +2,22 @@
     "name": "cachemere",
     "version-string": "0.1.0-dev",
     "dependencies": [
-        "benchmark",
-        "boost",
-        "gtest",
-        "tbb"
-    ]
+        "boost"
+    ],
+    "features": {
+        "tests": {
+            "description": "The unit tests",
+            "dependencies": [
+                "gtest"
+            ]
+        },
+        "benchmarks": {
+            "description": "The accuracy and performance benchmarks",
+            "dependencies": [
+                "benchmark",
+                "gtest",
+                "tbb"
+            ]
+        }
+    }
 }
