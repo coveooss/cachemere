@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <list>
+#include <map>
 #include <random>
 #include <string>
 #include <thread>
+#include <unordered_map>
 
 #include "cachemere/cache.h"
 #include "cachemere/measurement.h"
@@ -142,4 +145,108 @@ TYPED_TEST(CacheTest, Resize)
     cache->set_maximum_size(4 * sizeof(Point3D));
     EXPECT_LE(cache->size(), 4 * sizeof(Point3D));
     EXPECT_EQ(cache->number_of_items(), 2);  // Only two items fit because of the cache overhead.
+}
+
+TYPED_TEST(CacheTest, RemoveWhenKeyPresent)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+
+    cache->find(0);
+    cache->insert(0, Point3D{0, 0, 0});
+
+    EXPECT_TRUE(cache->contains(0));
+    EXPECT_TRUE(cache->remove(0));
+    EXPECT_FALSE(cache->contains(0));
+}
+
+TYPED_TEST(CacheTest, RemoveWhenKeyAbsent)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+    EXPECT_FALSE(cache->remove(0));
+}
+
+TYPED_TEST(CacheTest, Retain)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+
+    const uint32_t number_of_items = 5;
+    for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
+        cache->find(point_id);
+        cache->insert(point_id, Point3D{point_id, point_id, point_id});
+    }
+
+    cache->retain([](const uint32_t& key, const Point3D& value) { return key % 2 == 0; });
+
+    for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
+        if (point_id % 2 == 0) {
+            EXPECT_TRUE(cache->contains(point_id));
+        } else {
+            EXPECT_FALSE(cache->contains(point_id));
+        }
+    }
+}
+
+TYPED_TEST(CacheTest, Collect)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+
+    const uint32_t number_of_items = 5;
+
+    for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
+        cache->find(point_id);
+        cache->insert(point_id, Point3D{point_id, point_id, point_id});
+    }
+
+    // Test with various STL collection types.
+    std::vector<std::pair<uint32_t, Point3D>> item_vec;
+    cache->collect_into(item_vec);
+    EXPECT_EQ(item_vec.size(), number_of_items);
+
+    std::map<uint32_t, Point3D> item_map;
+    cache->collect_into(item_map);
+    EXPECT_EQ(item_map.size(), number_of_items);
+
+    std::list<std::pair<uint32_t, Point3D>> item_list;
+    cache->collect_into(item_list);
+    EXPECT_EQ(item_list.size(), number_of_items);
+
+    std::unordered_map<uint32_t, Point3D> item_unordered_map;
+    cache->collect_into(item_unordered_map);
+    EXPECT_EQ(item_unordered_map.size(), number_of_items);
+
+    // Test with a custom collection that doesn't support size or reserve.
+    struct CustomCollection {
+        void emplace(const uint32_t& key, const Point3D& value)
+        {
+            m_data.emplace(key, value);
+        }
+
+        std::map<uint32_t, Point3D> m_data;
+    };
+
+    CustomCollection items_custom;
+    cache->collect_into(items_custom);
+    EXPECT_EQ(items_custom.m_data.size(), number_of_items);
+}
+
+TYPED_TEST(CacheTest, Swap)
+{
+    auto cache_even = TestFixture::new_cache(10 * sizeof(Point3D));
+    auto cache_odd  = TestFixture::new_cache(10 * sizeof(Point3D));
+
+    const uint32_t number_of_items = 10;
+
+    for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
+        auto& target_cache = point_id % 2 == 0 ? cache_even : cache_odd;
+
+        target_cache->find(point_id);
+        target_cache->insert(point_id, Point3D{point_id, point_id, point_id});
+    }
+
+    using std::swap;
+    swap(*cache_even, *cache_odd);
+
+    EXPECT_TRUE(cache_even->contains(7));
+    EXPECT_TRUE(cache_odd->contains(4));
+    EXPECT_FALSE(cache_even->contains(2));
 }

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <cstdint>
+#include <set>
 #include <string>
 
 #include "cachemere/policy/eviction_gdsf.h"
@@ -98,4 +99,24 @@ TEST(EvictionGDSF, MaximizeCostPerByteWithQuadraticCost)
         policy.on_update(key_and_item->second);
     }
     EXPECT_EQ(*policy.victim_begin(), short_key);
+}
+
+TEST(EvictionGDSF, VictimIteration)
+{
+    QuadraticCostGDSF policy;
+
+    ItemMap item_store;
+
+    const std::vector<std::string> keys{"a", "b", "c", "d", "e"};
+    for (size_t i = 0; i < keys.size(); ++i) {
+        insert_item(keys[i], static_cast<int32_t>(i), policy, item_store);
+    }
+
+    const std::set<std::string> expected_key_set{keys.begin(), keys.end()};
+    std::set<std::string>       key_set;
+    for (auto it = policy.victim_begin(); it != policy.victim_end(); ++it) {
+        key_set.insert(*it);
+    }
+
+    EXPECT_EQ(key_set, expected_key_set);
 }

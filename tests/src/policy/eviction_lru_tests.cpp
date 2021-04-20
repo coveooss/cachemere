@@ -22,6 +22,15 @@ void insert_item(std::string key, int32_t value, TestLRU& policy, ItemMap& item_
     policy.on_insert(key_and_item->second);
 }
 
+void expect_victims(const TestLRU& policy, std::vector<std::string> expected_victims)
+{
+    std::vector<std::string> victims;
+    for (auto it = policy.victim_begin(); it != policy.victim_end(); ++it) {
+        victims.push_back(*it);
+    }
+    EXPECT_EQ(victims, expected_victims);
+}
+
 TEST(EvictionLRU, EvictionsWithoutReordering)
 {
     TestLRU policy;
@@ -34,7 +43,6 @@ TEST(EvictionLRU, EvictionsWithoutReordering)
     insert_item("c", 1337, policy, item_store);
 
     const auto victim = *policy.victim_begin();
-    policy.on_evict(victim);
 
     EXPECT_EQ("a", victim);
 }
@@ -53,15 +61,7 @@ TEST(EvictionLRU, NoOpReordering)
     // Registering a cache hit on 1337 should not change the ordering of the policy.
     policy.on_cache_hit(item_store.find("c")->second);
 
-    std::vector<std::string> victims;
-    for (auto i = 0; i < 3; ++i) {
-        auto victim = *policy.victim_begin();
-        policy.on_evict(victim);
-        victims.push_back(victim);
-    }
-
-    const std::vector<std::string> expected_victims{"a", "b", "c"};
-    EXPECT_EQ(expected_victims, victims);
+    expect_victims(policy, {"a", "b", "c"});
 }
 
 TEST(EvictionLRU, EvictionsWithReordering)
@@ -76,13 +76,5 @@ TEST(EvictionLRU, EvictionsWithReordering)
 
     policy.on_cache_hit(item_store.find("a")->second);
 
-    std::vector<std::string> victims;
-    for (auto i = 0; i < 3; ++i) {
-        auto victim = *policy.victim_begin();
-        policy.on_evict(victim);
-        victims.push_back(victim);
-    }
-
-    const std::vector<std::string> expected_victims{"b", "c", "a"};
-    EXPECT_EQ(expected_victims, victims);
+    expect_victims(policy, {"b", "c", "a"});
 }

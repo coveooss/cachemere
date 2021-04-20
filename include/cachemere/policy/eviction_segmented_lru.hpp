@@ -7,7 +7,7 @@ EvictionSegmentedLRU<Key, Value>::VictimIterator::VictimIterator(const KeyRefRev
  : m_probation_iterator{probation_iterator},
    m_probation_end_iterator{probation_end_iterator},
    m_protected_iterator{protected_iterator},
-   m_done_with_probation{false}
+   m_done_with_probation{probation_iterator == probation_end_iterator}
 {
 }
 
@@ -38,7 +38,7 @@ template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::VictimIt
 template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::VictimIterator::operator==(const VictimIterator& other) const
 {
     return m_protected_iterator == other.m_protected_iterator && m_probation_iterator == other.m_probation_iterator &&
-           m_probation_end_iterator == other.m_probation_end_iterator && m_done_with_probation == other.m_done_with_probation;
+           m_done_with_probation == other.m_done_with_probation;
 }
 
 template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::VictimIterator::operator!=(const VictimIterator& other) const
@@ -93,19 +93,17 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache
 
 template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_evict(const Key& key)
 {
-    assert((m_probation_list.empty() && !m_protected_list.empty() && m_protected_list.back().get() == key) ||
-           (!m_probation_list.empty() && m_probation_list.back().get() == key));
+    assert((!m_protected_list.empty()) || !m_probation_list.empty());
 
-    if (!m_probation_list.empty() && m_probation_list.back().get() == key) {
-        // There are items in the probation list, these should be evicted first.
-        assert(m_probation_nodes.find(key) != m_probation_nodes.end());
-        m_probation_nodes.erase(key);
-        m_probation_list.pop_back();
+    auto key_and_it = m_probation_nodes.find(key);
+    if (key_and_it != m_probation_nodes.end()) {
+        m_probation_list.erase(key_and_it->second);
+        m_probation_nodes.erase(key_and_it);
     } else {
-        // The probation list is empty, evict from the protected list.
-        assert(m_protected_nodes.find(key) != m_protected_nodes.end());
-        m_protected_nodes.erase(key);
-        m_protected_list.pop_back();
+        key_and_it = m_protected_nodes.find(key);
+        assert(key_and_it != m_protected_nodes.end());
+        m_protected_list.erase(key_and_it->second);
+        m_protected_nodes.erase(key_and_it);
     }
 }
 

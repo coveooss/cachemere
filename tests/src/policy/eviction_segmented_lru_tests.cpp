@@ -20,6 +20,15 @@ void insert_item(std::string key, int32_t value, TestSLRU& policy, ItemMap& item
     policy.on_insert(key_and_item->second);
 }
 
+void expect_victims(const TestSLRU& policy, std::vector<std::string> expected_victims)
+{
+    std::vector<std::string> victims;
+    for (auto it = policy.victim_begin(); it != policy.victim_end(); ++it) {
+        victims.push_back(*it);
+    }
+    EXPECT_EQ(victims, expected_victims);
+}
+
 TEST(EvictionSegmentedLRU, BasicInsertEvict)
 {
     TestSLRU policy;
@@ -51,4 +60,34 @@ TEST(EvictionSegmentedLRU, BasicInsertEvict)
     // This means that requesting an eviction should return a, and then e.
     EXPECT_EQ("a", *policy.victim_begin());
     EXPECT_EQ("e", *++policy.victim_begin());
+}
+
+TEST(EvictionSegmentedLRU, RandomEvictions)
+{
+    TestSLRU policy;
+    policy.set_protected_segment_size(4);
+
+    ItemMap item_store;
+
+    const std::vector<std::string> keys{"a", "b", "c", "d", "e"};
+
+    for (int32_t i = 0; i < 5; ++i) {
+        insert_item(keys[i], i, policy, item_store);
+    }
+
+    // Promote b, c, and d to the protected segment.
+    policy.on_cache_hit(item_store.find("b")->second);
+    policy.on_cache_hit(item_store.find("c")->second);
+    policy.on_cache_hit(item_store.find("d")->second);
+
+    // Verify everything is in order.
+    expect_victims(policy, {"a", "e", "b", "c", "d"});
+
+    // Remove something not at the head of the probation segment.
+    policy.on_evict("e");
+    expect_victims(policy, {"a", "b", "c", "d"});
+
+    // Remove something in the protected segment
+    policy.on_evict("c");
+    expect_victims(policy, {"a", "b", "d"});
 }

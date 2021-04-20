@@ -17,8 +17,9 @@ struct Cost {
 
 template<typename Key, typename Value> using TestGDSF = policy::EvictionGDSF<Key, Value, Cost>;
 
-#define CACHEMERE_POLICY_BENCH(test, insertion, eviction) \
-    BENCHMARK_TEMPLATE(test, insertion, eviction)->ArgsProduct({{1, 1000, 10000, 100000}})->Complexity()->UseManualTime()
+#define CACHEMERE_POLICY_BENCH(test, insertion, eviction)                                                                        \
+    BENCHMARK_TEMPLATE(test, insertion, eviction, true)->ArgsProduct({{1, 1000, 10000, 100000}})->Complexity()->UseManualTime(); \
+    BENCHMARK_TEMPLATE(test, insertion, eviction, false)->ArgsProduct({{1, 1000, 10000, 100000}})->Complexity()->UseManualTime()
 
 #define CACHEMERE_BENCH(test)                                                             \
     CACHEMERE_POLICY_BENCH(test, policy::InsertionAlways, policy::EvictionLRU);           \
@@ -28,9 +29,14 @@ template<typename Key, typename Value> using TestGDSF = policy::EvictionGDSF<Key
     CACHEMERE_POLICY_BENCH(test, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU); \
     CACHEMERE_POLICY_BENCH(test, policy::InsertionTinyLFU, TestGDSF)
 
-template<template<class, class> class I, template<class, class> class E>
-using BenchCache =
-    Cache<std::string, std::string, I, E, measurement::CapacityDynamicallyAllocated<std::string>, measurement::CapacityDynamicallyAllocated<std::string>>;
+template<template<class, class> class I, template<class, class> class E, bool ThreadSafe>
+using BenchCache = Cache<std::string,
+                         std::string,
+                         I,
+                         E,
+                         measurement::CapacityDynamicallyAllocated<std::string>,
+                         measurement::CapacityDynamicallyAllocated<std::string>,
+                         ThreadSafe>;
 
 template<class C> std::unique_ptr<C> setup(size_t item_count)
 {
@@ -52,10 +58,10 @@ template<class C> std::unique_ptr<C> setup(size_t item_count)
     return cache;
 }
 
-template<template<class, class> class Insertion, template<class, class> class Eviction> void cache_insert(benchmark::State& state)
+template<template<class, class> class Insertion, template<class, class> class Eviction, bool ThreadSafe> void cache_insert(benchmark::State& state)
 {
     const size_t previous_insertions = state.range(0);
-    auto         cache               = setup<BenchCache<Insertion, Eviction>>(previous_insertions);
+    auto         cache               = setup<BenchCache<Insertion, Eviction, ThreadSafe>>(previous_insertions);
 
     for (auto _ : state) {
         const std::string key = "key";
@@ -75,10 +81,10 @@ template<template<class, class> class Insertion, template<class, class> class Ev
 
 CACHEMERE_BENCH(cache_insert);
 
-template<template<class, class> class Insertion, template<class, class> class Eviction> void cache_find(benchmark::State& state)
+template<template<class, class> class Insertion, template<class, class> class Eviction, bool ThreadSafe> void cache_find(benchmark::State& state)
 {
     const size_t previous_insertions = state.range(0);
-    auto         cache               = setup<BenchCache<Insertion, Eviction>>(previous_insertions);
+    auto         cache               = setup<BenchCache<Insertion, Eviction, ThreadSafe>>(previous_insertions);
 
     for (auto _ : state) {
         const auto start = std::chrono::high_resolution_clock::now();
