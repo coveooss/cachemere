@@ -7,7 +7,7 @@ target_link_libraries(bench_accuracy
     PRIVATE
         GTest::GTest
         GTest::Main
-        tbb
+        TBB::tbb
 
         cachemere
 )
