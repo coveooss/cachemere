@@ -25,24 +25,29 @@ constexpr auto has_emplace_back = boost::hana::is_valid([](auto& t) -> decltype(
 namespace event {
 
 template<typename K, typename V, template<class, class> typename P>
-constexpr auto has_on_insert = boost::hana::is_valid([](auto& t) -> decltype(boost::hana::traits::declval(t).on_insert(std::declval<Item<K, V>>())) {
-})(boost::hana::type_c<P<K, V>>);
+constexpr auto has_on_insert =
+    boost::hana::is_valid([](auto& policy_t, auto& item_t) -> decltype(boost::hana::traits::declval(policy_t).on_insert(boost::hana::traits::declval(item_t))) {
+    })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<Item<K, V>>);
 
 template<typename K, typename V, template<class, class> typename P>
-constexpr auto has_on_update = boost::hana::is_valid([](auto& t) -> decltype(boost::hana::traits::declval(t).on_update(std::declval<Item<K, V>>())) {
-})(boost::hana::type_c<P<K, V>>);
+constexpr auto has_on_update =
+    boost::hana::is_valid([](auto& policy_t, auto& item_t) -> decltype(boost::hana::traits::declval(policy_t).on_update(boost::hana::traits::declval(item_t))) {
+    })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<Item<K, V>>);
 
 template<typename K, typename V, template<class, class> typename P>
-constexpr auto has_on_cachehit = boost::hana::is_valid([](auto& t) -> decltype(boost::hana::traits::declval(t).on_cache_hit(std::declval<Item<K, V>>())) {
-})(boost::hana::type_c<P<K, V>>);
+constexpr auto has_on_cachehit = boost::hana::is_valid(
+    [](auto& policy_t, auto& item_t) -> decltype(boost::hana::traits::declval(policy_t).on_cache_hit(boost::hana::traits::declval(item_t))) {
+    })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<Item<K, V>>);
 
 template<typename K, typename V, template<class, class> typename P>
-constexpr auto has_on_cachemiss = boost::hana::is_valid([](auto& t) -> decltype(boost::hana::traits::declval(t).on_cache_miss(std::declval<K>())) {
-})(boost::hana::type_c<P<K, V>>);
+constexpr auto has_on_cachemiss = boost::hana::is_valid(
+    [](auto& policy_t, auto& item_t) -> decltype(boost::hana::traits::declval(policy_t).on_cache_miss(boost::hana::traits::declval(item_t))) {
+    })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<K>);
 
 template<typename K, typename V, template<class, class> typename P>
-constexpr auto has_on_evict = boost::hana::is_valid([](auto& t) -> decltype(boost::hana::traits::declval(t).on_evict(std::declval<K>())) {
-})(boost::hana::type_c<P<K, V>>);
+constexpr auto has_on_evict =
+    boost::hana::is_valid([](auto& policy_t, auto& item_t) -> decltype(boost::hana::traits::declval(policy_t).on_evict(boost::hana::traits::declval(item_t))) {
+    })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<K>);
 
 }  // namespace event
 
