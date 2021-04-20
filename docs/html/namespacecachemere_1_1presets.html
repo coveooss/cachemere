@@ -86,10 +86,42 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a3f70ae4ec4ec5ed157517c898c19ae7d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecachemere_1_1presets.html#a3f70ae4ec4ec5ed157517c898c19ae7d">TinyLFUCache</a> = <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">policy::InsertionTinyLFU</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">policy::EvictionSegmentedLRU</a>, MeasureValue, MeasureKey &gt;</td></tr>
 <tr class="memdesc:a3f70ae4ec4ec5ed157517c898c19ae7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">TinyLFU <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>.  <a href="namespacecachemere_1_1presets.html#a3f70ae4ec4ec5ed157517c898c19ae7d">More...</a><br /></td></tr>
 <tr class="separator:a3f70ae4ec4ec5ed157517c898c19ae7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade9d0c56258e5bc0a85c58258b7fa559"><td class="memTemplParams" colspan="2">template&lt;typename Key , typename Value , typename Cost , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;&gt; </td></tr>
+<tr class="memitem:ade9d0c56258e5bc0a85c58258b7fa559"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecachemere_1_1presets.html#ade9d0c56258e5bc0a85c58258b7fa559">CustomCostCache</a> = typename <a class="el" href="classcachemere_1_1presets_1_1detail_1_1SpecializedGDSFCache.html">detail::SpecializedGDSFCache</a>&lt; Key, Value, Cost, MeasureValue, MeasureKey &gt;::type</td></tr>
+<tr class="memdesc:ade9d0c56258e5bc0a85c58258b7fa559"><td class="mdescLeft">&#160;</td><td class="mdescRight">Custom-Cost <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>.  <a href="namespacecachemere_1_1presets.html#ade9d0c56258e5bc0a85c58258b7fa559">More...</a><br /></td></tr>
+<tr class="separator:ade9d0c56258e5bc0a85c58258b7fa559"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Frequently-used cache presets. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="ade9d0c56258e5bc0a85c58258b7fa559"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade9d0c56258e5bc0a85c58258b7fa559">&#9670;&nbsp;</a></span>CustomCostCache</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Key , typename Value , typename Cost , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacecachemere_1_1presets.html#ade9d0c56258e5bc0a85c58258b7fa559">cachemere::presets::CustomCostCache</a> = typedef typename <a class="el" href="classcachemere_1_1presets_1_1detail_1_1SpecializedGDSFCache.html">detail::SpecializedGDSFCache</a>&lt;Key, Value, Cost, MeasureValue, MeasureKey&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Custom-Cost <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>. </p>
+<p>The use of this cache should be favored in scenarios where the cost of a cache miss varies greatly from one item to the next. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Key</td><td>The type of the key used for retrieving items. </td></tr>
+    <tr><td class="paramname">Value</td><td>The type of the items stored in the cache. </td></tr>
+    <tr><td class="paramname">Cost</td><td>A functor taking a <code>const <a class="el" href="structcachemere_1_1Item.html" title="A wrapper for items stored in the cache.">Item</a>&lt;Key, Value&gt;&amp;</code> returning the cost to load this item in cache. </td></tr>
+    <tr><td class="paramname">MeasureValue</td><td>A functor returning the size of a cache value. </td></tr>
+    <tr><td class="paramname">MeasureKey</td><td>A functor returning the size of a cache key. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="af72980266222f70f2101538e041bd354"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af72980266222f70f2101538e041bd354">&#9670;&nbsp;</a></span>LRUCache</h2>
 

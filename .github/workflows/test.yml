@@ -13,7 +13,12 @@ jobs:
 
       - name: Install apt dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl ninja-build libboost-all-dev libgtest-dev
+          sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl ninja-build libboost-all-dev libgtest-dev libtbb-dev
+
+      - name: Install Google Benchmark
+        run: |
+          git clone https://github.com/google/benchmark.git
+          cd benchmark && cmake -E make_directory "build" && cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=ON -DCMAKE_BUILD_TYPE=Release ../ && sudo cmake --build "build" --config Release --target install
 
       - name: Build Tests
         env:

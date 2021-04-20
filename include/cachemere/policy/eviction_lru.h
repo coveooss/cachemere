@@ -1,6 +1,7 @@
 #ifndef CACHEMERE_EVICTION_LRU
 #define CACHEMERE_EVICTION_LRU
 
+#include <cassert>
 #include <functional>
 #include <list>
 #include <map>

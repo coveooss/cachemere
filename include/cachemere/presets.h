@@ -19,8 +19,8 @@ namespace cachemere::presets {
 /// @tparam Value The type of the items stored in the cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
-template<typename Key, typename Value, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>>
-using LRUCache = Cache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey>;
+template<typename Key, typename Value, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>, bool ThreadSafe = true>
+using LRUCache = Cache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, ThreadSafe>;
 
 /// @brief TinyLFU Cache.
 /// @details Uses a combination of frequency sketches to gather a decent estimate of the access frequency of most keys.
@@ -29,20 +29,20 @@ using LRUCache = Cache<Key, Value, policy::InsertionAlways, policy::EvictionLRU,
 /// @tparam Value The type of the items stored in the cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
-template<typename Key, typename Value, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>>
-using TinyLFUCache = Cache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey>;
+template<typename Key, typename Value, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>, bool ThreadSafe = true>
+using TinyLFUCache = Cache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, ThreadSafe>;
 
 namespace detail {
 
 // Template helper to allow partial specialization of Cost.
-template<typename Key, typename Value, typename Cost, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>>
+template<typename Key, typename Value, typename Cost, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>, bool ThreadSafe = true>
 class SpecializedGDSFCache
 {
 private:
     template<typename K, typename V> using MyGDSF = policy::EvictionGDSF<K, V, Cost>;
 
 public:
-    using type = Cache<Key, Value, policy::InsertionTinyLFU, MyGDSF, MeasureValue, MeasureKey>;
+    using type = Cache<Key, Value, policy::InsertionAlways, MyGDSF, MeasureValue, MeasureKey, ThreadSafe>;
 };
 
 }  // namespace detail
@@ -54,8 +54,8 @@ public:
 /// @tparam Cost A functor taking a `const Item<Key, Value>&` returning the cost to load this item in cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
-template<typename Key, typename Value, typename Cost, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>>
-using CustomCostCache = typename detail::SpecializedGDSFCache<Key, Value, Cost, MeasureValue, MeasureKey>::type;
+template<typename Key, typename Value, typename Cost, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>, bool ThreadSafe = true>
+using CustomCostCache = typename detail::SpecializedGDSFCache<Key, Value, Cost, MeasureValue, MeasureKey, ThreadSafe>::type;
 
 }  // namespace cachemere::presets
 

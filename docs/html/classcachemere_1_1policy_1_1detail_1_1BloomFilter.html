@@ -84,14 +84,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2067fabe0cc24c1ef4e40f3282b7fa2e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a2067fabe0cc24c1ef4e40f3282b7fa2e">BloomFilter</a> (uint32_t cardinality)</td></tr>
 <tr class="memdesc:a2067fabe0cc24c1ef4e40f3282b7fa2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a2067fabe0cc24c1ef4e40f3282b7fa2e">More...</a><br /></td></tr>
 <tr class="separator:a2067fabe0cc24c1ef4e40f3282b7fa2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1a20bb215b20bcb22d6368d4829cbc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#aa1a20bb215b20bcb22d6368d4829cbc4">add</a> (const Item &amp;item)</td></tr>
+<tr class="memitem:aa1a20bb215b20bcb22d6368d4829cbc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#aa1a20bb215b20bcb22d6368d4829cbc4">add</a> (const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;item)</td></tr>
 <tr class="memdesc:aa1a20bb215b20bcb22d6368d4829cbc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an item to the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#aa1a20bb215b20bcb22d6368d4829cbc4">More...</a><br /></td></tr>
 <tr class="separator:aa1a20bb215b20bcb22d6368d4829cbc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14e84da980d8c328176bfa985741b913"><td class="memItemLeft" align="right" valign="top"><a id="a14e84da980d8c328176bfa985741b913"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a14e84da980d8c328176bfa985741b913">clear</a> ()</td></tr>
 <tr class="memdesc:a14e84da980d8c328176bfa985741b913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the filter while keeping the allocated memory. <br /></td></tr>
 <tr class="separator:a14e84da980d8c328176bfa985741b913"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e18f5918524813b94a81b039e84feaf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a6e18f5918524813b94a81b039e84feaf">maybe_contains</a> (const Item &amp;item) const</td></tr>
+<tr class="memitem:a6e18f5918524813b94a81b039e84feaf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a6e18f5918524813b94a81b039e84feaf">maybe_contains</a> (const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;item) const</td></tr>
 <tr class="memdesc:a6e18f5918524813b94a81b039e84feaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test membership of the specified item.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a6e18f5918524813b94a81b039e84feaf">More...</a><br /></td></tr>
 <tr class="separator:a6e18f5918524813b94a81b039e84feaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9b04b1a85ae1aed9061337fd9f1afdf"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#ac9b04b1a85ae1aed9061337fd9f1afdf">memory_used</a> () const noexcept</td></tr>
@@ -108,7 +108,7 @@ class cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt;</h3>
 <p>Probabilistic data structure for representing sets in a space-efficient format. </p>
 <p>A bloom filter is a constant-sized data structure, which means that insertions will never make the filter allocate more memory. However, too many inserts will severly impact the accuracy of filter membership tests. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Item</td><td>The type of the items that will be inserted into the set. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structcachemere_1_1Item.html" title="A wrapper for items stored in the cache.">Item</a></td><td>The type of the items that will be inserted into the set. </td></tr>
     <tr><td class="paramname">ItemHash</td><td>Functor used for hashing the items inserted in the set. </td></tr>
   </table>
   </dd>
@@ -123,7 +123,7 @@ class cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt;</h3>
 template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; Item, ItemHash &gt;::<a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">BloomFilter</a> </td>
+          <td class="memname"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::<a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">BloomFilter</a> </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>cardinality</em></td><td>)</td>
@@ -154,9 +154,9 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; Item, ItemHash &gt;::add </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::add </td>
           <td>(</td>
-          <td class="paramtype">const Item &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;&#160;</td>
           <td class="paramname"><em>item</em></td><td>)</td>
           <td></td>
         </tr>
@@ -182,9 +182,9 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; Item, ItemHash &gt;::maybe_contains </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::maybe_contains </td>
           <td>(</td>
-          <td class="paramtype">const Item &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;&#160;</td>
           <td class="paramname"><em>item</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -213,7 +213,7 @@ template&lt;typename Item , typename ItemHash &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; Item, ItemHash &gt;::memory_used</td>
+          <td class="memname">size_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::memory_used</td>
         </tr>
       </table>
   </td>
@@ -240,7 +240,7 @@ template&lt;typename Item , typename ItemHash &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; Item, ItemHash &gt;::saturation</td>
+          <td class="memname">double <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::saturation</td>
         </tr>
       </table>
   </td>
