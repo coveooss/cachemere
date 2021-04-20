@@ -1,6 +1,10 @@
-project(cachemere)
-
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
+
+if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+
+project(cachemere)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -8,7 +12,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Boost 1.65 REQUIRED)
 
 add_library(cachemere INTERFACE)
-add_compile_options("-Wall")
+
+# TODO: Re-add this once msvc is solved.
+#add_compile_options("-Wall")
 
 target_link_libraries(cachemere
     INTERFACE

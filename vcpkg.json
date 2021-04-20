@@ -1,0 +1,10 @@
+{
+    "name": "cachemere",
+    "version-string": "0.1.0-dev",
+    "dependencies": [
+        "benchmark",
+        "boost",
+        "gtest",
+        "tbb"
+    ]
+}
