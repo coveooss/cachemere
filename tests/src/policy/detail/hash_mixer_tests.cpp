@@ -9,8 +9,8 @@ using namespace cachemere::policy::detail;
 
 using TestMixer = HashMixer<std::string, std::hash<std::string>>;
 
-TEST(HashMixer, StaysWithinRange) {
-    constexpr size_t lower_bound = 0;
+TEST(HashMixer, StaysWithinRange)
+{
     constexpr size_t upper_bound = 5;
 
     TestMixer mixer{"hello", upper_bound};
@@ -23,8 +23,8 @@ TEST(HashMixer, StaysWithinRange) {
     }
 }
 
-TEST(HashMixer, StaysWithinRangeLong) {
-    constexpr size_t lower_bound = 0;
+TEST(HashMixer, StaysWithinRangeLong)
+{
     constexpr size_t upper_bound = 500;
 
     TestMixer mixer{"hello", upper_bound};
@@ -37,7 +37,8 @@ TEST(HashMixer, StaysWithinRangeLong) {
     }
 }
 
-TEST(HashMixer, DeterministicWithSameSeed) {
+TEST(HashMixer, DeterministicWithSameSeed)
+{
     constexpr size_t run_length = 100;
 
     TestMixer mixer_a{"hello", 500};

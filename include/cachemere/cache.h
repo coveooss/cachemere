@@ -11,9 +11,8 @@
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
-#include <boost/hana.hpp>
 
-#include "detail/item.h"
+#include "item.h"
 #include "measurement.h"
 
 /// @brief Root namespace
@@ -30,6 +29,7 @@ namespace cachemere {
 /// @tparam EvictionPolicy A template parameterized by `Key` and `Value` implementing the eviction policy interface.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam ThreadSafe Whether to enable locking. When true, all cache operations will be protected by a lock. `true` by default.
 template<typename Key,
          typename Value,
          template<class, class>
@@ -37,12 +37,14 @@ template<typename Key,
          template<class, class>
          class EvictionPolicy,
          typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>>
+         typename MeasureKey   = measurement::Size<Key>,
+         bool ThreadSafe       = true>
 class Cache
 {
 public:
     using MyInsertionPolicy = InsertionPolicy<Key, Value>;
     using MyEvictionPolicy  = EvictionPolicy<Key, Value>;
+    using CacheType         = Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey>;
 
     /// @brief Simple constructor.
     /// @param maximum_size The maximum amount memory to be used by the cache (in bytes).
@@ -59,6 +61,15 @@ public:
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
     std::optional<Value> find(const Key& key) const;
 
+    /// @brief Copy the cache contents in the provided container.
+    /// @details The container should conform to either of the STL's interfaces for associative
+    ///          containers or for sequence containers.
+    ///          Uses `emplace_back` for sequence containers, and `emplace` for associative containers.
+    ///          If the provided container has `size()` and `reserve()` methods, `collect_into` will reserve
+    ///          the appropriate amount of space in the container before inserting.
+    /// @param container The container in which to insert the items.
+    template<typename C> void collect_into(C& container) const;
+
     /// @brief Insert a key/value pair in the cache.
     /// @details If the key is new, the key/value pair will be inserted.
     ///          If the key already exists, the provided value will overwrite the previous one.
@@ -66,6 +77,23 @@ public:
     /// @param value The value to store.
     /// @return Whether the item was inserted in cache.
     bool insert(const Key& key, const Value& value);
+
+    /// @brief Remove a key and its value from the cache.
+    /// @details If the key is not present in cache, no operation is taken.
+    /// @param key The key to remove from the cache.
+    /// @return Whether the key was present in cache.
+    bool remove(const Key& key);
+
+    /// @brief Retain all objects matching a predicate.
+    /// @details Removes all items for which `predicate_fn` returns false.
+    /// @param predicate_fn The predicate function.
+    /// @tparam P The type of the predicate function.
+    ///           The predicate should have the signature `bool fn(const Key& key, const Value& value)`.
+    template<typename P> void retain(P predicate_fn);
+
+    /// @brief Swaps the current cache with another cache of the same type.
+    /// @param other The cache to swap this instance with.
+    void swap(CacheType& other);
 
     /// @brief Get the number of items currently stored in the cache.
     /// @warning This method acquires a mutual exclusion lock to secure the item count.
@@ -112,8 +140,9 @@ public:
     [[nodiscard]] double byte_hit_rate() const;
 
 private:
-    using CacheItem = detail::Item<Key, Value>;
+    using CacheItem = Item<Key, Value>;
     using DataMap   = std::map<Key, CacheItem>;
+    using DataMapIt = typename DataMap::iterator;
 
     using MyInsertionPolicySP = std::unique_ptr<MyInsertionPolicy>;
     using MyEvictionPolicySP  = std::unique_ptr<MyEvictionPolicy>;
@@ -137,8 +166,11 @@ private:
     mutable MeanAccumulator m_hit_rate_acc;
     mutable MeanAccumulator m_byte_hit_rate_acc;
 
+    std::unique_lock<std::mutex> lock() const;
+
     bool   compare_evict(const Key& candidate_key, size_t candidate_size);
     size_t free_amount(size_t amount_to_free);
+    void   remove(DataMapIt it);
 
     void on_insert(const CacheItem& item) const;
     void on_update(const CacheItem& item) const;
@@ -146,6 +178,9 @@ private:
     void on_cache_miss(const Key& key) const;
     void on_evict(const Key& key) const;
 };
+
+template<typename K, typename V, template<class, class> class I, template<class, class> class E, typename SV, typename SK, bool TS>
+void swap(Cache<K, V, I, E, SV, SK, TS>& lhs, Cache<K, V, I, E, SV, SK, TS>& rhs);
 
 }  // namespace cachemere
 

@@ -12,19 +12,22 @@ jobs:
               name: "Windows x64 (msvc)",
               os: windows-latest,
               compiler: "cl.exe",
-              extension: ".exe"
+              extension: ".exe",
+              prefix: "Debug/"
            }
           - {
               name: "Linux x64 (gcc)",
               os: ubuntu-20.04,
               compiler: "/usr/bin/g++",
-              extension: ""
+              extension: "",
+              prefix: ""
            }
           - {
               name: "Linux x64 (clang)",
               os: ubuntu-20.04,
               compiler: "/usr/bin/clang++",
-              extension: ""
+              extension: "",
+              prefix: ""
            }
     runs-on: ${{ matrix.config.os }}
 
@@ -59,4 +62,4 @@ jobs:
       - name: Run Tests
         shell: bash
         run: |
-          ./build/tests/cachemere_tests${{ matrix.config.extension }}
+          ./build/tests/${{ matrix.config.prefix }}cachemere_tests${{ matrix.config.extension }}

@@ -155,7 +155,7 @@ $(function() {
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keyword">const</span> <span class="keyword">auto</span> it_and_ok =</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                m_data.emplace(std::piecewise_construct, std::forward_as_tuple(key), std::forward_as_tuple(key, key_size, value, value_size));</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            assert(it_and_ok.second);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keyword">const</span> <a class="code" href="structcachemere_1_1detail_1_1Item.html">CacheItem</a>&amp; item = it_and_ok.first-&gt;second;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item = it_and_ok.first-&gt;second;</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            on_insert(item);</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            m_current_size += item_size_overhead;</div>
@@ -294,7 +294,7 @@ $(function() {
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;            <span class="keyword">const</span> <span class="keyword">auto</span> total_size_and_overhead = key_and_item-&gt;second.m_key_size + key_and_item-&gt;second.m_total_size;</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;            m_current_size -= total_size_and_overhead;</div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;            on_evict(key_and_item-&gt;first);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;            on_evict(key_and_item-&gt;second.m_key);</div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;            m_data.erase(key_and_item-&gt;first);</div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        }</div>
 <div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160; </div>
@@ -427,8 +427,8 @@ $(function() {
 <div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;}  <span class="comment">// namespace cachemere</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a24f986ccc851d66e7e2d2cf4923a0e79"><div class="ttname"><a href="classcachemere_1_1Cache.html#a24f986ccc851d66e7e2d2cf4923a0e79">cachemere::Cache::insert</a></div><div class="ttdeci">bool insert(const Key &amp;key, const Value &amp;value)</div><div class="ttdoc">Insert a key/value pair in the cache.</div><div class="ttdef"><b>Definition:</b> cache.hpp:52</div></div>
-<div class="ttc" id="astructcachemere_1_1detail_1_1Item_html"><div class="ttname"><a href="structcachemere_1_1detail_1_1Item.html">cachemere::detail::Item</a></div><div class="ttdoc">A wrapper for items stored in the cache.</div><div class="ttdef"><b>Definition:</b> item.h:9</div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a92132bedcff8bd9d1a6d4c9e42e981a3"><div class="ttname"><a href="classcachemere_1_1Cache.html#a92132bedcff8bd9d1a6d4c9e42e981a3">cachemere::Cache::hit_rate</a></div><div class="ttdeci">double hit_rate() const</div><div class="ttdoc">Compute and return the running hit rate of the cache.</div><div class="ttdef"><b>Definition:</b> cache.hpp:143</div></div>
+<div class="ttc" id="astructcachemere_1_1Item_html"><div class="ttname"><a href="structcachemere_1_1Item.html">cachemere::Item</a></div><div class="ttdoc">A wrapper for items stored in the cache.</div><div class="ttdef"><b>Definition:</b> item.h:9</div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_aa64c50ed24eacc441053795bcb672126"><div class="ttname"><a href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126">cachemere::Cache::find</a></div><div class="ttdeci">std::optional&lt; Value &gt; find(const Key &amp;key) const</div><div class="ttdoc">Find a given key in cache returning the associated value when it exists.</div><div class="ttdef"><b>Definition:</b> cache.hpp:37</div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_ad43ea72ed782225ea027cde1f8d0bcac"><div class="ttname"><a href="classcachemere_1_1Cache.html#ad43ea72ed782225ea027cde1f8d0bcac">cachemere::Cache::contains</a></div><div class="ttdeci">bool contains(const Key &amp;key) const</div><div class="ttdoc">Check whether a given key is stored in the cache.</div><div class="ttdef"><b>Definition:</b> cache.hpp:30</div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a871709fd819460e2a5d06151d675c8d5"><div class="ttname"><a href="classcachemere_1_1Cache.html#a871709fd819460e2a5d06151d675c8d5">cachemere::Cache::byte_hit_rate</a></div><div class="ttdeci">double byte_hit_rate() const</div><div class="ttdoc">Compute and return the running byte hit rate of the cache, in bytes.</div><div class="ttdef"><b>Definition:</b> cache.hpp:149</div></div>

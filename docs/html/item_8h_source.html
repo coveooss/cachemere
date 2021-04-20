@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cachemere: include/cachemere/detail/item.h Source File</title>
+<title>Cachemere: include/cachemere/item.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,7 +62,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_80e81e592dd321ccee9271337394af7b.html">cachemere</a></li><li class="navelem"><a class="el" href="dir_772945f3e6ecc7c265e21f78a7c1010c.html">detail</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_80e81e592dd321ccee9271337394af7b.html">cachemere</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -75,39 +75,40 @@ $(function() {
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cstring&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>cachemere::detail {</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecachemere.html">cachemere</a> {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="structcachemere_1_1detail_1_1Item.html">    9</a></span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Key, <span class="keyword">typename</span> Value&gt; <span class="keyword">struct </span><a class="code" href="structcachemere_1_1detail_1_1Item.html">Item</a> {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <a class="code" href="structcachemere_1_1detail_1_1Item.html">Item</a>(Key key, <span class="keywordtype">size_t</span> key_size, Value value, <span class="keywordtype">size_t</span> value_size)</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;     : <a class="code" href="structcachemere_1_1detail_1_1Item.html#a7c89c6598848a6eba753a0406a8fad30">m_key</a>{std::move(key)},</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;       <a class="code" href="structcachemere_1_1detail_1_1Item.html#ad9845a25a9c7f291156a767624b84b42">m_key_size</a>{key_size},</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;       <a class="code" href="structcachemere_1_1detail_1_1Item.html#a9a645d977d126c9129f0fabe1a41de0d">m_value</a>{std::move(value)},</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;       <a class="code" href="structcachemere_1_1detail_1_1Item.html#a90e6c198cd0e3ebe4037b37557c1a3b7">m_value_size</a>{value_size},</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;       <a class="code" href="structcachemere_1_1detail_1_1Item.html#ab417ffe00272e4daa27b805f1605e8c5">m_total_size</a>{key_size + value_size}</div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="structcachemere_1_1Item.html">    9</a></span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Key, <span class="keyword">typename</span> Value&gt; <span class="keyword">struct </span><a class="code" href="structcachemere_1_1Item.html">Item</a> {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>(Key key, <span class="keywordtype">size_t</span> key_size, Value value, <span class="keywordtype">size_t</span> value_size)</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;     : <a class="code" href="structcachemere_1_1Item.html#aedb225a72b07b2c6fca422b8e48f2592">m_key</a>{std::move(key)},</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;       <a class="code" href="structcachemere_1_1Item.html#a030cd2638a41282a76202b20a2114765">m_key_size</a>{key_size},</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;       <a class="code" href="structcachemere_1_1Item.html#af316cde32b203cab940612995300d73d">m_value</a>{std::move(value)},</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;       <a class="code" href="structcachemere_1_1Item.html#a9406db7b53687268c0390624aae571e1">m_value_size</a>{value_size},</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;       <a class="code" href="structcachemere_1_1Item.html#a895433f7a68b0f48b5ef8860a975454d">m_total_size</a>{key_size + value_size}</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="structcachemere_1_1detail_1_1Item.html">Item</a>(<span class="keyword">const</span> <a class="code" href="structcachemere_1_1detail_1_1Item.html">Item</a>&amp; p_Other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="structcachemere_1_1detail_1_1Item.html">Item</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="structcachemere_1_1detail_1_1Item.html">Item</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>(<span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp; p_Other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structcachemere_1_1detail_1_1Item.html#a7c89c6598848a6eba753a0406a8fad30">   21</a></span>&#160;    Key    <a class="code" href="structcachemere_1_1detail_1_1Item.html#a7c89c6598848a6eba753a0406a8fad30">m_key</a>;       </div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structcachemere_1_1detail_1_1Item.html#ad9845a25a9c7f291156a767624b84b42">   22</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="structcachemere_1_1detail_1_1Item.html#ad9845a25a9c7f291156a767624b84b42">m_key_size</a>;  </div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structcachemere_1_1Item.html#aedb225a72b07b2c6fca422b8e48f2592">   21</a></span>&#160;    Key    <a class="code" href="structcachemere_1_1Item.html#aedb225a72b07b2c6fca422b8e48f2592">m_key</a>;       </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structcachemere_1_1Item.html#a030cd2638a41282a76202b20a2114765">   22</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="structcachemere_1_1Item.html#a030cd2638a41282a76202b20a2114765">m_key_size</a>;  </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structcachemere_1_1detail_1_1Item.html#a9a645d977d126c9129f0fabe1a41de0d">   24</a></span>&#160;    Value  <a class="code" href="structcachemere_1_1detail_1_1Item.html#a9a645d977d126c9129f0fabe1a41de0d">m_value</a>;       </div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structcachemere_1_1detail_1_1Item.html#a90e6c198cd0e3ebe4037b37557c1a3b7">   25</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="structcachemere_1_1detail_1_1Item.html#a90e6c198cd0e3ebe4037b37557c1a3b7">m_value_size</a>;  </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structcachemere_1_1Item.html#af316cde32b203cab940612995300d73d">   24</a></span>&#160;    Value  <a class="code" href="structcachemere_1_1Item.html#af316cde32b203cab940612995300d73d">m_value</a>;       </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structcachemere_1_1Item.html#a9406db7b53687268c0390624aae571e1">   25</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="structcachemere_1_1Item.html#a9406db7b53687268c0390624aae571e1">m_value_size</a>;  </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structcachemere_1_1detail_1_1Item.html#ab417ffe00272e4daa27b805f1605e8c5">   27</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="structcachemere_1_1detail_1_1Item.html#ab417ffe00272e4daa27b805f1605e8c5">m_total_size</a>;  </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structcachemere_1_1Item.html#a895433f7a68b0f48b5ef8860a975454d">   27</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="structcachemere_1_1Item.html#a895433f7a68b0f48b5ef8860a975454d">m_total_size</a>;  </div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;};</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}  <span class="comment">// namespace cachemere::detail</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}  <span class="comment">// namespace cachemere</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructcachemere_1_1detail_1_1Item_html_a7c89c6598848a6eba753a0406a8fad30"><div class="ttname"><a href="structcachemere_1_1detail_1_1Item.html#a7c89c6598848a6eba753a0406a8fad30">cachemere::detail::Item::m_key</a></div><div class="ttdeci">Key m_key</div><div class="ttdoc">The key of the item.</div><div class="ttdef"><b>Definition:</b> item.h:21</div></div>
-<div class="ttc" id="astructcachemere_1_1detail_1_1Item_html_a9a645d977d126c9129f0fabe1a41de0d"><div class="ttname"><a href="structcachemere_1_1detail_1_1Item.html#a9a645d977d126c9129f0fabe1a41de0d">cachemere::detail::Item::m_value</a></div><div class="ttdeci">Value m_value</div><div class="ttdoc">The item stored in cache.</div><div class="ttdef"><b>Definition:</b> item.h:24</div></div>
-<div class="ttc" id="astructcachemere_1_1detail_1_1Item_html"><div class="ttname"><a href="structcachemere_1_1detail_1_1Item.html">cachemere::detail::Item</a></div><div class="ttdoc">A wrapper for items stored in the cache.</div><div class="ttdef"><b>Definition:</b> item.h:9</div></div>
-<div class="ttc" id="astructcachemere_1_1detail_1_1Item_html_a90e6c198cd0e3ebe4037b37557c1a3b7"><div class="ttname"><a href="structcachemere_1_1detail_1_1Item.html#a90e6c198cd0e3ebe4037b37557c1a3b7">cachemere::detail::Item::m_value_size</a></div><div class="ttdeci">size_t m_value_size</div><div class="ttdoc">The size of the item.</div><div class="ttdef"><b>Definition:</b> item.h:25</div></div>
-<div class="ttc" id="astructcachemere_1_1detail_1_1Item_html_ab417ffe00272e4daa27b805f1605e8c5"><div class="ttname"><a href="structcachemere_1_1detail_1_1Item.html#ab417ffe00272e4daa27b805f1605e8c5">cachemere::detail::Item::m_total_size</a></div><div class="ttdeci">size_t m_total_size</div><div class="ttdoc">The total size of the item (m_key_size + m_value_size)</div><div class="ttdef"><b>Definition:</b> item.h:27</div></div>
-<div class="ttc" id="astructcachemere_1_1detail_1_1Item_html_ad9845a25a9c7f291156a767624b84b42"><div class="ttname"><a href="structcachemere_1_1detail_1_1Item.html#ad9845a25a9c7f291156a767624b84b42">cachemere::detail::Item::m_key_size</a></div><div class="ttdeci">size_t m_key_size</div><div class="ttdoc">The size of the key.</div><div class="ttdef"><b>Definition:</b> item.h:22</div></div>
+<div class="ttc" id="astructcachemere_1_1Item_html_af316cde32b203cab940612995300d73d"><div class="ttname"><a href="structcachemere_1_1Item.html#af316cde32b203cab940612995300d73d">cachemere::Item::m_value</a></div><div class="ttdeci">Value m_value</div><div class="ttdoc">The item stored in cache.</div><div class="ttdef"><b>Definition:</b> item.h:24</div></div>
+<div class="ttc" id="astructcachemere_1_1Item_html_a9406db7b53687268c0390624aae571e1"><div class="ttname"><a href="structcachemere_1_1Item.html#a9406db7b53687268c0390624aae571e1">cachemere::Item::m_value_size</a></div><div class="ttdeci">size_t m_value_size</div><div class="ttdoc">The size of the item.</div><div class="ttdef"><b>Definition:</b> item.h:25</div></div>
+<div class="ttc" id="astructcachemere_1_1Item_html_a895433f7a68b0f48b5ef8860a975454d"><div class="ttname"><a href="structcachemere_1_1Item.html#a895433f7a68b0f48b5ef8860a975454d">cachemere::Item::m_total_size</a></div><div class="ttdeci">size_t m_total_size</div><div class="ttdoc">The total size of the item (m_key_size + m_value_size)</div><div class="ttdef"><b>Definition:</b> item.h:27</div></div>
+<div class="ttc" id="astructcachemere_1_1Item_html"><div class="ttname"><a href="structcachemere_1_1Item.html">cachemere::Item</a></div><div class="ttdoc">A wrapper for items stored in the cache.</div><div class="ttdef"><b>Definition:</b> item.h:9</div></div>
+<div class="ttc" id="anamespacecachemere_html"><div class="ttname"><a href="namespacecachemere.html">cachemere</a></div><div class="ttdoc">Root namespace.</div><div class="ttdef"><b>Definition:</b> cache.h:20</div></div>
+<div class="ttc" id="astructcachemere_1_1Item_html_aedb225a72b07b2c6fca422b8e48f2592"><div class="ttname"><a href="structcachemere_1_1Item.html#aedb225a72b07b2c6fca422b8e48f2592">cachemere::Item::m_key</a></div><div class="ttdeci">Key m_key</div><div class="ttdoc">The key of the item.</div><div class="ttdef"><b>Definition:</b> item.h:21</div></div>
+<div class="ttc" id="astructcachemere_1_1Item_html_a030cd2638a41282a76202b20a2114765"><div class="ttname"><a href="structcachemere_1_1Item.html#a030cd2638a41282a76202b20a2114765">cachemere::Item::m_key_size</a></div><div class="ttdeci">size_t m_key_size</div><div class="ttdoc">The size of the key.</div><div class="ttdef"><b>Definition:</b> item.h:22</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

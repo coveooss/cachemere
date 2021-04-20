@@ -75,13 +75,13 @@ Construction Requirements</h2>
 <h2><a class="anchor" id="autotoc_md8"></a>
 Event Handlers</h2>
 <p>The policies <em>may</em> define the following event handlers to be notified of changes in the cache. These handlers do not all need to be implemented; a policy only needs to define the handlers that are relevant to its implementation. The cache will detect available handlers on its policies at compile-time, and will only call those that are defined.</p><ul>
-<li><p class="startli"><code>void on_insert(<a class="el" href="structcachemere_1_1detail_1_1Item.html" title="A wrapper for items stored in the cache.">cachemere::detail::Item</a>&lt;K, V&gt;&amp; item)</code></p>
+<li><p class="startli"><code>void on_insert(cachemere::detail::Item&lt;K, V&gt;&amp; item)</code></p>
 <p class="startli">Called immediately after a successful insertion in cache.</p>
 </li>
-<li><p class="startli"><code>void on_update(<a class="el" href="structcachemere_1_1detail_1_1Item.html" title="A wrapper for items stored in the cache.">cachemere::detail::Item</a>&lt;K, V&gt;&amp; item)</code></p>
+<li><p class="startli"><code>void on_update(cachemere::detail::Item&lt;K, V&gt;&amp; item)</code></p>
 <p class="startli">Called immediately after an insertion of an item that was already in cache (which has the effect of updating its value).</p>
 </li>
-<li><p class="startli"><code>void on_cache_hit(<a class="el" href="structcachemere_1_1detail_1_1Item.html" title="A wrapper for items stored in the cache.">cachemere::detail::Item</a>&lt;K, V&gt;&amp; item)</code></p>
+<li><p class="startli"><code>void on_cache_hit(cachemere::detail::Item&lt;K, V&gt;&amp; item)</code></p>
 <p class="startli">Called immediately after a cache hit (a successful call to <code><a class="el" href="classcachemere_1_1Cache.html#aa64c50ed24eacc441053795bcb672126" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
 </li>
 <li><p class="startli"><code>void on_cache_miss(K&amp; key)</code></p>

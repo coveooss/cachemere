@@ -9,13 +9,13 @@ template<class Key, class Value> const Key& EvictionLRU<Key, Value>::VictimItera
     return *m_iterator;
 }
 
-template<class Key, class Value> typename EvictionLRU<Key, Value>::VictimIterator& EvictionLRU<Key, Value>::VictimIterator::operator++()
+template<class Key, class Value> auto EvictionLRU<Key, Value>::VictimIterator::operator++() -> VictimIterator&
 {
     ++m_iterator;
     return *this;
 }
 
-template<class Key, class Value> typename EvictionLRU<Key, Value>::VictimIterator EvictionLRU<Key, Value>::VictimIterator::operator++(int)
+template<class Key, class Value> auto EvictionLRU<Key, Value>::VictimIterator::operator++(int) -> VictimIterator
 {
     return (*this)++;
 }
@@ -61,10 +61,15 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::on_evict(const Ke
 {
     assert(!m_nodes.empty());
     assert(!m_keys.empty());
-    assert(m_keys.back().get() == key);
 
-    m_nodes.erase(key);
-    m_keys.pop_back();
+    if (m_keys.back().get() == key) {
+        m_nodes.erase(key);
+        m_keys.pop_back();
+    } else {
+        auto it = m_nodes.find(key);
+        assert(it != m_nodes.end());
+        m_nodes.erase(it);
+    }
 }
 
 template<class Key, class Value> auto EvictionLRU<Key, Value>::victim_begin() const -> VictimIterator

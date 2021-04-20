@@ -3,7 +3,7 @@
 
 #include <list>
 
-#include "cachemere/detail/item.h"
+#include "cachemere/item.h"
 
 namespace cachemere::policy {
 
@@ -22,7 +22,7 @@ private:
     using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<const Key>>;
 
 public:
-    using CacheItem = cachemere::detail::Item<Key, Value>;
+    using CacheItem = cachemere::Item<Key, Value>;
 
     /// @brief Iterator for iterating over cache items in the order they should be
     //         evicted.
