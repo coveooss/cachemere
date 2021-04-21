@@ -27,7 +27,7 @@ project(cachemere)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Boost CONFIG REQUIRED)
+find_package(Boost REQUIRED)
 
 add_library(cachemere INTERFACE)
 
