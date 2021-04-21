@@ -12,7 +12,7 @@ using TestItem = Item<std::string, int32_t>;
 using ItemMap  = std::map<std::string, TestItem>;
 
 struct ConstantCost {
-    uint32_t operator()(const TestItem& item)
+    uint32_t operator()(const TestItem& /* item */)
     {
         return 42;
     }

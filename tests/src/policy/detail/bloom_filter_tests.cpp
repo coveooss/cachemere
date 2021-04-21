@@ -4,23 +4,25 @@
 
 using namespace cachemere::policy::detail;
 
-TEST(BloomFilter, BasicAdd) {
+TEST(BloomFilter, BasicAdd)
+{
     BloomFilter<std::string> filter{5};
     filter.add("hello world");
     ASSERT_TRUE(filter.maybe_contains("hello world"));
 }
 
-TEST(BloomFilter, FalsePositiveRate) {
+TEST(BloomFilter, FalsePositiveRate)
+{
     const uint32_t cardinality = 100;
 
     BloomFilter<uint32_t> filter{cardinality};
 
-    for (auto i = 0; i < cardinality; ++i) {
+    for (uint32_t i = 0; i < cardinality; ++i) {
         filter.add(i);
     }
 
     // Validate all items were added to the filter.
-    for (auto i = 0; i < cardinality; ++i) {
+    for (uint32_t i = 0; i < cardinality; ++i) {
         EXPECT_TRUE(filter.maybe_contains(i));
     }
 
@@ -35,12 +37,13 @@ TEST(BloomFilter, FalsePositiveRate) {
     EXPECT_LT(falsePositives, falsePositiveThreshold);
 }
 
-TEST(BloomFilter, FilterSaturation) {
-    const uint32_t cardinality = 5;
+TEST(BloomFilter, FilterSaturation)
+{
+    const uint32_t        cardinality = 5;
     BloomFilter<uint32_t> filter{cardinality};
 
     // Completely saturate the filter. After this, every filter bit should be set to `1`.
-    for (auto i = 0; i < cardinality * 100; ++i) {
+    for (uint32_t i = 0; i < cardinality * 100; ++i) {
         filter.add(i);
     }
 
@@ -52,7 +55,8 @@ TEST(BloomFilter, FilterSaturation) {
     }
 }
 
-TEST(BloomFilter, Clear) {
+TEST(BloomFilter, Clear)
+{
     BloomFilter<uint32_t> filter{5};
 
     filter.add(42);

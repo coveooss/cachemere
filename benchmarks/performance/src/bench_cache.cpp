@@ -9,7 +9,7 @@
 using namespace cachemere;
 
 struct Cost {
-    double operator()(const Item<std::string, std::string>& item)
+    double operator()(const Item<std::string, std::string>& /* item */)
     {
         return 1.0;
     }

@@ -44,7 +44,7 @@ TEST(HashMixer, DeterministicWithSameSeed)
     TestMixer mixer_a{"hello", 500};
     TestMixer mixer_b{mixer_a};
 
-    for (auto i = 0; i < run_length; ++i) {
+    for (size_t i = 0; i < run_length; ++i) {
         EXPECT_EQ(mixer_a(), mixer_b());
     }
 }

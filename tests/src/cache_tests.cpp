@@ -23,7 +23,7 @@ using LRUCache     = presets::LRUCache<uint32_t, Point3D, measurement::SizeOf<Po
 using TinyLFUCache = presets::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 
 struct RandomCost {
-    double operator()(const Item<uint32_t, Point3D>& item)
+    double operator()(const Item<uint32_t, Point3D>& /* item */)
     {
         const int min = 0;
         const int max = 100;
@@ -175,7 +175,7 @@ TYPED_TEST(CacheTest, Retain)
         cache->insert(point_id, Point3D{point_id, point_id, point_id});
     }
 
-    cache->retain([](const uint32_t& key, const Point3D& value) { return key % 2 == 0; });
+    cache->retain([](const uint32_t& key, const Point3D& /* value */) { return key % 2 == 0; });
 
     for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
         if (point_id % 2 == 0) {

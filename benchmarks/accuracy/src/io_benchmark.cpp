@@ -162,7 +162,7 @@ TEST_P(CacheSizeFixture, IO_TINYLFU)
 TEST_P(CacheSizeFixture, IO_GDSF_CONSTANT_COST)
 {
     struct ConstantCost {
-        double operator()(const cachemere::Item<std::string, std::shared_ptr<Article>>& item)
+        double operator()(const cachemere::Item<std::string, std::shared_ptr<Article>>& /* item */)
         {
             return 1;
         }

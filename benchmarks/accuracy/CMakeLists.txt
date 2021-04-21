@@ -1,7 +1,7 @@
 enable_testing()
 
-find_package(GTest REQUIRED)
-find_package(TBB REQUIRED)
+find_package(GTest CONFIG REQUIRED)
+find_package(TBB CONFIG REQUIRED)
 
 add_executable(bench_accuracy)
 

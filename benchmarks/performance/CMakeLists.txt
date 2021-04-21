@@ -1,4 +1,4 @@
-find_package(benchmark REQUIRED)
+find_package(benchmark CONFIG REQUIRED)
 
 add_executable(bench_performance)
 

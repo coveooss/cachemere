@@ -27,12 +27,17 @@ project(cachemere)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Boost 1.65 REQUIRED)
+find_package(Boost 1.65 CONFIG REQUIRED)
 
 add_library(cachemere INTERFACE)
 
-# TODO: Re-add this once msvc is solved.
-#add_compile_options("-Wall")
+if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"))
+  # using Clang or GCC
+  add_compile_options("-Wall" "-Wextra")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  # using MSVC
+  add_compile_options("/W4")
+endif()
 
 target_link_libraries(cachemere
     INTERFACE
