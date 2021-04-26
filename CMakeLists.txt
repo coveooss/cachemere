@@ -4,13 +4,14 @@ option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_BENCHMARKS "Build benchmarks" OFF)
 option(USE_VCPKG "Use vcpkg for dependencies" OFF)
 
-if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
-
 if (USE_VCPKG)
-    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
-    CACHE STRING "Vcpkg toolchain file")
+    if(DEFINED ENV{VCPKG_ROOT})
+        set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
+            CACHE STRING "Vcpkg toolchain file")
+    else()
+        set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
+            CACHE STRING "Vcpkg toolchain file")
+    endif()
 
     if (BUILD_TESTS)
         list(APPEND VCPKG_MANIFEST_FEATURES "tests")
@@ -21,6 +22,9 @@ if (USE_VCPKG)
     endif()
 endif()
 
+if (BUILD_TESTS OR BUILD_BENCHMARKS)
+    enable_testing()
+endif()
 
 project(cachemere)
 
@@ -32,10 +36,8 @@ find_package(Boost REQUIRED)
 add_library(cachemere INTERFACE)
 
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"))
-  # using Clang or GCC
   add_compile_options("-Wall" "-Wextra")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  # using MSVC
   add_compile_options("/W4")
 endif()
 
@@ -44,11 +46,33 @@ target_link_libraries(cachemere
         Boost::boost
 )
 
+include(GNUInstallDirs)
 target_include_directories(cachemere
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-        $<INSTALL_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+set(INSTALL_CMAKEDIR "${CMAKE_INSTALL_DATAROOTDIR}/cachemere")
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(TARGETS cachemere EXPORT cachemere-targets)
+install(EXPORT cachemere-targets
+    DESTINATION "${INSTALL_CMAKEDIR}"
+    NAMESPACE cachemere::
+)
+include(CMakePackageConfigHelpers)
+configure_package_config_file(cachemereConfig.cmake.in
+    ${PROJECT_BINARY_DIR}/cachemereConfig.cmake
+    INSTALL_DESTINATION "${INSTALL_CMAKEDIR}"
+)
+install(FILES ${PROJECT_BINARY_DIR}/cachemereConfig.cmake DESTINATION ${INSTALL_CMAKEDIR})
+
+if (BUILD_BENCHMARKS)
+    add_subdirectory(benchmarks)
+endif()
+
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
 
 target_sources(cachemere
     INTERFACE
@@ -79,11 +103,3 @@ target_sources(cachemere
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/detail/hash_mixer.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/detail/hash_mixer.hpp>
 )
-
-if (BUILD_BENCHMARKS)
-    add_subdirectory(benchmarks)
-endif()
-
-if (BUILD_TESTS)
-    add_subdirectory(tests)
-endif()
