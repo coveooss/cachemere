@@ -32,5 +32,10 @@
 *.app
 
 build/*
+debug/*
+release/*
+out/*
 
 .vscode/*
+
+.vcpkg_installed/*

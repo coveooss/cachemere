@@ -1,11 +1,12 @@
 #ifndef CACHEMERE_EVICTION_LRU
 #define CACHEMERE_EVICTION_LRU
 
+#include <cassert>
 #include <functional>
 #include <list>
 #include <map>
 
-#include "cachemere/detail/item.h"
+#include "cachemere/item.h"
 
 namespace cachemere::policy {
 
@@ -13,7 +14,7 @@ namespace cachemere::policy {
 /// @details Implemented internally using a linked list.
 ///          The keys are ordered from most-recently used to least-recently used.
 ///          Only stores references to keys kept alive by the cache.
-/// @tparam Key The type of the keys used to identify an items in the cache.
+/// @tparam Key The type of the keys used to identify items in the cache.
 /// @tparam Value The type of the values stored in the cache.
 template<typename Key, typename Value> class EvictionLRU
 {
@@ -23,7 +24,7 @@ private:
     using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<const Key>>;
 
 public:
-    using CacheItem = cachemere::detail::Item<Key, Value>;
+    using CacheItem = cachemere::Item<Key, Value>;
 
     /// @brief Iterator for iterating over cache items in the order they should be
     ///        evicted.

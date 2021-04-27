@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lrucache_123',['LRUCache',['../namespacecachemere_1_1presets.html#af72980266222f70f2101538e041bd354',1,'cachemere::presets']]]
+  ['customcostcache_124',['CustomCostCache',['../namespacecachemere_1_1presets.html#ade9d0c56258e5bc0a85c58258b7fa559',1,'cachemere::presets']]]
 ];

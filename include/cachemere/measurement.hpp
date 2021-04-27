@@ -30,7 +30,7 @@ template<typename T> template<typename V> size_t Size<T>::operator()(const V& ob
     return detail::deref_maybe(object).size();
 }
 
-template<typename T> template<typename V> size_t SizeOf<T>::operator()(const V& object) const
+template<typename T> template<typename V> size_t SizeOf<T>::operator()(const V& /* object */) const
 {
     return sizeof(T);
 }

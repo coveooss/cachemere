@@ -84,7 +84,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab7efe8a340699f70aafec2160dd8d3fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ab7efe8a340699f70aafec2160dd8d3fd">CountingBloomFilter</a> (uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a310c3a6073af77a01a7630fb548f80a5">cardinality</a>)</td></tr>
 <tr class="memdesc:ab7efe8a340699f70aafec2160dd8d3fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ab7efe8a340699f70aafec2160dd8d3fd">More...</a><br /></td></tr>
 <tr class="separator:ab7efe8a340699f70aafec2160dd8d3fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b5989d61ca6f3223ed68a8b8de8365b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a2b5989d61ca6f3223ed68a8b8de8365b">add</a> (const Item &amp;item)</td></tr>
+<tr class="memitem:a2b5989d61ca6f3223ed68a8b8de8365b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a2b5989d61ca6f3223ed68a8b8de8365b">add</a> (const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;item)</td></tr>
 <tr class="memdesc:a2b5989d61ca6f3223ed68a8b8de8365b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increment the count for a given item by one.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a2b5989d61ca6f3223ed68a8b8de8365b">More...</a><br /></td></tr>
 <tr class="separator:a2b5989d61ca6f3223ed68a8b8de8365b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb787b9a19a9690554764b2cf1d2a633"><td class="memItemLeft" align="right" valign="top"><a id="adb787b9a19a9690554764b2cf1d2a633"></a>
@@ -94,7 +94,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ae87c3892ae6e4ceeb9cadf42a0057320"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ae87c3892ae6e4ceeb9cadf42a0057320">decay</a> ()</td></tr>
 <tr class="memdesc:ae87c3892ae6e4ceeb9cadf42a0057320"><td class="mdescLeft">&#160;</td><td class="mdescRight">Divide counter values by two.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ae87c3892ae6e4ceeb9cadf42a0057320">More...</a><br /></td></tr>
 <tr class="separator:ae87c3892ae6e4ceeb9cadf42a0057320"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a836f02f188ca1523dff0613c50824739"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a836f02f188ca1523dff0613c50824739">estimate</a> (const Item &amp;item) const</td></tr>
+<tr class="memitem:a836f02f188ca1523dff0613c50824739"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a836f02f188ca1523dff0613c50824739">estimate</a> (const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;item) const</td></tr>
 <tr class="memdesc:a836f02f188ca1523dff0613c50824739"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the counter estimate for a given item.  <a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a836f02f188ca1523dff0613c50824739">More...</a><br /></td></tr>
 <tr class="separator:a836f02f188ca1523dff0613c50824739"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a310c3a6073af77a01a7630fb548f80a5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a310c3a6073af77a01a7630fb548f80a5">cardinality</a> () const noexcept</td></tr>
@@ -123,7 +123,7 @@ class cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt;</h3
 template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::<a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">CountingBloomFilter</a> </td>
+          <td class="memname"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::<a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">CountingBloomFilter</a> </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>cardinality</em></td><td>)</td>
@@ -154,9 +154,9 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::add </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::add </td>
           <td>(</td>
-          <td class="paramtype">const Item &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;&#160;</td>
           <td class="paramname"><em>item</em></td><td>)</td>
           <td></td>
         </tr>
@@ -185,7 +185,7 @@ template&lt;typename Item , typename ItemHash &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::cardinality</td>
+          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::cardinality</td>
         </tr>
       </table>
   </td>
@@ -209,7 +209,7 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::decay</td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::decay</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -228,9 +228,9 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 template&lt;typename Item , typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::estimate </td>
+          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::estimate </td>
           <td>(</td>
-          <td class="paramtype">const Item &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;&#160;</td>
           <td class="paramname"><em>item</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -260,7 +260,7 @@ template&lt;typename Item , typename ItemHash &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::memory_used</td>
+          <td class="memname">size_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::memory_used</td>
         </tr>
       </table>
   </td>
@@ -287,7 +287,7 @@ template&lt;typename Item , typename ItemHash &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; Item, ItemHash &gt;::saturation</td>
+          <td class="memname">double <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::saturation</td>
         </tr>
       </table>
   </td>

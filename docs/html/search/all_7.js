@@ -5,5 +5,5 @@ var searchData=
   ['insertion_5fpolicy_27',['insertion_policy',['../classcachemere_1_1Cache.html#a595590ba222a0b75a31afcc16cf057e8',1,'cachemere::Cache']]],
   ['insertionalways_28',['InsertionAlways',['../classcachemere_1_1policy_1_1InsertionAlways.html',1,'cachemere::policy']]],
   ['insertiontinylfu_29',['InsertionTinyLFU',['../classcachemere_1_1policy_1_1InsertionTinyLFU.html',1,'cachemere::policy']]],
-  ['item_30',['Item',['../structcachemere_1_1detail_1_1Item.html',1,'cachemere::detail']]]
+  ['item_30',['Item',['../structcachemere_1_1Item.html',1,'cachemere']]]
 ];

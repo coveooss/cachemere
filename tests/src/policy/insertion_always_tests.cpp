@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "cachemere/detail/item.h"
 #include "cachemere/policy/insertion_always.h"
 
 using namespace cachemere::policy;
