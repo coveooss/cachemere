@@ -8,16 +8,16 @@
 
 namespace cachemere::policy::detail {
 
-/// @brief Space-efficient probalistic datastructure to estimate the number of times
-///        an item was inserted in a set in a space-efficient manner.
-/// @details A counting bloom filter is a constant-sized datastructure, which means that insertions will never
+/// @brief Space-efficient probalistic data structure to estimate the number of times
+///        an item was inserted in a set.
+/// @details A counting bloom filter is a constant-sized data structure, which means that insertions will never
 ///          make the filter allocate more memory. However, too many inserts will severly impact the accuracy
 ///          of counter estimates.
-template<typename Key, typename KeyHash = std::hash<Key>> class CountingBloomFilter
+template<typename Item, typename ItemHash = std::hash<Item>> class CountingBloomFilter
 {
 public:
     /// @brief Constructor.
-    /// @details To use this datastructure at its full potential, it's very important to have a good estimate
+    /// @details To use this data structure at its full potential, it's very important to have a good estimate
     ///          for the cardinality of the set to be inserted.
     ///
     /// @warning Having an estimate much higher than the real cardinality will result in excessive memory usage,
@@ -26,27 +26,27 @@ public:
     /// @param cardinality The expected cardinality of the set to be inserted in the filter.
     CountingBloomFilter(uint32_t cardinality);
 
-    /// @brief Increment the count for a given key by one.
-    /// @param key The key of the counter to increment.
-    void add(const Key& key);
+    /// @brief Increment the count for a given item by one.
+    /// @param item The item of the counter to increment.
+    void add(const Item& item);
 
     /// @brief Clear the filter while keeping the allocated memory.
     void clear();
 
     /// @brief Divide counter values by two.
-    /// @details If your application doesn't rely on the absolute value of the counters, calling this
-    ///          regularly will decrease the saturation of your filter by removing items that are very
+    /// @details If the user of this filter doesn't rely on the absolute value of the counters, calling this
+    ///          regularly will decrease the saturation of the filter by removing items that are very
     ///          rarely seen.
     void decay();
 
-    /// @brief Get the counter estimate for a given key.
-    /// @param key The key of the counter to estimate.
+    /// @brief Get the counter estimate for a given item.
+    /// @param item The item for which to estimate the count.
     /// @details Similarly to the way a bloom filter can return false positives, but not false negatives,
     ///          the counter estimation produced by a counting bloom filter is actually an upper bound of
     ///          the real counter value - the real count is guaranteed to be less or equal to the estimate
     ///          returned.
-    /// @return The counter estimate for the key.
-    [[nodiscard]] uint32_t estimate(const Key& key) const;
+    /// @return The counter estimate for the item.
+    [[nodiscard]] uint32_t estimate(const Item& item) const;
 
     /// @brief Get the cardinality of the filter.
     /// @return The cardinality of the filter, as configured.
@@ -65,7 +65,7 @@ public:
     [[nodiscard]] double saturation() const noexcept;
 
 private:
-    using Mixer = HashMixer<Key, KeyHash>;
+    using Mixer = HashMixer<Item, ItemHash>;
 
     uint32_t              m_cardinality;
     std::vector<uint32_t> m_filter;

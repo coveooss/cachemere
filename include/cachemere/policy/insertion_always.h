@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include "cachemere/detail/item.h"
 namespace cachemere::policy {
 
 /// @brief Simplest insertion policy. Always accepts insertions.

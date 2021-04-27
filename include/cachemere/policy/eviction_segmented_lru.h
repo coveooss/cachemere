@@ -3,7 +3,7 @@
 
 #include <list>
 
-#include "cachemere/detail/item.h"
+#include "cachemere/item.h"
 
 namespace cachemere::policy {
 
@@ -22,7 +22,7 @@ private:
     using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<const Key>>;
 
 public:
-    using CacheItem = cachemere::detail::Item<Key, Value>;
+    using CacheItem = cachemere::Item<Key, Value>;
 
     /// @brief Iterator for iterating over cache items in the order they should be
     //         evicted.
@@ -75,6 +75,9 @@ public:
     void on_evict(const Key& item);
 
     /// @brief Get an iterator to the first item that should be evicted.
+    /// @details Considering that the keys are ordered internally from most-recently used
+    ///          to least-recently used, this iterator will effectively walk the internal
+    ///          structure backwards.
     /// @return An item iterator.
     [[nodiscard]] VictimIterator victim_begin() const;
 

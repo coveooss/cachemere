@@ -1,12 +1,12 @@
 Implementing Custom Policies {#implementingCustomPolicies}
 ============================
 
-This page is about implementing custom policies.
+This page is meant to guide you through the implementation of custom policies.
 ## Shared Characteristics
 ### Construction Requirements
-Both types of policies _must_ be default-constructible, because the cache is responsible for instanciating them.
+Both types of policies _must_ be [default-constructible](http://www.cplusplus.com/reference/type_traits/is_default_constructible/), because the cache is responsible for instanciating them.
 ### Event Handlers
-The policies _may_ define the following event handlers to be notified of changes in the cache. These handlers will only be called if implemented.
+The policies _may_ define the following event handlers to be notified of changes in the cache. These handlers do not all need to be implemented; a policy only needs to define the handlers that are relevant to its implementation. The cache will detect available handlers on its policies at compile-time, and will only call those that are defined.
 * `void on_insert(cachemere::detail::Item<K, V>& item)`
 
     Called immediately after a successful insertion in cache.
@@ -50,7 +50,7 @@ In addition to the shared requirements above, an insertion policy must implement
 
 * `bool should_replace(const Key& victim, const Key& candidate)`
 
-    Should return `true` if the policy believes that the candidate should replace the victim in cache.
+    Should return `true` if the policy states that the candidate should replace the victim in cache.
     @note Returning `true` guarantees that the object matching the `candidate` key will be inserted in cache.
 
 ## Eviction Policy

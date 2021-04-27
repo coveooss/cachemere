@@ -1,0 +1,65 @@
+name: Tests
+
+on:
+  push: {}
+
+jobs:
+  unit:
+    strategy:
+      matrix:
+        config:
+          - {
+              name: "Windows x64 (msvc)",
+              os: windows-latest,
+              compiler: "cl.exe",
+              extension: ".exe",
+              prefix: "Debug/"
+           }
+          - {
+              name: "Linux x64 (gcc)",
+              os: ubuntu-20.04,
+              compiler: "/usr/bin/g++",
+              extension: "",
+              prefix: ""
+           }
+          - {
+              name: "Linux x64 (clang)",
+              os: ubuntu-20.04,
+              compiler: "/usr/bin/clang++",
+              extension: "",
+              prefix: ""
+           }
+    runs-on: ${{ matrix.config.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - uses: ilammy/msvc-dev-cmd@d39d8f7626e5667b00caa504eaefd7c24c9ba49d
+
+      - name: Enable vcpkg cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache
+            ./vcpkg_installed
+          key: ${{ runner.os }}-cachemere
+
+      - name: Install apt dependencies
+        if: matrix.config.os == 'ubuntu-20.04'
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl
+
+      - name: Build Tests & Benchmarks
+        env:
+          CXX: ${{ matrix.config.compiler }}
+        shell: bash
+        run: |
+          cmake -B build -S . -DUSE_VCPKG=ON -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug
+          cmake --build build/
+
+      - name: Run Tests
+        shell: bash
+        run: |
+          ./build/tests/${{ matrix.config.prefix }}cachemere_tests${{ matrix.config.extension }}

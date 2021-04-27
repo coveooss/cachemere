@@ -6,7 +6,7 @@
 /// @brief Utilities for measuring cached items.
 namespace cachemere::measurement {
 
-/// @brief Get the size of an object via an user-defined `size()` method.
+/// @brief Get the size of an object via a user-defined `size()` method.
 template<typename T> struct Size {
     template<typename V> size_t operator()(const V& object) const;
 };
@@ -16,7 +16,7 @@ template<typename T> struct SizeOf {
     template<typename V> size_t operator()(const V& object) const;
 };
 
-/// @brief Get the size of an object via an user-defined `capacity()` method.
+/// @brief Get the size of an object via a user-defined `capacity()` method.
 template<typename T> struct CapacityDynamicallyAllocated {
 public:
     template<typename V> size_t operator()(const V& object) const;

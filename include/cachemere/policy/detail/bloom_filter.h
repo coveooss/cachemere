@@ -10,17 +10,17 @@
 
 namespace cachemere::policy::detail {
 
-/// @brief Probabilistic datastructure for representing sets in a space-efficient format.
-/// @details A bloom filter is a constant-sized datastructure, which means that insertions will never make
+/// @brief Probabilistic data structure for representing sets in a space-efficient format.
+/// @details A bloom filter is a constant-sized data structure, which means that insertions will never make
 ///          the filter allocate more memory. However, too many inserts will severly impact the accuracy of
 ///          filter membership tests.
-/// @tparam Key The type of the items that will be inserted into the set.
-/// @tparam KeyHash Functor used for hashing the keys inserted in the set.
-template<typename Key, typename KeyHash = std::hash<Key>> class BloomFilter
+/// @tparam Item The type of the items that will be inserted into the set.
+/// @tparam ItemHash Functor used for hashing the items inserted in the set.
+template<typename Item, typename ItemHash = std::hash<Item>> class BloomFilter
 {
 public:
     /// @brief Constructor.
-    /// @details To use this datastructure at its full potential, it's very important to have a good estimate
+    /// @details To use this data structure at its full potential, it's very important to have a good estimate
     ///          for the cardinality of the set to be inserted.
     ///
     /// @warning Having an estimate much higher than the real cardinality will result in excessive memory usage,
@@ -30,18 +30,18 @@ public:
     BloomFilter(uint32_t cardinality);
 
     /// @brief Add an item to the filter.
-    /// @param key The key to insert.
-    void add(const Key& key);
+    /// @param item The item to insert.
+    void add(const Item& item);
 
     /// @brief Clear the filter while keeping the allocated memory.
     void clear();
 
-    /// @brief Test membership of the specified key.
+    /// @brief Test membership of the specified item.
     /// @details A bloom filter can return false positives, but not false negatives.
-    ///          This method returning `true` only means that the set _might_ contain the specified key,
-    ///          while a return value of `false` means that the set _certainly_ does not contain the specified key.
-    /// @param key The key to test.
-    [[nodiscard]] bool maybe_contains(const Key& key) const;
+    ///          This method returning `true` only means that the set _might_ contain the specified item,
+    ///          while a return value of `false` means that the set _certainly_ does not contain the specified item.
+    /// @param item The item to test.
+    [[nodiscard]] bool maybe_contains(const Item& item) const;
 
     /// @brief Get an estimate of the memory consumption of the filter.
     /// @return The memory used by the filter, in bytes.
@@ -55,7 +55,7 @@ public:
     [[nodiscard]] double saturation() const noexcept;
 
 private:
-    using Mixer       = HashMixer<Key, KeyHash>;
+    using Mixer       = HashMixer<Item, ItemHash>;
     using BitsetBlock = uint8_t;
     using BitSet      = boost::dynamic_bitset<BitsetBlock>;
 
