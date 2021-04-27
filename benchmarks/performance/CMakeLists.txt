@@ -12,6 +12,6 @@ target_link_libraries(bench_performance
 
 target_sources(bench_performance
     PRIVATE
-    src/bench_cache.cpp
-    src/main.cpp
+        src/bench_cache.cpp
+        src/main.cpp
 )
