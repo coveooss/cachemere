@@ -1,0 +1,1 @@
+Checks: clang-diagnostic-*,clang-analyzer-*,-*,bugprone*,modernize*,performance*,-modernize-use-auto,-modernize-use-trailing-return-type,-modernize-use-transparent-functors
