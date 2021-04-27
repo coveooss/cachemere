@@ -1,13 +1,11 @@
-enable_testing()
-
-find_package(GTest CONFIG REQUIRED)
+find_package(GTest REQUIRED)
 
 add_executable(cachemere_tests)
 
 target_link_libraries(cachemere_tests
     PRIVATE
-        GTest::gtest
-        GTest::gtest_main
+        GTest::GTest
+        GTest::Main
 
         cachemere
 )

@@ -1,4 +1,4 @@
-find_package(benchmark CONFIG REQUIRED)
+find_package(benchmark REQUIRED)
 
 add_executable(bench_performance)
 
@@ -12,6 +12,6 @@ target_link_libraries(bench_performance
 
 target_sources(bench_performance
     PRIVATE
-    src/bench_cache.cpp
-    src/main.cpp
+        src/bench_cache.cpp
+        src/main.cpp
 )

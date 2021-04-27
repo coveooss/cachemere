@@ -1,14 +1,12 @@
-enable_testing()
-
-find_package(GTest CONFIG REQUIRED)
-find_package(TBB CONFIG REQUIRED)
+find_package(GTest REQUIRED)
+find_package(TBB REQUIRED)
 
 add_executable(bench_accuracy)
 
 target_link_libraries(bench_accuracy
     PRIVATE
-        GTest::gtest
-        GTest::gtest_main
+        GTest::GTest
+        GTest::Main
         TBB::tbb
 
         cachemere
