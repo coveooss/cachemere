@@ -1,0 +1,38 @@
+name: Generate Documentation
+on:
+  push:
+    branches: main
+
+jobs:
+  docs:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Install Doxygen
+        run: |
+          sudo apt-get update
+          sudo apt-get install doxygen
+
+      - name: Checkout docs branch and merge main
+        run: |
+          git checkout docs
+          git merge main
+
+      - name: Generate the docs
+        run: |
+          rm -rf ./docs/
+          doxygen Doxyfile
+
+      - name: Push the docs
+        run: |
+          git config user.name coveobot
+          git config user.email coveobot@coveo.com
+          git add docs/
+          git commit -m "Update documentation"
+          git push origin docs
+

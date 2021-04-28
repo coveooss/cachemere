@@ -1,7 +1,10 @@
 name: Tests
 
 on:
-  push: {}
+  push:
+    branches: main
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
   unit:
