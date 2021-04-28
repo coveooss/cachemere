@@ -33,6 +33,6 @@ jobs:
           git config user.name coveobot
           git config user.email coveobot@coveo.com
           git add docs/
-          git commit -m "Update documentation"
+          git commit -m "Update documentation" || status=$?
           git push origin docs
 

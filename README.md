@@ -5,6 +5,9 @@ Cachemere is a modular header-only caching library for C++.
 It provides implementations for some state-of-the-art caching algorithms,
 as well as a comprehensive set of primitives for building custom caching solutions.
 
+[![Tests](https://github.com/coveooss/cachemere/actions/workflows/test.yml/badge.svg)](https://github.com/coveooss/cachemere/actions/workflows/test.yml)
+![License](https://img.shields.io/github/license/coveooss/cachemere)
+
 ## Getting Started
 ### TinyLFU Cache
 ```cpp
@@ -39,6 +42,8 @@ int main()
     return 0;
 }
 ```
+
+For more information, take a look at the [documentation](https://coveooss.github.io/cachemere/).
 
 ## Design Overview
 ### Background
