@@ -1,6 +1,6 @@
 {
     "name": "cachemere",
-    "version-string": "0.1.0-dev",
+    "version-semver": "0.1.0",
     "dependencies": [
         "boost"
     ],
