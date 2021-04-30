@@ -5,6 +5,8 @@ option(BUILD_BENCHMARKS "Build benchmarks" OFF)
 option(USE_VCPKG "Use vcpkg for dependencies" OFF)
 
 if (USE_VCPKG)
+    set(VCPKG_FEATURE_FLAGS "versions")
+
     if(DEFINED ENV{VCPKG_ROOT})
         set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
             CACHE STRING "Vcpkg toolchain file")
