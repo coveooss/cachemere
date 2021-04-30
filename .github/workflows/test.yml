@@ -60,8 +60,7 @@ jobs:
           VCPKG_ROOT: ./vcpkg
         shell: bash
         run: |
-          cd ./vcpkg && git rev-parse HEAD && cd ..
-          cmake -B build -S . -DUSE_VCPKG=ON -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug
+          cmake -B build -S . -DUSE_VCPKG=ON -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug || cat ./build/vcpkg-manifest-install.log
           cmake --build build/
 
       - name: Run Tests
