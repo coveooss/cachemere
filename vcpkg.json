@@ -2,9 +2,29 @@
     "name": "cachemere",
     "version-semver": "0.1.0",
     "dependencies": [
+        {
+            "name": "vcpkg-cmake",
+            "version>=": "2021-02-28",
+            "host": true,
+            "$comment": "This transitive dependency needs to be specified explicitly."
+        },
+        {
+            "name": "vcpkg-cmake-config",
+            "version>=": "2021-02-26",
+            "host": true,
+            "$comment": "This transitive dependency needs to be specified explicitly."
+        }
+    ],
+    "default-features": [
         "boost"
     ],
     "features": {
+        "boost": {
+            "description": "Use boost from vcpkg",
+            "dependencies": [
+                "boost"
+            ]
+        },
         "tests": {
             "description": "The unit tests",
             "dependencies": [
@@ -19,5 +39,6 @@
                 "tbb"
             ]
         }
-    }
+    },
+    "builtin-baseline": "414bec05f2a97cfc0ddb8e22fd4635dfe2a20ab8"
 }
