@@ -57,9 +57,8 @@ jobs:
       - name: Build Tests & Benchmarks
         env:
           CXX: ${{ matrix.config.compiler }}
+          VCPKG_ROOT: ${{ env.GITHUB_WORKSPACE }}/vcpkg
         shell: bash
-        env:
-            VCPKG_ROOT: ${{ env.GITHUB_WORKSPACE }}/vcpkg
         run: |
           cmake -B build -S . -DUSE_VCPKG=ON -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug
           cmake --build build/
