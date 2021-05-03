@@ -22,7 +22,9 @@
         "boost": {
             "description": "Use boost from vcpkg",
             "dependencies": [
-                "boost"
+                "boost-accumulators",
+                "boost-dynamic-bitset",
+                "boost-hana"
             ]
         },
         "tests": {

@@ -55,23 +55,12 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl
 
-      - name: Install libffi manually
-        if: matrix.config.os == 'windows-latest'
-        env:
-          CXX: ${{ matrix.config.compiler }}
-          VCPKG_ROOT: ./vcpkg
-        shell: bash
-        run: |
-          ./vcpkg/bootstrap-vcpkg.bat
-          ./vcpkg/vcpkg.exe install --feature-flags=manifests,versions
-
       - name: Build Tests & Benchmarks
         env:
           CXX: ${{ matrix.config.compiler }}
           VCPKG_ROOT: ./vcpkg
         shell: bash
         run: |
-          git version
           cmake -B build -S . -DUSE_VCPKG=ON -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug
           cmake --build build/
 
