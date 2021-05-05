@@ -139,6 +139,9 @@ public:
     /// @return The byte hit rate, in bytes.
     [[nodiscard]] double byte_hit_rate() const;
 
+protected:
+    std::unique_lock<std::mutex> lock() const;
+
 private:
     using CacheItem = Item<Key, Value>;
     using DataMap   = std::map<Key, CacheItem>;
@@ -165,8 +168,6 @@ private:
 
     mutable MeanAccumulator m_hit_rate_acc;
     mutable MeanAccumulator m_byte_hit_rate_acc;
-
-    std::unique_lock<std::mutex> lock() const;
 
     bool   compare_evict(const Key& candidate_key, size_t candidate_size);
     size_t free_amount(size_t amount_to_free);
