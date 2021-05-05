@@ -69,6 +69,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classcachemere_1_1Cache-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt; Class Template Reference</div>  </div>
@@ -146,6 +147,12 @@ MyEvictionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a cla
 <tr class="memitem:ad49385469c4833bd05946fd7592bddad"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ad49385469c4833bd05946fd7592bddad">byte_hit_rate</a> () const</td></tr>
 <tr class="memdesc:ad49385469c4833bd05946fd7592bddad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running byte hit rate of the cache, in bytes.  <a href="classcachemere_1_1Cache.html#ad49385469c4833bd05946fd7592bddad">More...</a><br /></td></tr>
 <tr class="separator:ad49385469c4833bd05946fd7592bddad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:af3fb485364e8ef7be7224d585a68c9e1"><td class="memItemLeft" align="right" valign="top"><a id="af3fb485364e8ef7be7224d585a68c9e1"></a>
+std::unique_lock&lt; std::mutex &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> () const</td></tr>
+<tr class="separator:af3fb485364e8ef7be7224d585a68c9e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename Key, typename Value, template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, typename MeasureValue = measurement::Size&lt;Value&gt;, typename MeasureKey = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt;<br />
