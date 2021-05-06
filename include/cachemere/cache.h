@@ -44,7 +44,7 @@ class Cache
 public:
     using MyInsertionPolicy = InsertionPolicy<Key, Value>;
     using MyEvictionPolicy  = EvictionPolicy<Key, Value>;
-    using CacheType         = Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey>;
+    using CacheType         = Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe>;
 
     /// @brief Simple constructor.
     /// @param maximum_size The maximum amount memory to be used by the cache (in bytes).
