@@ -196,14 +196,14 @@ inline size_t Cache<K, V, I, E, SV, SK, TS>::number_of_items() const
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::size() const
 {
-    std::unique_lock<std::mutex> me_guard(lock());
+    std::unique_lock<std::mutex> guard(lock());
     return m_current_size;
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::maximum_size() const
 {
-    std::unique_lock<std::mutex> me_guard(lock());
+    std::unique_lock<std::mutex> guard(lock());
     return m_maximum_size;
 }
 
