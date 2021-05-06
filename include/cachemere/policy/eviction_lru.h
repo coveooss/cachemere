@@ -45,6 +45,9 @@ public:
         KeyRefReverseIt m_iterator;
     };
 
+    /// @brief Clears the policy.
+    void clear();
+
     /// @brief Insertion event handler.
     /// @details Inserts the provided item at the front of the list.
     /// @param item The item that has been inserted in cache.

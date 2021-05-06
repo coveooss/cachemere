@@ -1,5 +1,11 @@
 namespace cachemere::policy {
 
+template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::clear()
+{
+    m_gatekeeper.clear();
+    m_frequency_sketch.clear();
+}
+
 template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::on_cache_hit(const CacheItem& item)
 {
     touch_item(item.m_key);

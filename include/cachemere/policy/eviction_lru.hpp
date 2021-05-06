@@ -30,6 +30,12 @@ template<class Key, class Value> bool EvictionLRU<Key, Value>::VictimIterator::o
     return m_iterator != other.m_iterator;
 }
 
+template<class Key, class Value> void EvictionLRU<Key, Value>::clear()
+{
+    m_keys.clear();
+    m_nodes.clear();
+}
+
 template<class Key, class Value> void EvictionLRU<Key, Value>::on_insert(const CacheItem& item)
 {
     assert(m_nodes.find(std::ref(item.m_key)) == m_nodes.end());  // Validate the item is not already in policy.

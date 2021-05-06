@@ -84,6 +84,9 @@ public:
     /// @return Whether the key was present in cache.
     bool remove(const Key& key);
 
+    /// @brief Clears the cache contents.
+    void clear();
+
     /// @brief Retain all objects matching a predicate.
     /// @details Removes all items for which `predicate_fn` returns false.
     /// @param predicate_fn The predicate function.
@@ -156,6 +159,7 @@ private:
 
     std::atomic<size_t> m_current_size;
     std::atomic<size_t> m_maximum_size;
+    uint32_t            m_statistics_window_size;
 
     MyInsertionPolicySP m_insertion_policy;
     MyEvictionPolicySP  m_eviction_policy;

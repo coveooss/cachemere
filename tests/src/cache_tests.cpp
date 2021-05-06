@@ -250,3 +250,22 @@ TYPED_TEST(CacheTest, Swap)
     EXPECT_TRUE(cache_odd->contains(4));
     EXPECT_FALSE(cache_even->contains(2));
 }
+
+TYPED_TEST(CacheTest, Clear)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+
+    cache->find(1);
+    cache->find(2);
+
+    cache->insert(1, Point3D{1, 1, 1});
+    cache->insert(2, Point3D{2, 2, 2});
+
+    EXPECT_TRUE(cache->contains(1));
+    EXPECT_TRUE(cache->contains(2));
+
+    cache->clear();
+
+    EXPECT_FALSE(cache->contains(1));
+    EXPECT_FALSE(cache->contains(2));
+}

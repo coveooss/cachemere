@@ -9,6 +9,9 @@ namespace cachemere::policy {
 template<typename Key, typename Value> class InsertionAlways
 {
 public:
+    /// @brief Clears the policy.
+    void clear();
+
     /// @brief Determines whether a given key should be inserted into the cache.
     /// @details For this policy, `should_add` always returns true.
     /// @param key The key of the insertion candidate.

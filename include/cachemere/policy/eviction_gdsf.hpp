@@ -42,6 +42,13 @@ template<class Key, class Value, class Cost> bool EvictionGDSF<Key, Value, Cost>
     return m_iterator != other.m_iterator;
 }
 
+template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::clear()
+{
+    m_priority_set.clear();
+    m_iterator_map.clear();
+    m_frequency_sketch.clear();
+}
+
 template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::set_cardinality(uint32_t cardinality)
 {
     m_frequency_sketch = detail::CountingBloomFilter<Key>{cardinality};

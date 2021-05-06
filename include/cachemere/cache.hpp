@@ -18,6 +18,7 @@ template<typename Key,
 Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe>::Cache(size_t maximum_size, uint32_t statistics_window_size)
  : m_current_size{0},
    m_maximum_size{maximum_size},
+   m_statistics_window_size{statistics_window_size},
    m_insertion_policy(std::make_unique<InsertionPolicy<Key, Value>>()),
    m_eviction_policy(std::make_unique<EvictionPolicy<Key, Value>>()),
    m_measure_key{},
@@ -134,6 +135,21 @@ bool Cache<K, V, I, E, SV, SK, TS>::remove(const K& key)
         return true;
     }
     return false;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::clear()
+{
+    std::unique_lock<std::mutex> guard(lock());
+
+    m_current_size = 0;
+    m_data.clear();
+
+    m_hit_rate_acc      = MeanAccumulator(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size);
+    m_byte_hit_rate_acc = MeanAccumulator(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size);
+
+    m_insertion_policy->clear();
+    m_eviction_policy->clear();
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
