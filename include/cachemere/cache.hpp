@@ -178,15 +178,8 @@ void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
 
     using std::swap;
 
-    // Atomics don't implement swap, we can do it manually because we currently hold the lock.
-    size_t value         = m_current_size;
-    m_current_size       = other.m_current_size.load();
-    other.m_current_size = value;
-    value                = m_maximum_size;
-    m_maximum_size       = other.m_maximum_size.load();
-    other.m_maximum_size = value;
-
-    // Swap the rest of the members.
+    swap(m_current_size, other.m_current_size);
+    swap(m_maximum_size, other.m_maximum_size);
     swap(m_measure_key, other.m_measure_key);
     swap(m_measure_value, other.m_measure_value);
     swap(m_data, other.m_data);
@@ -203,12 +196,14 @@ inline size_t Cache<K, V, I, E, SV, SK, TS>::number_of_items() const
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::size() const
 {
+    std::unique_lock<std::mutex> me_guard(lock());
     return m_current_size;
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::maximum_size() const
 {
+    std::unique_lock<std::mutex> me_guard(lock());
     return m_maximum_size;
 }
 

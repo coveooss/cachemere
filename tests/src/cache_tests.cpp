@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <list>
+#include <atomic>
 #include <map>
 #include <random>
 #include <string>

@@ -1,7 +1,6 @@
 #ifndef CACHEMERE_CACHE_H
 #define CACHEMERE_CACHE_H
 
-#include <atomic>
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -157,9 +156,9 @@ private:
     using RollingMeanStatistics = boost::accumulators::stats<RollingMeanTag>;
     using MeanAccumulator       = boost::accumulators::accumulator_set<uint32_t, RollingMeanStatistics>;
 
-    std::atomic<size_t> m_current_size;
-    std::atomic<size_t> m_maximum_size;
-    uint32_t            m_statistics_window_size;
+    size_t   m_current_size;
+    size_t   m_maximum_size;
+    uint32_t m_statistics_window_size;
 
     MyInsertionPolicySP m_insertion_policy;
     MyEvictionPolicySP  m_eviction_policy;
