@@ -55,6 +55,9 @@ public:
         PrioritySetIt m_iterator;
     };
 
+    /// @brief Clears the policy.
+    void clear();
+
     /// @brief Set the cardinality of the policy.
     /// @details The set cardinality should be a decent approximation of the cardinality
     ///          of the set of keys that _might_ be inserted in the cache. Getting an

@@ -46,6 +46,15 @@ template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::VictimIt
     return !(*this == other);
 }
 
+template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::clear()
+{
+    m_probation_list.clear();
+    m_probation_nodes.clear();
+
+    m_protected_list.clear();
+    m_protected_nodes.clear();
+}
+
 template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::set_protected_segment_size(size_t size)
 {
     m_protected_segment_size = size;

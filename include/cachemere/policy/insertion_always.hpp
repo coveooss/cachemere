@@ -1,5 +1,9 @@
 namespace cachemere::policy {
 
+template<typename Key, typename Value> void InsertionAlways<Key, Value>::clear()
+{
+}
+
 template<typename Key, typename Value> bool InsertionAlways<Key, Value>::should_add(const Key& /* key */)
 {
     return true;

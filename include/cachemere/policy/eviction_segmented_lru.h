@@ -46,6 +46,9 @@ public:
         bool            m_done_with_probation;
     };
 
+    /// @brief Clears the policy.
+    void clear();
+
     /// @brief Set the maximum number of items in the protected LRU segment.
     /// @param size The maximum number of items in the protected segment.
     void set_protected_segment_size(size_t size);

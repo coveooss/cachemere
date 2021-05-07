@@ -1,7 +1,6 @@
 #ifndef CACHEMERE_CACHE_H
 #define CACHEMERE_CACHE_H
 
-#include <atomic>
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -44,7 +43,7 @@ class Cache
 public:
     using MyInsertionPolicy = InsertionPolicy<Key, Value>;
     using MyEvictionPolicy  = EvictionPolicy<Key, Value>;
-    using CacheType         = Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey>;
+    using CacheType         = Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe>;
 
     /// @brief Simple constructor.
     /// @param maximum_size The maximum amount memory to be used by the cache (in bytes).
@@ -83,6 +82,9 @@ public:
     /// @param key The key to remove from the cache.
     /// @return Whether the key was present in cache.
     bool remove(const Key& key);
+
+    /// @brief Clears the cache contents.
+    void clear();
 
     /// @brief Retain all objects matching a predicate.
     /// @details Removes all items for which `predicate_fn` returns false.
@@ -154,8 +156,9 @@ private:
     using RollingMeanStatistics = boost::accumulators::stats<RollingMeanTag>;
     using MeanAccumulator       = boost::accumulators::accumulator_set<uint32_t, RollingMeanStatistics>;
 
-    std::atomic<size_t> m_current_size;
-    std::atomic<size_t> m_maximum_size;
+    size_t   m_current_size;
+    size_t   m_maximum_size;
+    uint32_t m_statistics_window_size;
 
     MyInsertionPolicySP m_insertion_policy;
     MyEvictionPolicySP  m_eviction_policy;
