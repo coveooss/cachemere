@@ -89,9 +89,9 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>MyInsertionPolicy</b
 <tr class="memitem:ab4e0bdc3254977e106124a2d78096c1d"><td class="memItemLeft" align="right" valign="top"><a id="ab4e0bdc3254977e106124a2d78096c1d"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>MyEvictionPolicy</b> = EvictionPolicy&lt; Key, Value &gt;</td></tr>
 <tr class="separator:ab4e0bdc3254977e106124a2d78096c1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a19a7a3693bdabd256d70a444703d57"><td class="memItemLeft" align="right" valign="top"><a id="a6a19a7a3693bdabd256d70a444703d57"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheType</b> = <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey &gt;</td></tr>
-<tr class="separator:a6a19a7a3693bdabd256d70a444703d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3dea391443fc4866eb6fe04b08d4743"><td class="memItemLeft" align="right" valign="top"><a id="ab3dea391443fc4866eb6fe04b08d4743"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheType</b> = <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</td></tr>
+<tr class="separator:ab3dea391443fc4866eb6fe04b08d4743"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -114,6 +114,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa9f722affb48ec87cff3ba7c83f9ac7b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#aa9f722affb48ec87cff3ba7c83f9ac7b">remove</a> (const Key &amp;key)</td></tr>
 <tr class="memdesc:aa9f722affb48ec87cff3ba7c83f9ac7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a key and its value from the cache.  <a href="classcachemere_1_1Cache.html#aa9f722affb48ec87cff3ba7c83f9ac7b">More...</a><br /></td></tr>
 <tr class="separator:aa9f722affb48ec87cff3ba7c83f9ac7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adabd851c8688db0e0f0b065de0e33339"><td class="memItemLeft" align="right" valign="top"><a id="adabd851c8688db0e0f0b065de0e33339"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#adabd851c8688db0e0f0b065de0e33339">clear</a> ()</td></tr>
+<tr class="memdesc:adabd851c8688db0e0f0b065de0e33339"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the cache contents. <br /></td></tr>
+<tr class="separator:adabd851c8688db0e0f0b065de0e33339"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02d1be364fcf98e4ae7b3de88e1fed9a"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
 <tr class="memitem:a02d1be364fcf98e4ae7b3de88e1fed9a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a02d1be364fcf98e4ae7b3de88e1fed9a">retain</a> (P predicate_fn)</td></tr>
 <tr class="memdesc:a02d1be364fcf98e4ae7b3de88e1fed9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retain all objects matching a predicate.  <a href="classcachemere_1_1Cache.html#a02d1be364fcf98e4ae7b3de88e1fed9a">More...</a><br /></td></tr>
