@@ -18,6 +18,7 @@ template<typename Key,
 Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe>::Cache(size_t maximum_size, uint32_t statistics_window_size)
  : m_current_size{0},
    m_maximum_size{maximum_size},
+   m_statistics_window_size{statistics_window_size},
    m_insertion_policy(std::make_unique<InsertionPolicy<Key, Value>>()),
    m_eviction_policy(std::make_unique<EvictionPolicy<Key, Value>>()),
    m_measure_key{},
@@ -137,6 +138,21 @@ bool Cache<K, V, I, E, SV, SK, TS>::remove(const K& key)
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::clear()
+{
+    std::unique_lock<std::mutex> guard(lock());
+
+    m_current_size = 0;
+    m_data.clear();
+
+    m_hit_rate_acc      = MeanAccumulator(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size);
+    m_byte_hit_rate_acc = MeanAccumulator(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size);
+
+    m_insertion_policy->clear();
+    m_eviction_policy->clear();
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 template<class P>
 void Cache<K, V, I, E, SV, SK, TS>::retain(P predicate_fn)
 {
@@ -162,15 +178,8 @@ void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
 
     using std::swap;
 
-    // Atomics don't implement swap, we can do it manually because we currently hold the lock.
-    size_t value         = m_current_size;
-    m_current_size       = other.m_current_size.load();
-    other.m_current_size = value;
-    value                = m_maximum_size;
-    m_maximum_size       = other.m_maximum_size.load();
-    other.m_maximum_size = value;
-
-    // Swap the rest of the members.
+    swap(m_current_size, other.m_current_size);
+    swap(m_maximum_size, other.m_maximum_size);
     swap(m_measure_key, other.m_measure_key);
     swap(m_measure_value, other.m_measure_value);
     swap(m_data, other.m_data);
@@ -187,12 +196,14 @@ inline size_t Cache<K, V, I, E, SV, SK, TS>::number_of_items() const
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::size() const
 {
+    std::unique_lock<std::mutex> guard(lock());
     return m_current_size;
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::maximum_size() const
 {
+    std::unique_lock<std::mutex> guard(lock());
     return m_maximum_size;
 }
 

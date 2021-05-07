@@ -20,6 +20,9 @@ template<typename Key, typename Value> class InsertionTinyLFU
 public:
     using CacheItem = cachemere::Item<Key, Value>;
 
+    /// @brief Clears the policy.
+    void clear();
+
     /// @brief Cache hit event handler.
     /// @details Updates the internal frequency sketches for the given item.
     /// @param item The item that has been hit.
