@@ -139,7 +139,7 @@ $(function() {
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    [[nodiscard]] <span class="keywordtype">double</span> <a class="code" href="classcachemere_1_1Cache.html#ad49385469c4833bd05946fd7592bddad">byte_hit_rate</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    std::unique_lock&lt;std::mutex&gt; lock() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; lock() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keyword">using</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a> = <a class="code" href="structcachemere_1_1Item.html">Item&lt;Key, Value&gt;</a>;</div>
@@ -163,8 +163,8 @@ $(function() {
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    MeasureKey   m_measure_key;</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    MeasureValue m_measure_value;</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keyword">mutable</span> std::mutex m_mutex;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    DataMap            m_data;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keyword">mutable</span> std::recursive_mutex m_mutex;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    DataMap                      m_data;</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keyword">mutable</span> MeanAccumulator m_hit_rate_acc;</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">mutable</span> MeanAccumulator m_byte_hit_rate_acc;</div>

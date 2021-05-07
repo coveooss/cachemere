@@ -105,14 +105,14 @@ $(function() {
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#a77cf1d98dd3a82f7dcca7bfac6944940">   34</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="classcachemere_1_1Cache.html#a77cf1d98dd3a82f7dcca7bfac6944940">Cache&lt;K, V, I, E, SV, SK, TS&gt;::contains</a>(<span class="keyword">const</span> K&amp; key)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">return</span> m_data.find(key) != m_data.end();</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#a054b70f3b46e06c9efb2446aeb26adf4">   41</a></span>&#160;std::optional&lt;V&gt; <a class="code" href="classcachemere_1_1Cache.html#a054b70f3b46e06c9efb2446aeb26adf4">Cache&lt;K, V, I, E, SV, SK, TS&gt;::find</a>(<span class="keyword">const</span> K&amp; key)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">auto</span> key_and_item = m_data.find(key);</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">if</span> (key_and_item != m_data.end()) {</div>
@@ -137,7 +137,7 @@ $(function() {
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        [](<span class="keyword">auto</span>&amp; seq_container, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; item) { seq_container.emplace_back(item.m_key, item.m_value); },</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        [](<span class="keyword">auto</span>&amp; assoc_container, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; item) { assoc_container.emplace(item.m_key, item.m_value); });</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="comment">// Reserve space if the container has a reserve() method and a size method().</span></div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    hana::if_(</div>
@@ -154,7 +154,7 @@ $(function() {
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#a32f6538036e48a53fc09dba64fc5e8ad">   83</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcachemere_1_1Cache.html#a32f6538036e48a53fc09dba64fc5e8ad">Cache&lt;K, V, I, E, SV, SK, TS&gt;::insert</a>(<span class="keyword">const</span> K&amp; key, <span class="keyword">const</span> V&amp; value)</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;{</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>   key_size           = <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m_measure_key(key));</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>   value_size         = <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m_measure_value(value));</div>
@@ -199,7 +199,7 @@ $(function() {
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classcachemere_1_1Cache.html#aa9f722affb48ec87cff3ba7c83f9ac7b">Cache&lt;K, V, I, E, SV, SK, TS&gt;::remove</a>(<span class="keyword">const</span> K&amp; key)</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;{</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keyword">auto</span> key_and_item = m_data.find(key);</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordflow">if</span> (key_and_item != m_data.end()) {</div>
@@ -212,7 +212,7 @@ $(function() {
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#adabd851c8688db0e0f0b065de0e33339">  141</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#adabd851c8688db0e0f0b065de0e33339">Cache&lt;K, V, I, E, SV, SK, TS&gt;::clear</a>()</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;{</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    m_current_size = 0;</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    m_data.clear();</div>
@@ -228,7 +228,7 @@ $(function() {
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> P&gt;</div>
 <div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#a02d1be364fcf98e4ae7b3de88e1fed9a">  157</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a02d1be364fcf98e4ae7b3de88e1fed9a">Cache&lt;K, V, I, E, SV, SK, TS&gt;::retain</a>(P predicate_fn)</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;{</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = m_data.begin(); it != m_data.end();) {</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item = it-&gt;second;</div>
@@ -245,8 +245,8 @@ $(function() {
 <div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#a7c970feae46340e67211fee443c93ed8">  173</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a7c970feae46340e67211fee443c93ed8">Cache&lt;K, V, I, E, SV, SK, TS&gt;::swap</a>(<a class="code" href="classcachemere_1_1Cache.html">CacheType</a>&amp; other)</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;{</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="comment">// Acquire both cache locks.</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    std::unique_lock&lt;std::mutex&gt; me_guard(lock());</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    std::unique_lock&lt;std::mutex&gt; other_guard(other.lock());</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; me_guard(lock());</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; other_guard(other.lock());</div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="keyword">using</span> std::swap;</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
@@ -261,28 +261,28 @@ $(function() {
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#aae5d5865c872d9a5a7ba98b8a38ab7b2">  190</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="classcachemere_1_1Cache.html#aae5d5865c872d9a5a7ba98b8a38ab7b2">Cache&lt;K, V, I, E, SV, SK, TS&gt;::number_of_items</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="keywordflow">return</span> m_data.size();</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;}</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00197"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#afdfa08d81e3b165b0465a08c8eeeecc8">  197</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="classcachemere_1_1Cache.html#afdfa08d81e3b165b0465a08c8eeeecc8">Cache&lt;K, V, I, E, SV, SK, TS&gt;::size</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="keywordflow">return</span> m_current_size;</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;}</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00204"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#a1b2ffb6cdc72ed03bb22a7d9157ac96c">  204</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="classcachemere_1_1Cache.html#a1b2ffb6cdc72ed03bb22a7d9157ac96c">Cache&lt;K, V, I, E, SV, SK, TS&gt;::maximum_size</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordflow">return</span> m_maximum_size;</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;}</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
 <div class="line"><a name="l00211"></a><span class="lineno"><a class="line" href="classcachemere_1_1Cache.html#a48c8beb59d70b800d9ba545ec1b2230e">  211</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a48c8beb59d70b800d9ba545ec1b2230e">Cache&lt;K, V, I, E, SV, SK, TS&gt;::set_maximum_size</a>(<span class="keywordtype">size_t</span> max_size)</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;{</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    std::unique_lock&lt;std::mutex&gt; guard(lock());</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; guard(lock());</div>
 <div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    m_maximum_size = max_size;</div>
 <div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordflow">if</span> (m_maximum_size &lt; m_current_size) {</div>
@@ -319,13 +319,13 @@ $(function() {
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;}</div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;std::unique_lock&lt;std::mutex&gt; <a class="code" href="classcachemere_1_1Cache.html">Cache&lt;K, V, I, E, SV, SK, TS&gt;::lock</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;std::unique_lock&lt;std::recursive_mutex&gt; <a class="code" href="classcachemere_1_1Cache.html">Cache&lt;K, V, I, E, SV, SK, TS&gt;::lock</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    <span class="keywordflow">if</span> constexpr (TS) {</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        std::unique_lock&lt;std::mutex&gt; guard{m_mutex};</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        std::unique_lock&lt;std::recursive_mutex&gt; guard{m_mutex};</div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <span class="keywordflow">return</span> guard;</div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        std::unique_lock&lt;std::mutex&gt; guard;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        std::unique_lock&lt;std::recursive_mutex&gt; guard;</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">return</span> guard;</div>
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    }</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;}</div>
