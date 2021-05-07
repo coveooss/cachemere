@@ -142,7 +142,7 @@ public:
     [[nodiscard]] double byte_hit_rate() const;
 
 protected:
-    std::unique_lock<std::mutex> lock() const;
+    std::unique_lock<std::recursive_mutex> lock() const;
 
 private:
     using CacheItem = Item<Key, Value>;
@@ -166,8 +166,8 @@ private:
     MeasureKey   m_measure_key;
     MeasureValue m_measure_value;
 
-    mutable std::mutex m_mutex;
-    DataMap            m_data;
+    mutable std::recursive_mutex m_mutex;
+    DataMap                      m_data;
 
     mutable MeanAccumulator m_hit_rate_acc;
     mutable MeanAccumulator m_byte_hit_rate_acc;
