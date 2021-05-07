@@ -33,14 +33,14 @@ Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, Thr
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline bool Cache<K, V, I, E, SV, SK, TS>::contains(const K& key) const
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
     return m_data.find(key) != m_data.end();
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 std::optional<V> Cache<K, V, I, E, SV, SK, TS>::find(const K& key) const
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
 
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
@@ -65,7 +65,7 @@ void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
         [](auto& seq_container, const auto& item) { seq_container.emplace_back(item.m_key, item.m_value); },
         [](auto& assoc_container, const auto& item) { assoc_container.emplace(item.m_key, item.m_value); });
 
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
 
     // Reserve space if the container has a reserve() method and a size method().
     hana::if_(
@@ -82,7 +82,7 @@ void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 bool Cache<K, V, I, E, SV, SK, TS>::insert(const K& key, const V& value)
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
 
     const auto   key_size           = static_cast<size_t>(m_measure_key(key));
     const auto   value_size         = static_cast<size_t>(m_measure_value(value));
@@ -127,7 +127,7 @@ bool Cache<K, V, I, E, SV, SK, TS>::insert(const K& key, const V& value)
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 bool Cache<K, V, I, E, SV, SK, TS>::remove(const K& key)
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
 
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
@@ -140,7 +140,7 @@ bool Cache<K, V, I, E, SV, SK, TS>::remove(const K& key)
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 void Cache<K, V, I, E, SV, SK, TS>::clear()
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
 
     m_current_size = 0;
     m_data.clear();
@@ -156,7 +156,7 @@ template<class K, class V, template<class, class> class I, template<class, class
 template<class P>
 void Cache<K, V, I, E, SV, SK, TS>::retain(P predicate_fn)
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
 
     for (auto it = m_data.begin(); it != m_data.end();) {
         const CacheItem& item = it->second;
@@ -173,8 +173,8 @@ template<class K, class V, template<class, class> class I, template<class, class
 void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
 {
     // Acquire both cache locks.
-    std::unique_lock<std::mutex> me_guard(lock());
-    std::unique_lock<std::mutex> other_guard(other.lock());
+    std::unique_lock<std::recursive_mutex> me_guard(lock());
+    std::unique_lock<std::recursive_mutex> other_guard(other.lock());
 
     using std::swap;
 
@@ -189,28 +189,28 @@ void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::number_of_items() const
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
     return m_data.size();
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::size() const
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
     return m_current_size;
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline size_t Cache<K, V, I, E, SV, SK, TS>::maximum_size() const
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
     return m_maximum_size;
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline void Cache<K, V, I, E, SV, SK, TS>::set_maximum_size(size_t max_size)
 {
-    std::unique_lock<std::mutex> guard(lock());
+    std::unique_lock<std::recursive_mutex> guard(lock());
     m_maximum_size = max_size;
 
     if (m_maximum_size < m_current_size) {
@@ -247,13 +247,13 @@ inline double Cache<K, V, I, E, SV, SK, TS>::byte_hit_rate() const
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-std::unique_lock<std::mutex> Cache<K, V, I, E, SV, SK, TS>::lock() const
+std::unique_lock<std::recursive_mutex> Cache<K, V, I, E, SV, SK, TS>::lock() const
 {
     if constexpr (TS) {
-        std::unique_lock<std::mutex> guard{m_mutex};
+        std::unique_lock<std::recursive_mutex> guard{m_mutex};
         return guard;
     } else {
-        std::unique_lock<std::mutex> guard;
+        std::unique_lock<std::recursive_mutex> guard;
         return guard;
     }
 }
