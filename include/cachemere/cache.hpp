@@ -180,10 +180,18 @@ void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
 
     swap(m_current_size, other.m_current_size);
     swap(m_maximum_size, other.m_maximum_size);
+    swap(m_statistics_window_size, other.m_statistics_window_size);
+
+    swap(m_insertion_policy, other.m_insertion_policy);
+    swap(m_eviction_policy, other.m_eviction_policy);
+
     swap(m_measure_key, other.m_measure_key);
     swap(m_measure_value, other.m_measure_value);
+
     swap(m_data, other.m_data);
+
     swap(m_hit_rate_acc, other.m_hit_rate_acc);
+    swap(m_byte_hit_rate_acc, other.m_byte_hit_rate_acc);
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
