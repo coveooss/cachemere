@@ -38,8 +38,6 @@ using CustomCostCache = presets::CustomCostCache<uint32_t, Point3D, RandomCost, 
 template<typename CacheT> class CacheTest : public testing::Test
 {
 public:
-    using CacheType = CacheT;
-
     std::shared_ptr<CacheT> new_cache(size_t size)
     {
         return std::make_shared<CacheT>(size);
