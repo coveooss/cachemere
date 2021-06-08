@@ -38,6 +38,8 @@ using CustomCostCache = presets::CustomCostCache<uint32_t, Point3D, RandomCost, 
 template<typename CacheT> class CacheTest : public testing::Test
 {
 public:
+    using CacheType = CacheT;
+
     std::shared_ptr<CacheT> new_cache(size_t size)
     {
         return std::make_shared<CacheT>(size);
@@ -249,6 +251,11 @@ TYPED_TEST(CacheTest, Swap)
 
     EXPECT_TRUE(cache_even->contains(7));
     EXPECT_TRUE(cache_odd->contains(4));
+
+    EXPECT_TRUE(
+        cache_odd->find(4)
+            .has_value());  // Cache::find() hits the policy on cache hit. If this call doesn't throw an assert it means the policies were swapped properly.
+
     EXPECT_FALSE(cache_even->contains(2));
 }
 
