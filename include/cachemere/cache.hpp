@@ -31,6 +31,13 @@ Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, Thr
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+template<typename C>
+Cache<K, V, I, E, SV, SK, TS>::Cache(C& collection, size_t maximum_size, uint32_t statistics_window_size) : Cache(maximum_size, statistics_window_size)
+{
+    import(collection);
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 inline bool Cache<K, V, I, E, SV, SK, TS>::contains(const K& key) const
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
@@ -80,7 +87,7 @@ void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-bool Cache<K, V, I, E, SV, SK, TS>::insert(const K& key, const V& value)
+bool Cache<K, V, I, E, SV, SK, TS>::insert(K key, V value)
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
 
@@ -92,33 +99,7 @@ bool Cache<K, V, I, E, SV, SK, TS>::insert(const K& key, const V& value)
     const bool should_insert = compare_evict(key, item_size_overhead);
 
     if (should_insert) {
-        auto key_and_item = m_data.find(key);
-        if (key_and_item != m_data.end()) {
-            // Update.
-
-            if (value_size > key_and_item->second.m_value_size) {
-                // This item got bigger with the update.
-                m_current_size += value_size - key_and_item->second.m_value_size;
-            } else {
-                // This item got smaller with the update.
-                m_current_size -= key_and_item->second.m_value_size - value_size;
-            }
-
-            key_and_item->second.m_value      = value;
-            key_and_item->second.m_value_size = value_size;
-            key_and_item->second.m_total_size = item_size;
-
-            on_update(key_and_item->second);
-        } else {
-            // Insert.
-            const auto it_and_ok =
-                m_data.emplace(std::piecewise_construct, std::forward_as_tuple(key), std::forward_as_tuple(key, key_size, value, value_size));
-            assert(it_and_ok.second);
-            const CacheItem& item = it_and_ok.first->second;
-            on_insert(item);
-
-            m_current_size += item_size_overhead;
-        }
+        insert_or_update(std::move(key), std::move(value), key_size, value_size);
     }
 
     return should_insert;
@@ -267,6 +248,26 @@ std::unique_lock<std::recursive_mutex> Cache<K, V, I, E, SV, SK, TS>::lock() con
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+template<class C>
+void Cache<K, V, I, E, SV, SK, TS>::import(C& collection)
+{
+    std::unique_lock<std::recursive_mutex> guard(lock());
+
+    for (auto& [key, value] : collection) {
+        const auto   key_size           = static_cast<size_t>(m_measure_key(key));
+        const auto   value_size         = static_cast<size_t>(m_measure_value(value));
+        const size_t item_size          = key_size + value_size;
+        const size_t item_size_overhead = item_size + key_size;
+
+        if (m_current_size + item_size_overhead > m_maximum_size) {
+            return;
+        }
+
+        insert_or_update(std::move(key), std::move(value), key_size, value_size);
+    }
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
 bool Cache<K, V, I, E, SV, SK, TS>::compare_evict(const K& candidate_key, size_t candidate_size)
 {
     if (m_current_size + candidate_size <= m_maximum_size) {
@@ -338,6 +339,41 @@ bool Cache<K, V, I, E, SV, SK, TS>::compare_evict(const K& candidate_key, size_t
         }
 
         return true;
+    }
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+void Cache<K, V, I, E, SV, SK, TS>::insert_or_update(K&& key, V&& value, size_t key_size, size_t value_size)
+{
+    auto key_and_item = m_data.find(key);
+    if (key_and_item != m_data.end()) {
+        // Update.
+
+        if (value_size > key_and_item->second.m_value_size) {
+            // This item got bigger with the update.
+            m_current_size += value_size - key_and_item->second.m_value_size;
+        } else {
+            // This item got smaller with the update.
+            m_current_size -= key_and_item->second.m_value_size - value_size;
+        }
+
+        key_and_item->second.m_value      = std::move(value);
+        key_and_item->second.m_value_size = value_size;
+        key_and_item->second.m_total_size = key_size + value_size;
+
+        on_update(key_and_item->second);
+    } else {
+        // Insert.
+        K key_copy = key;  // Copy the key manually here so we do only a single copy.
+
+        const auto it_and_ok = m_data.emplace(std::piecewise_construct,
+                                              std::forward_as_tuple(std::move(key_copy)),
+                                              std::forward_as_tuple(std::move(key), key_size, std::move(value), value_size));
+        assert(it_and_ok.second);
+        const CacheItem& item = it_and_ok.first->second;
+        on_insert(item);
+
+        m_current_size += key_size + key_size + value_size;
     }
 }
 

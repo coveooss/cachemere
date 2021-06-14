@@ -3,6 +3,7 @@
 #include <list>
 #include <atomic>
 #include <map>
+#include <memory>
 #include <random>
 #include <string>
 #include <thread>
@@ -13,6 +14,10 @@
 #include "cachemere/presets.h"
 
 struct Point3D {
+    Point3D(uint32_t a, uint32_t b, uint32_t c) : x(a), y(b), z(c)
+    {
+    }
+
     uint32_t x;
     uint32_t y;
     uint32_t z;
@@ -41,6 +46,11 @@ public:
     std::shared_ptr<CacheT> new_cache(size_t size)
     {
         return std::make_shared<CacheT>(size);
+    }
+
+    std::shared_ptr<CacheT> new_cache(std::vector<std::pair<uint32_t, Point3D>> collection, size_t size)
+    {
+        return std::make_shared<CacheT>(collection, size);
     }
 };
 
@@ -189,14 +199,13 @@ TYPED_TEST(CacheTest, Retain)
 
 TYPED_TEST(CacheTest, Collect)
 {
-    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
-
-    const uint32_t number_of_items = 5;
-
+    const uint32_t                            number_of_items = 5;
+    std::vector<std::pair<uint32_t, Point3D>> cache_items;
     for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
-        cache->find(point_id);
-        cache->insert(point_id, Point3D{point_id, point_id, point_id});
+        cache_items.emplace_back(point_id, Point3D{point_id, point_id, point_id});
     }
+
+    auto cache = TestFixture::new_cache(cache_items, 10 * sizeof(Point3D));
 
     // Test with various STL collection types.
     std::vector<std::pair<uint32_t, Point3D>> item_vec;
@@ -259,13 +268,7 @@ TYPED_TEST(CacheTest, Swap)
 
 TYPED_TEST(CacheTest, Clear)
 {
-    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
-
-    cache->find(1);
-    cache->find(2);
-
-    cache->insert(1, Point3D{1, 1, 1});
-    cache->insert(2, Point3D{2, 2, 2});
+    auto cache = TestFixture::new_cache({{1, Point3D{1, 1, 1}}, {2, Point3D{2, 2, 2}}}, 10 * sizeof(Point3D));
 
     EXPECT_TRUE(cache->contains(1));
     EXPECT_TRUE(cache->contains(2));
@@ -274,4 +277,39 @@ TYPED_TEST(CacheTest, Clear)
 
     EXPECT_FALSE(cache->contains(1));
     EXPECT_FALSE(cache->contains(2));
+}
+
+TYPED_TEST(CacheTest, ImportConstructionNotEnoughSpace)
+{
+    auto cache = TestFixture::new_cache({{1, Point3D{1, 1, 1}}, {2, Point3D{2, 2, 2}}, {3, Point3D{3, 3, 3}}},
+                                        4 * sizeof(Point3D));  // Only 2 items fit because of overhead.
+
+    EXPECT_TRUE(cache->contains(1));
+    EXPECT_TRUE(cache->contains(2));
+    EXPECT_FALSE(cache->contains(3));
+}
+
+TEST(CacheTest, NoValueCopyOnInsert)
+{
+    using PtrCache =
+        presets::LRUCache<std::string, std::unique_ptr<Point3D>, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
+
+    PtrCache cache{10 * sizeof(Point3D)};
+
+    auto item = std::make_unique<Point3D>(1, 1, 1);
+    EXPECT_TRUE(cache.insert("asdf", std::move(item)));
+}
+
+TEST(CacheTest, NoValueCopyOnImportConstruction)
+{
+    using PtrCache =
+        presets::LRUCache<std::string, std::unique_ptr<Point3D>, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
+
+    std::vector<std::pair<std::string, std::unique_ptr<Point3D>>> items;
+    items.emplace_back("a", std::make_unique<Point3D>(1, 1, 1));
+    items.emplace_back("b", std::make_unique<Point3D>(2, 2, 2));
+
+    PtrCache cache{items, 10 * sizeof(Point3D)};
+
+    EXPECT_TRUE(cache.contains("a"));
 }
