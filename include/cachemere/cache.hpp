@@ -348,14 +348,7 @@ void Cache<K, V, I, E, SV, SK, TS>::insert_or_update(K&& key, V&& value, size_t 
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
         // Update.
-
-        if (value_size > key_and_item->second.m_value_size) {
-            // This item got bigger with the update.
-            m_current_size += value_size - key_and_item->second.m_value_size;
-        } else {
-            // This item got smaller with the update.
-            m_current_size -= key_and_item->second.m_value_size - value_size;
-        }
+        m_current_size = m_current_size + key_and_item->second.m_value_size - value_size;
 
         key_and_item->second.m_value      = std::move(value);
         key_and_item->second.m_value_size = value_size;
