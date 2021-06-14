@@ -46,9 +46,16 @@ public:
     using CacheType         = Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe>;
 
     /// @brief Simple constructor.
-    /// @param maximum_size The maximum amount memory to be used by the cache (in bytes).
+    /// @param maximum_size The maximum amount of memory to be used by the cache (in bytes).
     /// @param statistics_window_size The length of the cache history to be kept for statistics.
     Cache(size_t maximum_size, uint32_t statistics_window_size = 1000);
+
+    /// @brief Constructor to initialize the cache with a set of items.
+    /// @details Will insert items in order in the cache until `maximum_size` is reached.
+    /// @param collection The collection to use to initialize the cache - must be either a map or a collection of pairs.
+    /// @param maximum_size The maximum amount of memory to be used by the cache (in bytes).
+    /// @param statistics_window_size The length of the cache history to be kept for statistics.
+    template<typename C> Cache(C& collection, size_t maximum_size, uint32_t statistics_window_size = 1000);
 
     /// @brief Check whether a given key is stored in the cache.
     /// @param key The key whose presence to test.
@@ -75,7 +82,7 @@ public:
     /// @param key The key to associate with the value.
     /// @param value The value to store.
     /// @return Whether the item was inserted in cache.
-    bool insert(const Key& key, const Value& value);
+    bool insert(Key key, Value value);
 
     /// @brief Remove a key and its value from the cache.
     /// @details If the key is not present in cache, no operation is taken.
@@ -143,6 +150,7 @@ public:
 
 protected:
     std::unique_lock<std::recursive_mutex> lock() const;
+    template<typename C> void              import(C& collection);
 
 private:
     using CacheItem = Item<Key, Value>;
@@ -173,6 +181,7 @@ private:
     mutable MeanAccumulator m_byte_hit_rate_acc;
 
     bool   compare_evict(const Key& candidate_key, size_t candidate_size);
+    void   insert_or_update(Key&& key, Value&& value, size_t key_size, size_t value_size);
     size_t free_amount(size_t amount_to_free);
     void   remove(DataMapIt it);
 
