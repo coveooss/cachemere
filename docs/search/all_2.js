@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['cache_4',['Cache',['../classcachemere_1_1Cache.html',1,'cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;'],['../classcachemere_1_1Cache.html#ab1006bf2c7d7dc2e4ff711568d47b54a',1,'cachemere::Cache::Cache()']]],
+  ['cache_4',['Cache',['../classcachemere_1_1Cache.html',1,'cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;'],['../classcachemere_1_1Cache.html#ab1006bf2c7d7dc2e4ff711568d47b54a',1,'cachemere::Cache::Cache(size_t maximum_size, uint32_t statistics_window_size=1000)'],['../classcachemere_1_1Cache.html#a4667085471b18a51ce4db9729af31a2a',1,'cachemere::Cache::Cache(C &amp;collection, size_t maximum_size, uint32_t statistics_window_size=1000)']]],
   ['cachemere_5',['cachemere',['../namespacecachemere.html',1,'']]],
   ['capacitydynamicallyallocated_6',['CapacityDynamicallyAllocated',['../structcachemere_1_1measurement_1_1CapacityDynamicallyAllocated.html',1,'cachemere::measurement']]],
   ['cardinality_7',['cardinality',['../classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a310c3a6073af77a01a7630fb548f80a5',1,'cachemere::policy::detail::CountingBloomFilter']]],

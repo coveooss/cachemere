@@ -98,6 +98,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab1006bf2c7d7dc2e4ff711568d47b54a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ab1006bf2c7d7dc2e4ff711568d47b54a">Cache</a> (size_t <a class="el" href="classcachemere_1_1Cache.html#a1b2ffb6cdc72ed03bb22a7d9157ac96c">maximum_size</a>, uint32_t statistics_window_size=1000)</td></tr>
 <tr class="memdesc:ab1006bf2c7d7dc2e4ff711568d47b54a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple constructor.  <a href="classcachemere_1_1Cache.html#ab1006bf2c7d7dc2e4ff711568d47b54a">More...</a><br /></td></tr>
 <tr class="separator:ab1006bf2c7d7dc2e4ff711568d47b54a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4667085471b18a51ce4db9729af31a2a"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a4667085471b18a51ce4db9729af31a2a"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a4667085471b18a51ce4db9729af31a2a">Cache</a> (C &amp;collection, size_t <a class="el" href="classcachemere_1_1Cache.html#a1b2ffb6cdc72ed03bb22a7d9157ac96c">maximum_size</a>, uint32_t statistics_window_size=1000)</td></tr>
+<tr class="memdesc:a4667085471b18a51ce4db9729af31a2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor to initialize the cache with a set of items.  <a href="classcachemere_1_1Cache.html#a4667085471b18a51ce4db9729af31a2a">More...</a><br /></td></tr>
+<tr class="separator:a4667085471b18a51ce4db9729af31a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77cf1d98dd3a82f7dcca7bfac6944940"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a77cf1d98dd3a82f7dcca7bfac6944940">contains</a> (const Key &amp;key) const</td></tr>
 <tr class="memdesc:a77cf1d98dd3a82f7dcca7bfac6944940"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a given key is stored in the cache.  <a href="classcachemere_1_1Cache.html#a77cf1d98dd3a82f7dcca7bfac6944940">More...</a><br /></td></tr>
 <tr class="separator:a77cf1d98dd3a82f7dcca7bfac6944940"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,9 +112,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5463c76d8627f6c4920a1b09a7a277aa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a5463c76d8627f6c4920a1b09a7a277aa">collect_into</a> (C &amp;container) const</td></tr>
 <tr class="memdesc:a5463c76d8627f6c4920a1b09a7a277aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the cache contents in the provided container.  <a href="classcachemere_1_1Cache.html#a5463c76d8627f6c4920a1b09a7a277aa">More...</a><br /></td></tr>
 <tr class="separator:a5463c76d8627f6c4920a1b09a7a277aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32f6538036e48a53fc09dba64fc5e8ad"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a32f6538036e48a53fc09dba64fc5e8ad">insert</a> (const Key &amp;key, const Value &amp;value)</td></tr>
-<tr class="memdesc:a32f6538036e48a53fc09dba64fc5e8ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a key/value pair in the cache.  <a href="classcachemere_1_1Cache.html#a32f6538036e48a53fc09dba64fc5e8ad">More...</a><br /></td></tr>
-<tr class="separator:a32f6538036e48a53fc09dba64fc5e8ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaaca1cab732c06269de5e6f506f8f502"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#aaaca1cab732c06269de5e6f506f8f502">insert</a> (Key key, Value value)</td></tr>
+<tr class="memdesc:aaaca1cab732c06269de5e6f506f8f502"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a key/value pair in the cache.  <a href="classcachemere_1_1Cache.html#aaaca1cab732c06269de5e6f506f8f502">More...</a><br /></td></tr>
+<tr class="separator:aaaca1cab732c06269de5e6f506f8f502"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9f722affb48ec87cff3ba7c83f9ac7b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#aa9f722affb48ec87cff3ba7c83f9ac7b">remove</a> (const Key &amp;key)</td></tr>
 <tr class="memdesc:aa9f722affb48ec87cff3ba7c83f9ac7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a key and its value from the cache.  <a href="classcachemere_1_1Cache.html#aa9f722affb48ec87cff3ba7c83f9ac7b">More...</a><br /></td></tr>
 <tr class="separator:aa9f722affb48ec87cff3ba7c83f9ac7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -157,6 +161,10 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ab9d4e830a1675b5090dab8d6a23025cd"><td class="memItemLeft" align="right" valign="top"><a id="ab9d4e830a1675b5090dab8d6a23025cd"></a>
 std::unique_lock&lt; std::recursive_mutex &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> () const</td></tr>
 <tr class="separator:ab9d4e830a1675b5090dab8d6a23025cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc34769efdb3570419e095b6873b6b1a"><td class="memTemplParams" colspan="2"><a id="afc34769efdb3570419e095b6873b6b1a"></a>
+template&lt;typename C &gt; </td></tr>
+<tr class="memitem:afc34769efdb3570419e095b6873b6b1a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>import</b> (C &amp;collection)</td></tr>
+<tr class="separator:afc34769efdb3570419e095b6873b6b1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename Key, typename Value, template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, typename MeasureValue = measurement::Size&lt;Value&gt;, typename MeasureKey = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt;<br />
@@ -178,7 +186,7 @@ class cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureV
 </dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab1006bf2c7d7dc2e4ff711568d47b54a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1006bf2c7d7dc2e4ff711568d47b54a">&#9670;&nbsp;</a></span>Cache()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1006bf2c7d7dc2e4ff711568d47b54a">&#9670;&nbsp;</a></span>Cache() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -208,7 +216,55 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 <p>Simple constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">maximum_size</td><td>The maximum amount memory to be used by the cache (in bytes). </td></tr>
+    <tr><td class="paramname">maximum_size</td><td>The maximum amount of memory to be used by the cache (in bytes). </td></tr>
+    <tr><td class="paramname">statistics_window_size</td><td>The length of the cache history to be kept for statistics. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4667085471b18a51ce4db9729af31a2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4667085471b18a51ce4db9729af31a2a">&#9670;&nbsp;</a></span>Cache() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, class SV , class SK , bool TS&gt; </div>
+<div class="memtemplate">
+template&lt;typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, SV, SK, TS &gt;::<a class="el" href="classcachemere_1_1Cache.html">Cache</a> </td>
+          <td>(</td>
+          <td class="paramtype">C &amp;&#160;</td>
+          <td class="paramname"><em>collection</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>maximum_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>statistics_window_size</em> = <code>1000</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor to initialize the cache with a set of items. </p>
+<p>Will insert items in order in the cache until <code>maximum_size</code> is reached. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">collection</td><td>The collection to use to initialize the cache - must be either a map or a collection of pairs. </td></tr>
+    <tr><td class="paramname">maximum_size</td><td>The maximum amount of memory to be used by the cache (in bytes). </td></tr>
     <tr><td class="paramname">statistics_window_size</td><td>The length of the cache history to be kept for statistics. </td></tr>
   </table>
   </dd>
@@ -367,8 +423,8 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 
 </div>
 </div>
-<a id="a32f6538036e48a53fc09dba64fc5e8ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a32f6538036e48a53fc09dba64fc5e8ad">&#9670;&nbsp;</a></span>insert()</h2>
+<a id="aaaca1cab732c06269de5e6f506f8f502"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaaca1cab732c06269de5e6f506f8f502">&#9670;&nbsp;</a></span>insert()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -378,13 +434,13 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
         <tr>
           <td class="memname">bool <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, SV, SK, TS &gt;::insert </td>
           <td>(</td>
-          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramtype">Key&#160;</td>
           <td class="paramname"><em>key</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Value &amp;&#160;</td>
+          <td class="paramtype">Value&#160;</td>
           <td class="paramname"><em>value</em>&#160;</td>
         </tr>
         <tr>
