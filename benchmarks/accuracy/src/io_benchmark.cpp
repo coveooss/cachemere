@@ -162,7 +162,7 @@ TEST_P(CacheSizeFixture, IO_TINYLFU)
 TEST_P(CacheSizeFixture, IO_GDSF_CONSTANT_COST)
 {
     struct ConstantCost {
-        double operator()(const cachemere::Item<std::string, std::shared_ptr<Article>>& /* item */)
+        double operator()(const std::string& /* key */, const cachemere::Item<std::shared_ptr<Article>>& /* item */)
         {
             return 1;
         }
@@ -184,7 +184,7 @@ TEST_P(CacheSizeFixture, IO_GDSF_CONSTANT_COST)
 TEST_P(CacheSizeFixture, IO_GDSF_LATENCY_COST)
 {
     struct QuadraticCost {
-        double operator()(const cachemere::Item<std::string, std::shared_ptr<Article>>& item)
+        double operator()(const std::string& /* key */, const cachemere::Item<std::shared_ptr<Article>>& item)
         {
             return static_cast<double>(item.m_value->m_latency_ms);
         }

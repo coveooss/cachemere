@@ -51,7 +51,7 @@ std::optional<V> Cache<K, V, I, E, SV, SK, TS>::find(const K& key) const
 
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
-        on_cache_hit(key_and_item->second);
+        on_cache_hit(key_and_item->first, key_and_item->second);
         return key_and_item->second.m_value;
     }
 
@@ -69,8 +69,8 @@ void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
     // Use emplace_back if container is a sequence container, or emplace if container is an associative container.
     constexpr auto emplace_fn = hana::if_(
         traits::stl::has_emplace_back<C, K, V>,
-        [](auto& seq_container, const auto& item) { seq_container.emplace_back(item.m_key, item.m_value); },
-        [](auto& assoc_container, const auto& item) { assoc_container.emplace(item.m_key, item.m_value); });
+        [](auto& seq_container, const auto& key, const auto& item) { seq_container.emplace_back(key, item.m_value); },
+        [](auto& assoc_container, const auto& key, const auto& item) { assoc_container.emplace(key, item.m_value); });
 
     std::unique_lock<std::recursive_mutex> guard(lock());
 
@@ -81,8 +81,8 @@ void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
         [](auto&) {})(container);
 
     // Copy the cache contents to the container.
-    for (const auto& [_, cached_item] : m_data) {
-        emplace_fn(container, cached_item);
+    for (const auto& [key, cached_item] : m_data) {
+        emplace_fn(container, key, cached_item);
     }
 }
 
@@ -142,7 +142,7 @@ void Cache<K, V, I, E, SV, SK, TS>::retain(P predicate_fn)
     for (auto it = m_data.begin(); it != m_data.end();) {
         const CacheItem& item = it->second;
 
-        if (!predicate_fn(item.m_key, item.m_value)) {
+        if (!predicate_fn(it->first, item.m_value)) {
             remove(it++);
         } else {
             ++it;
@@ -354,17 +354,14 @@ void Cache<K, V, I, E, SV, SK, TS>::insert_or_update(K&& key, V&& value, size_t 
         key_and_item->second.m_value_size = value_size;
         key_and_item->second.m_total_size = key_size + value_size;
 
-        on_update(key_and_item->second);
+        on_update(key_and_item->first, key_and_item->second);
     } else {
         // Insert.
-        K key_copy = key;  // Copy the key manually here so we do only a single copy.
-
-        const auto it_and_ok = m_data.emplace(std::piecewise_construct,
-                                              std::forward_as_tuple(std::move(key_copy)),
-                                              std::forward_as_tuple(std::move(key), key_size, std::move(value), value_size));
+        const auto it_and_ok =
+            m_data.emplace(std::piecewise_construct, std::forward_as_tuple(std::move(key)), std::forward_as_tuple(key_size, std::move(value), value_size));
         assert(it_and_ok.second);
-        const CacheItem& item = it_and_ok.first->second;
-        on_insert(item);
+
+        on_insert(it_and_ok.first->first, it_and_ok.first->second);
 
         m_current_size += key_size + key_size + value_size;
     }
@@ -401,42 +398,42 @@ void Cache<K, V, I, E, SV, SK, TS>::remove(DataMapIt it)
     const auto total_size_and_overhead = it->second.m_key_size + it->second.m_total_size;
     m_current_size -= total_size_and_overhead;
 
-    on_evict(it->second.m_key);
+    on_evict(it->first);
     m_data.erase(it);
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::on_insert(const CacheItem& item) const
+void Cache<K, V, I, E, SV, SK, TS>::on_insert(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
         detail::traits::event::has_on_insert<K, V, I>,
-        [&](auto& x) { return x.on_insert(item); },
+        [&](auto& x) { return x.on_insert(key, item); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
         detail::traits::event::has_on_insert<K, V, E>,
-        [&](auto& x) { return x.on_insert(item); },
+        [&](auto& x) { return x.on_insert(key, item); },
         [](auto&) {})(*m_eviction_policy);
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::on_update(const CacheItem& item) const
+void Cache<K, V, I, E, SV, SK, TS>::on_update(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
         detail::traits::event::has_on_update<K, V, I>,
-        [&](auto& x) { return x.on_update(item); },
+        [&](auto& x) { return x.on_update(key, item); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
         detail::traits::event::has_on_update<K, V, E>,
-        [&](auto& x) { return x.on_update(item); },
+        [&](auto& x) { return x.on_update(key, item); },
         [](auto&) {})(*m_eviction_policy);
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::on_cache_hit(const CacheItem& item) const
+void Cache<K, V, I, E, SV, SK, TS>::on_cache_hit(const K& key, const CacheItem& item) const
 {
     // Update the cache hit rate accumulators.
     m_hit_rate_acc(1);
@@ -445,12 +442,12 @@ void Cache<K, V, I, E, SV, SK, TS>::on_cache_hit(const CacheItem& item) const
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
         detail::traits::event::has_on_cachehit<K, V, I>,
-        [&](auto& x) { return x.on_cache_hit(item); },
+        [&](auto& x) { return x.on_cache_hit(key, item); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
         detail::traits::event::has_on_cachehit<K, V, E>,
-        [&](auto& x) { return x.on_cache_hit(item); },
+        [&](auto& x) { return x.on_cache_hit(key, item); },
         [](auto&) {})(*m_eviction_policy);
 }
 

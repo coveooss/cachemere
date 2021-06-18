@@ -7,15 +7,15 @@ This page is meant to guide you through the implementation of custom policies.
 Both types of policies _must_ be [default-constructible](http://www.cplusplus.com/reference/type_traits/is_default_constructible/), because the cache is responsible for instanciating them.
 ### Event Handlers
 The policies _may_ define the following event handlers to be notified of changes in the cache. These handlers do not all need to be implemented; a policy only needs to define the handlers that are relevant to its implementation. The cache will detect available handlers on its policies at compile-time, and will only call those that are defined.
-* `void on_insert(cachemere::detail::Item<K, V>& item)`
+* `void on_insert(K& key, cachemere::detail::Item<V>& item)`
 
     Called immediately after a successful insertion in cache.
 
-* `void on_update(cachemere::detail::Item<K, V>& item)`
+* `void on_update(K& key, cachemere::detail::Item<V>& item)`
 
     Called immediately after an insertion of an item that was already in cache (which has the effect of updating its value).
 
-* `void on_cache_hit(cachemere::detail::Item<K, V>& item)`
+* `void on_cache_hit(K& key, cachemere::detail::Item<V>& item)`
 
     Called immediately after a cache hit (a successful call to `cachemere::Cache::find`).
 

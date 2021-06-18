@@ -60,25 +60,25 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::set_prot
     m_protected_segment_size = size;
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_insert(const CacheItem& item)
+template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_insert(const Key& key, const CacheItem& /* item */)
 {
-    assert(m_probation_nodes.find(item.m_key) == m_probation_nodes.end());
+    assert(m_probation_nodes.find(key) == m_probation_nodes.end());
 
-    m_probation_list.emplace_front(std::ref(item.m_key));
-    m_probation_nodes.emplace(std::ref(item.m_key), m_probation_list.begin());
+    m_probation_list.emplace_front(std::ref(key));
+    m_probation_nodes.emplace(std::ref(key), m_probation_list.begin());
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_update(const CacheItem& item)
+template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_update(const Key& key, const CacheItem& item)
 {
-    on_cache_hit(item);
+    on_cache_hit(key, item);
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache_hit(const CacheItem& item)
+template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
 {
     assert(m_probation_nodes.size() == m_probation_list.size());
     assert(m_protected_nodes.size() == m_protected_list.size());
 
-    auto protected_node_it = m_protected_nodes.find(item.m_key);
+    auto protected_node_it = m_protected_nodes.find(key);
     if (protected_node_it != m_protected_nodes.end()) {
         if (protected_node_it->second != m_protected_list.begin()) {
             // If the node is in the protected segment, move it to the front of the protected segment.
@@ -86,7 +86,7 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache
         }
     } else {
         // If the node is in probation, move it to the protected segment.
-        [[maybe_unused]] const bool promotion_ok = move_to_protected(item.m_key);
+        [[maybe_unused]] const bool promotion_ok = move_to_protected(key);
         assert(promotion_ok);
     }
 

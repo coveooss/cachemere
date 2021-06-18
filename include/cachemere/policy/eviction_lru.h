@@ -24,7 +24,7 @@ private:
     using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<const Key>>;
 
 public:
-    using CacheItem = cachemere::Item<Key, Value>;
+    using CacheItem = cachemere::Item<Value>;
 
     /// @brief Iterator for iterating over cache items in the order they should be
     ///        evicted.
@@ -50,18 +50,21 @@ public:
 
     /// @brief Insertion event handler.
     /// @details Inserts the provided item at the front of the list.
+    /// @param key The key of the inserted item.
     /// @param item The item that has been inserted in cache.
-    void on_insert(const CacheItem& item);
+    void on_insert(const Key& key, const CacheItem& item);
 
     /// @brief Update event handler.
     /// @details Moves the provided item to the front of the list.
+    /// @param key The key that has been updated in the cache.
     /// @param item The item that has been updated in the cache.
-    void on_update(const CacheItem& item);
+    void on_update(const Key& key, const CacheItem& item);
 
     /// @brief Cache hit event handler.
     /// @details Moves the provided item at the front of the list.
+    /// @param key The key that has been hit.
     /// @param item The item that has been hit.
-    void on_cache_hit(const CacheItem& item);
+    void on_cache_hit(const Key& key, const CacheItem& item);
 
     /// @brief Eviction event handler.
     /// @details Removes the item at the back of the list - ensuring it has the provided key.

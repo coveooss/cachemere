@@ -153,7 +153,7 @@ protected:
     template<typename C> void              import(C& collection);
 
 private:
-    using CacheItem = Item<Key, Value>;
+    using CacheItem = Item<Value>;
     using DataMap   = std::map<Key, CacheItem>;
     using DataMapIt = typename DataMap::iterator;
 
@@ -185,9 +185,9 @@ private:
     size_t free_amount(size_t amount_to_free);
     void   remove(DataMapIt it);
 
-    void on_insert(const CacheItem& item) const;
-    void on_update(const CacheItem& item) const;
-    void on_cache_hit(const CacheItem& item) const;
+    void on_insert(const Key& key, const CacheItem& item) const;
+    void on_update(const Key& key, const CacheItem& item) const;
+    void on_cache_hit(const Key& key, const CacheItem& item) const;
     void on_cache_miss(const Key& key) const;
     void on_evict(const Key& key) const;
 };

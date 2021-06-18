@@ -29,7 +29,7 @@ using LRUCache     = presets::LRUCache<uint32_t, Point3D, measurement::SizeOf<Po
 using TinyLFUCache = presets::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 
 struct RandomCost {
-    double operator()(const Item<uint32_t, Point3D>& /* item */)
+    double operator()(const uint32_t& /* key */, const Item<Point3D>& /* item */)
     {
         const int min = 0;
         const int max = 100;
@@ -55,6 +55,24 @@ public:
 };
 
 using TestTypes = testing::Types<LRUCache, TinyLFUCache, CustomCostCache>;
+
+class NonCopyString : public std::string
+{
+private:
+    NonCopyString()
+    {
+    }
+
+public:
+    NonCopyString(std::string a) : std::string(a)
+    {
+    }
+
+    NonCopyString(NonCopyString&& a) = default;
+
+    NonCopyString(const NonCopyString&) = delete;
+    NonCopyString& operator=(const NonCopyString&) = delete;
+};
 
 TYPED_TEST_SUITE(CacheTest, TestTypes);
 
@@ -312,4 +330,29 @@ TEST(CacheTest, NoValueCopyOnImportConstruction)
     PtrCache cache{items, 10 * sizeof(Point3D)};
 
     EXPECT_TRUE(cache.contains("a"));
+}
+
+TEST(CacheTest, NoKeyCopyOnInsert)
+{
+    NonCopyString test_key("asdf");
+
+    using TestCache = presets::LRUCache<NonCopyString, Point3D, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
+
+    TestCache cache{10 * sizeof(Point3D)};
+
+    EXPECT_TRUE(cache.insert(std::move(test_key), Point3D{1, 1, 1}));
+}
+
+TEST(CacheTest, NoKeyCopyOnImportConstruction)
+{
+    using TestCache = presets::LRUCache<NonCopyString, Point3D, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
+
+    std::vector<std::pair<NonCopyString, Point3D>> items;
+    items.emplace_back(NonCopyString("a"), Point3D(1, 1, 1));
+    items.emplace_back(NonCopyString("b"), Point3D(1, 1, 1));
+    items.emplace_back(NonCopyString("c"), Point3D(1, 1, 1));
+
+    TestCache cache{items, 10 * sizeof(Point3D)};
+
+    EXPECT_TRUE(cache.contains(NonCopyString("a")));
 }
