@@ -62,9 +62,10 @@ template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>
     m_iterator_map[std::ref(key)] = std::move(it);
 }
 
-template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_update(const Key& key, const CacheItem& item)
+template<class Key, class Value, class Cost>
+void EvictionGDSF<Key, Value, Cost>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
 {
-    on_cache_hit(key, item);
+    on_cache_hit(key, new_item);
 }
 
 template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_cache_hit(const Key& key, const CacheItem& item)
@@ -79,7 +80,7 @@ template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>
     on_insert(key, item);
 }
 
-template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_evict(const Key& key)
+template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_evict(const Key& key, const CacheItem& /* item */)
 {
     auto keyref_and_it = m_iterator_map.find(std::ref(key));
     assert(keyref_and_it != m_iterator_map.end());

@@ -34,6 +34,7 @@ using BenchCache = Cache<std::string,
                          std::string,
                          I,
                          E,
+                         policy::ConstraintMemory,
                          measurement::CapacityDynamicallyAllocated<std::string>,
                          measurement::CapacityDynamicallyAllocated<std::string>,
                          ThreadSafe>;

@@ -57,8 +57,9 @@ public:
     /// @brief Update event handler.
     /// @details Moves the provided item to the front of the list.
     /// @param key The key that has been updated in the cache.
-    /// @param item The item that has been updated in the cache.
-    void on_update(const Key& key, const CacheItem& item);
+    /// @param old_item The old value for this key.
+    /// @param new_item The new value for this key
+    void on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
 
     /// @brief Cache hit event handler.
     /// @details Moves the provided item at the front of the list.
@@ -68,8 +69,9 @@ public:
 
     /// @brief Eviction event handler.
     /// @details Removes the item at the back of the list - ensuring it has the provided key.
-    /// @param item The key of the item that was evicted.
-    void on_evict(const Key& item);
+    /// @param key The key that was evicted.
+    /// @param item The item that was evicted.
+    void on_evict(const Key& key, const CacheItem& item);
 
     /// @brief Get an iterator to the first item that should be evicted.
     /// @details Considering that the keys are ordered internally from most-recently used

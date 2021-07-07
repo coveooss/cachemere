@@ -14,8 +14,10 @@ template<typename Value> struct Item {
        m_total_size{key_size + value_size}
     {
     }
-    Item(const Item& p_Other) = delete;
+    Item(Item&& other)      = default;
+    Item(const Item& other) = delete;
     Item& operator=(const Item&) = delete;
+    Item& operator=(Item&&) = default;
 
     size_t m_key_size;  //!< The size of the key.
 

@@ -55,7 +55,7 @@ TEST(EvictionGDSF, MaximizesCostPerByteWithConstantCost)
 
     for (size_t i = 0; i < 10; ++i) {
         auto key_and_item = item_store.find(long_key);
-        policy.on_update(key_and_item->first, key_and_item->second);
+        policy.on_cache_hit(key_and_item->first, key_and_item->second);
     }
 
     // GDSF does take frequency into account, so touching "this is supposed to be a much longer string" a few times gives it priority again.
@@ -64,7 +64,7 @@ TEST(EvictionGDSF, MaximizesCostPerByteWithConstantCost)
     // But since cost/byte is favored, we can load "a" fewer times and get it to stay in cache
     for (size_t i = 0; i < 4; ++i) {
         auto key_and_item = item_store.find(short_key);
-        policy.on_update(key_and_item->first, key_and_item->second);
+        policy.on_cache_hit(key_and_item->first, key_and_item->second);
     }
 
     EXPECT_EQ(*policy.victim_begin(), long_key);
@@ -91,12 +91,12 @@ TEST(EvictionGDSF, MaximizeCostPerByteWithQuadraticCost)
     // We can demonstrate this by accessing the short key more than the long key. The bigger item will still be favored.
     for (size_t i = 0; i < 10; ++i) {
         auto key_and_item = item_store.find(short_key);
-        policy.on_update(key_and_item->first, key_and_item->second);
+        policy.on_cache_hit(key_and_item->first, key_and_item->second);
     }
 
     for (size_t i = 0; i < 4; ++i) {
         auto key_and_item = item_store.find(long_key);
-        policy.on_update(key_and_item->first, key_and_item->second);
+        policy.on_cache_hit(key_and_item->first, key_and_item->second);
     }
     EXPECT_EQ(*policy.victim_begin(), short_key);
 }

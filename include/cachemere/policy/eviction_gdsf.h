@@ -36,7 +36,7 @@ private:
     using PrioritySetIt = typename PrioritySet::const_iterator;
 
 public:
-    using CacheItem = cachemere::Item<Value>;
+    using CacheItem = Item<Value>;
 
     /// @brief Iterator for iterating over cache items in the order they should be
     ///        evicted.
@@ -75,8 +75,9 @@ public:
     /// @brief Update event handler.
     /// @details Updates the coefficient for this item and changes its position in the priority queue.
     /// @param key The key that has been updated in the cache.
-    /// @param item The item that has been updated in the cache.
-    void on_update(const Key& key, const CacheItem& item);
+    /// @param old_item The old value for this key.
+    /// @param new_item The new value for this key.
+    void on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
 
     /// @brief Cache hit event handler.
     /// @details Updates the coefficient for this item and changes its position in the priority queue.
@@ -86,8 +87,9 @@ public:
 
     /// @brief Eviction event handler.
     /// @details Removes the item from the priority queue.
-    /// @param item The key of the item that was evicted.
-    void on_evict(const Key& key);
+    /// @param key The key that was evicted.
+    /// @param item The item that was evicted.
+    void on_evict(const Key& key, const CacheItem& item);
 
     /// @brief Get an iterator to the first item that should be evicted.
     /// @return An item iterator.
