@@ -46,13 +46,13 @@ In addition to the shared requirements above, a constraint policy must implement
 * `bool can_add(const Key& key, const Item<Value>& item)`
 
     Should return `true` if the item can be inserted in the cache while still satisfying the constraint.
-    @note Returning `true` does not guarantee that the object matching the key will be inserted in cache.
+    @note Returning `true` guarantees that the object matching the key will be inserted in cache.
 
 * `bool can_replace(const Key& key, const Item<Value>& old_item, const Item<Value>& new_item)`
 
     Should return `true` if the value associated with `key` can be changed from `old_item` to `new_item` while still
     satisfying the constraint.
-    @note Returning `true` does not guarantee that the object matching the key will be updated.
+    @note Returning `true` guarantees that the object matching the key will be updated.
 
 * `bool is_invalidated(const Key& key)`
 

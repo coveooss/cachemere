@@ -305,7 +305,7 @@ template<class K, class V, template<class, class> class I, template<class, class
 bool Cache<K, V, I, E, C, SV, SK, TS>::check_insert(const K& key, const CacheItem& item)
 {
     if (m_constraint_policy->can_add(key, item)) {
-        return true;
+        return m_insertion_policy->should_add(key);
     }
 
     // We need to perform some evictions to try and make some room.
@@ -417,7 +417,6 @@ void Cache<K, V, I, E, C, SV, SK, TS>::insert_or_update(K&& key, CacheItem&& ite
         on_update(key_and_item->first, item, key_and_item->second);
     } else {
         // Insert.
-        // const auto it_and_ok = m_data.emplace(std::piecewise_construct, std::forward_as_tuple(std::move(key)), std::move(item));
         const auto it_and_ok = m_data.insert_or_assign(std::move(key), std::move(item));
         assert(it_and_ok.second);
         on_insert(it_and_ok.first->first, it_and_ok.first->second);
