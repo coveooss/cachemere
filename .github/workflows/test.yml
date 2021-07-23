@@ -66,7 +66,6 @@ jobs:
           VCPKG_ROOT: ./vcpkg
         shell: bash
         run: |
-          wget https://github.com/frivard-coveo/vcpkg-tool/releases/download/2021-04-19-ad06323bbd2b6ca4fbe3e9fa67bf0a3762e3e15d/vcpkg.exe
           cmake -B build -S . -DUSE_VCPKG=ON -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_BUILD_TYPE=Debug || true
           cmake --build build/ || true
           cat build/vcpkg-manifest-install.log
