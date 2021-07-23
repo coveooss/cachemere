@@ -7,13 +7,26 @@
 #include <mutex>
 #include <optional>
 #include <unordered_map>
+#include <vector>
+
+#ifdef _WIN32
+#    pragma warning(push)
+#    pragma warning(disable : 4244)
+#    pragma warning(disable : 4018)
+#endif
 
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
+#include <boost/hana.hpp>
+
+#ifdef _WIN32
+#    pragma warning(pop)
+#endif
 
 #include "item.h"
 #include "measurement.h"
+#include "detail/traits.h"
 
 /// @brief Root namespace
 namespace cachemere {

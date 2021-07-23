@@ -1,9 +1,3 @@
-#include <vector>
-
-#include <boost/hana.hpp>
-
-#include "detail/traits.h"
-
 namespace cachemere {
 
 template<typename Key,
