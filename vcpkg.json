@@ -1,6 +1,6 @@
 {
     "name": "cachemere",
-    "version-semver": "0.1.4",
+    "version-semver": "0.1.5",
     "dependencies": [
         {
             "name": "vcpkg-cmake",
