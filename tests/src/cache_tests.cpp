@@ -313,3 +313,28 @@ TEST(CacheTest, NoValueCopyOnImportConstruction)
 
     EXPECT_TRUE(cache.contains("a"));
 }
+
+// Reproduces an underflow bug that occurred when growing an object.
+TEST(CacheTest, SizeUpdateNoUnderflow)
+{
+    struct SelfSized {
+        SelfSized(size_t size) : m_size(size)
+        {
+        }
+        size_t size() const
+        {
+            return m_size;
+        }
+
+    private:
+        size_t m_size;
+    };
+
+    using CacheT = presets::LRUCache<uint32_t, SelfSized, measurement::Size<SelfSized>, measurement::SizeOf<uint32_t>>;
+
+    CacheT cache{100};
+
+    cache.insert(1, SelfSized{1});
+    cache.insert(1, SelfSized{11});
+    EXPECT_LT(cache.size(), 100);
+}
