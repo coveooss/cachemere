@@ -139,11 +139,20 @@ public:
     /// @brief Get a reference to the insertion policy used by the cache.
     [[nodiscard]] MyInsertionPolicy& insertion_policy();
 
+    /// @brief Get a const reference to the insertion policy used by the cache.
+    [[nodiscard]] const MyInsertionPolicy& insertion_policy() const;
+
     /// @brief Get a reference to the eviction policy used by the cache.
     [[nodiscard]] MyEvictionPolicy& eviction_policy();
 
+    /// @brief Get a const reference to the eviction policy used by the cache.
+    [[nodiscard]] const MyEvictionPolicy& eviction_policy() const;
+
     /// @brief Get a reference to the constraint policy used by the cache.
     [[nodiscard]] MyConstraintPolicy& constraint_policy();
+
+    /// @brief Get a const reference to the constraint policy used by the cache.
+    [[nodiscard]] const MyConstraintPolicy& constraint_policy() const;
 
     /// @brief Compute and return the running hit rate of the cache.
     /// @details The hit rate is computed using a sliding window determined by the sliding window

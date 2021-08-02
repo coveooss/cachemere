@@ -226,13 +226,31 @@ inline I<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::insertion_policy()
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline const I<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::insertion_policy() const
+{
+    return *m_insertion_policy;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
 inline E<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::eviction_policy()
 {
     return *m_eviction_policy;
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline const E<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::eviction_policy() const
+{
+    return *m_eviction_policy;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
 inline C<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::constraint_policy()
+{
+    return *m_constraint_policy;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline const C<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::constraint_policy() const
 {
     return *m_constraint_policy;
 }
