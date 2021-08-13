@@ -2,6 +2,7 @@
 
 #include <list>
 #include <atomic>
+#include <functional>
 #include <map>
 #include <memory>
 #include <random>
@@ -25,9 +26,6 @@ struct Point3D {
 
 using namespace cachemere;
 
-using LRUCache     = presets::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
-using TinyLFUCache = presets::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
-
 struct RandomCost {
     double operator()(const uint32_t& /* key */, const Item<Point3D>& /* item */)
     {
@@ -38,7 +36,13 @@ struct RandomCost {
     }
 };
 
-using CustomCostCache = presets::CustomCostCache<uint32_t, Point3D, RandomCost, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using MemoryLRUCache        = presets::memory::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using MemoryTinyLFUCache    = presets::memory::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using MemoryCustomCostCache = presets::memory::CustomCostCache<uint32_t, Point3D, RandomCost, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+
+using CountLRUCache        = presets::count::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using CountTinyLFUCache    = presets::count::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using CountCustomCostCache = presets::count::CustomCostCache<uint32_t, Point3D, RandomCost, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 
 template<typename CacheT> class CacheTest : public testing::Test
 {
@@ -50,11 +54,11 @@ public:
 
     std::shared_ptr<CacheT> new_cache(std::vector<std::pair<uint32_t, Point3D>> collection, size_t size)
     {
-        return std::make_shared<CacheT>(collection, size);
+        return std::make_shared<CacheT>(collection, std::make_tuple(size));
     }
 };
 
-using TestTypes = testing::Types<LRUCache, TinyLFUCache, CustomCostCache>;
+using TestTypes = testing::Types<MemoryLRUCache, MemoryTinyLFUCache, MemoryCustomCostCache, CountLRUCache, CountTinyLFUCache, CountCustomCostCache>;
 
 class NonCopyString : public std::string
 {
@@ -73,6 +77,15 @@ public:
     NonCopyString(const NonCopyString&) = delete;
     NonCopyString& operator=(const NonCopyString&) = delete;
 };
+
+namespace std {
+template<> struct hash<NonCopyString> {
+    size_t operator()(const NonCopyString& s) const noexcept
+    {
+        return std::hash<std::string>{}(static_cast<const std::string&>(s));
+    }
+};
+}  // namespace std
 
 TYPED_TEST_SUITE(CacheTest, TestTypes);
 
@@ -156,24 +169,6 @@ TYPED_TEST(CacheTest, MultiThreadLong)
 
     std::cout << "Total of " << op_count << " operations in 10.0s";
     std::cout << "Hit rate: " << cache->hit_rate() << std::endl;
-}
-
-TYPED_TEST(CacheTest, Resize)
-{
-    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
-
-    // Insert all items and make sure they all fit in cache.
-    const uint32_t number_of_items = 5;
-    for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
-        cache->find(point_id);  // Trigger a cache miss so TinyLFU has seen the item once.
-        cache->insert(point_id, Point3D{point_id, point_id, point_id});
-    }
-    EXPECT_EQ(cache->number_of_items(), number_of_items);
-
-    // Resize the cache, make sure some were evicted.
-    cache->set_maximum_size(4 * sizeof(Point3D));
-    EXPECT_LE(cache->size(), 4 * sizeof(Point3D));
-    EXPECT_EQ(cache->number_of_items(), 2);  // Only two items fit because of the cache overhead.
 }
 
 TYPED_TEST(CacheTest, RemoveWhenKeyPresent)
@@ -297,20 +292,10 @@ TYPED_TEST(CacheTest, Clear)
     EXPECT_FALSE(cache->contains(2));
 }
 
-TYPED_TEST(CacheTest, ImportConstructionNotEnoughSpace)
-{
-    auto cache = TestFixture::new_cache({{1, Point3D{1, 1, 1}}, {2, Point3D{2, 2, 2}}, {3, Point3D{3, 3, 3}}},
-                                        4 * sizeof(Point3D));  // Only 2 items fit because of overhead.
-
-    EXPECT_TRUE(cache->contains(1));
-    EXPECT_TRUE(cache->contains(2));
-    EXPECT_FALSE(cache->contains(3));
-}
-
 TEST(CacheTest, NoValueCopyOnInsert)
 {
     using PtrCache =
-        presets::LRUCache<std::string, std::unique_ptr<Point3D>, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
+        presets::memory::LRUCache<std::string, std::unique_ptr<Point3D>, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
 
     PtrCache cache{10 * sizeof(Point3D)};
 
@@ -321,13 +306,13 @@ TEST(CacheTest, NoValueCopyOnInsert)
 TEST(CacheTest, NoValueCopyOnImportConstruction)
 {
     using PtrCache =
-        presets::LRUCache<std::string, std::unique_ptr<Point3D>, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
+        presets::memory::LRUCache<std::string, std::unique_ptr<Point3D>, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
 
     std::vector<std::pair<std::string, std::unique_ptr<Point3D>>> items;
     items.emplace_back("a", std::make_unique<Point3D>(1, 1, 1));
     items.emplace_back("b", std::make_unique<Point3D>(2, 2, 2));
 
-    PtrCache cache{items, 10 * sizeof(Point3D)};
+    PtrCache cache{items, std::make_tuple(10 * sizeof(Point3D))};
 
     EXPECT_TRUE(cache.contains("a"));
 }
@@ -336,7 +321,7 @@ TEST(CacheTest, NoKeyCopyOnInsert)
 {
     NonCopyString test_key("asdf");
 
-    using TestCache = presets::LRUCache<NonCopyString, Point3D, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
+    using TestCache = presets::memory::LRUCache<NonCopyString, Point3D, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
 
     TestCache cache{10 * sizeof(Point3D)};
 
@@ -345,39 +330,14 @@ TEST(CacheTest, NoKeyCopyOnInsert)
 
 TEST(CacheTest, NoKeyCopyOnImportConstruction)
 {
-    using TestCache = presets::LRUCache<NonCopyString, Point3D, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
+    using TestCache = presets::memory::LRUCache<NonCopyString, Point3D, measurement::SizeOf<Point3D>, measurement::CapacityDynamicallyAllocated<std::string>>;
 
     std::vector<std::pair<NonCopyString, Point3D>> items;
     items.emplace_back(NonCopyString("a"), Point3D(1, 1, 1));
     items.emplace_back(NonCopyString("b"), Point3D(1, 1, 1));
     items.emplace_back(NonCopyString("c"), Point3D(1, 1, 1));
 
-    TestCache cache{items, 10 * sizeof(Point3D)};
+    TestCache cache{items, std::make_tuple(10 * sizeof(Point3D))};
 
     EXPECT_TRUE(cache.contains(NonCopyString("a")));
-}
-
-// Reproduces an underflow bug that occurred when growing an object.
-TEST(CacheTest, SizeUpdateNoUnderflow)
-{
-    struct SelfSized {
-        SelfSized(size_t size) : m_size(size)
-        {
-        }
-        size_t size() const
-        {
-            return m_size;
-        }
-
-    private:
-        size_t m_size;
-    };
-
-    using CacheT = presets::LRUCache<uint32_t, SelfSized, measurement::Size<SelfSized>, measurement::SizeOf<uint32_t>>;
-
-    CacheT cache{100};
-
-    cache.insert(1, SelfSized{1});
-    cache.insert(1, SelfSized{11});
-    EXPECT_LT(cache.size(), 100);
 }

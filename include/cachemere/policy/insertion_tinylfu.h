@@ -52,6 +52,7 @@ public:
     ///          estimation for both keys. It will return `true` only if it estimates
     ///          that the candidate key is accessed more frequently than the victim key.
     /// @param victim The key of the victim the candidate will be compared to.
+    /// @param candidate The replacement candidate.
     bool should_replace(const Key& victim, const Key& candidate);
 
 private:

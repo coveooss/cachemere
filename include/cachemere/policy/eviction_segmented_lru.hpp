@@ -68,9 +68,9 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_inser
     m_probation_nodes.emplace(std::ref(key), m_probation_list.begin());
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_update(const Key& key, const CacheItem& item)
+template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
 {
-    on_cache_hit(key, item);
+    on_cache_hit(key, new_item);
 }
 
 template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
@@ -100,7 +100,7 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache
     assert(m_protected_nodes.size() == m_protected_list.size());
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_evict(const Key& key)
+template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_evict(const Key& key, const CacheItem& /* item */)
 {
     assert((!m_protected_list.empty()) || !m_probation_list.empty());
 

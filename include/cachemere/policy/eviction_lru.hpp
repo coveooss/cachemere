@@ -44,9 +44,9 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::on_insert(const K
     m_nodes.emplace(std::ref(key), m_keys.begin());
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_update(const Key& key, const CacheItem& item)
+template<class Key, class Value> void EvictionLRU<Key, Value>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
 {
-    on_cache_hit(key, item);
+    on_cache_hit(key, new_item);
 }
 
 template<class Key, class Value> void EvictionLRU<Key, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
@@ -63,7 +63,7 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::on_cache_hit(cons
     }
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_evict(const Key& key)
+template<class Key, class Value> void EvictionLRU<Key, Value>::on_evict(const Key& key, const CacheItem& /* item */)
 {
     assert(!m_nodes.empty());
     assert(!m_keys.empty());

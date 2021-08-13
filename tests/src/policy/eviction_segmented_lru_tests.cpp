@@ -87,10 +87,10 @@ TEST(EvictionSegmentedLRU, RandomEvictions)
     expect_victims(policy, {"a", "e", "b", "c", "d"});
 
     // Remove something not at the head of the probation segment.
-    policy.on_evict("e");
+    policy.on_evict("e", Item{0, 4, sizeof(uint32_t)});
     expect_victims(policy, {"a", "b", "c", "d"});
 
     // Remove something in the protected segment
-    policy.on_evict("c");
+    policy.on_evict("c", Item{0, 2, sizeof(uint32_t)});
     expect_victims(policy, {"a", "b", "d"});
 }

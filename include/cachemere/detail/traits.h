@@ -33,6 +33,7 @@ constexpr auto has_on_insert = boost::hana::is_valid(
 template<typename K, typename V, template<class, class> typename P>
 constexpr auto has_on_update = boost::hana::is_valid(
     [](auto& policy_t, auto& key_t, auto& item_t) -> decltype(boost::hana::traits::declval(policy_t).on_update(boost::hana::traits::declval(key_t),
+                                                                                                               boost::hana::traits::declval(item_t),
                                                                                                                boost::hana::traits::declval(item_t))) {
     })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<K>, boost::hana::type_c<Item<V>>);
 
@@ -48,9 +49,10 @@ constexpr auto has_on_cachemiss = boost::hana::is_valid(
     })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<K>);
 
 template<typename K, typename V, template<class, class> typename P>
-constexpr auto has_on_evict =
-    boost::hana::is_valid([](auto& policy_t, auto& item_t) -> decltype(boost::hana::traits::declval(policy_t).on_evict(boost::hana::traits::declval(item_t))) {
-    })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<K>);
+constexpr auto has_on_evict = boost::hana::is_valid(
+    [](auto& policy_t, auto& key_t, auto& value_t) -> decltype(boost::hana::traits::declval(policy_t).on_evict(boost::hana::traits::declval(key_t),
+                                                                                                               boost::hana::traits::declval(value_t))) {
+    })(boost::hana::type_c<P<K, V>>, boost::hana::type_c<K>, boost::hana::type_c<Item<V>>);
 
 }  // namespace event
 

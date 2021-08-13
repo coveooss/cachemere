@@ -1,9 +1,3 @@
-#include <vector>
-
-#include <boost/hana.hpp>
-
-#include "detail/traits.h"
-
 namespace cachemere {
 
 template<typename Key,
@@ -12,40 +6,47 @@ template<typename Key,
          class InsertionPolicy,
          template<class, class>
          class EvictionPolicy,
+         template<class, class>
+         class ConstraintPolicy,
          typename MeasureValue,
          typename MeasureKey,
          bool ThreadSafe>
-Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe>::Cache(size_t maximum_size, uint32_t statistics_window_size)
- : m_current_size{0},
-   m_maximum_size{maximum_size},
-   m_statistics_window_size{statistics_window_size},
-   m_insertion_policy(std::make_unique<InsertionPolicy<Key, Value>>()),
+template<typename... Args>
+Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe>::Cache(Args... args)
+ : m_insertion_policy(std::make_unique<InsertionPolicy<Key, Value>>()),
    m_eviction_policy(std::make_unique<EvictionPolicy<Key, Value>>()),
-   m_measure_key{},
-   m_measure_value{},
+   m_constraint_policy(std::make_unique<ConstraintPolicy<Key, Value>>(std::forward<Args>(args)...)),
    m_mutex{},
    m_data{},
-   m_hit_rate_acc(boost::accumulators::tag::rolling_window::window_size = statistics_window_size),
-   m_byte_hit_rate_acc(boost::accumulators::tag::rolling_window::window_size = statistics_window_size)
+   m_hit_rate_acc(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size),
+   m_byte_hit_rate_acc(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size)
 {
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-template<typename C>
-Cache<K, V, I, E, SV, SK, TS>::Cache(C& collection, size_t maximum_size, uint32_t statistics_window_size) : Cache(maximum_size, statistics_window_size)
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+template<typename Coll, typename... Args>
+Cache<K, V, I, E, C, SV, SK, TS>::Cache(Coll& collection, std::tuple<Args...> args)
+ : m_insertion_policy(std::make_unique<I<K, V>>()),
+   m_eviction_policy(std::make_unique<E<K, V>>()),
+   m_constraint_policy(
+       std::move(std::apply([](auto&&... params) { return std::make_unique<C<K, V>>(std::forward<decltype(params)>(params)...); }, std::move(args)))),
+   m_mutex{},
+   m_data{},
+   m_hit_rate_acc(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size),
+   m_byte_hit_rate_acc(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size)
 {
     import(collection);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline bool Cache<K, V, I, E, SV, SK, TS>::contains(const K& key) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline bool Cache<K, V, I, E, C, SV, SK, TS>::contains(const K& key) const
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
     return m_data.find(key) != m_data.end();
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-std::optional<V> Cache<K, V, I, E, SV, SK, TS>::find(const K& key) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+std::optional<V> Cache<K, V, I, E, C, SV, SK, TS>::find(const K& key)
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
 
@@ -59,16 +60,16 @@ std::optional<V> Cache<K, V, I, E, SV, SK, TS>::find(const K& key) const
     return std::nullopt;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-template<class C>
-void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+template<class Container>
+void Cache<K, V, I, E, C, SV, SK, TS>::collect_into(Container& container) const
 {
     using namespace boost;
     using namespace detail;
 
     // Use emplace_back if container is a sequence container, or emplace if container is an associative container.
     constexpr auto emplace_fn = hana::if_(
-        traits::stl::has_emplace_back<C, K, V>,
+        traits::stl::has_emplace_back<Container, K, V>,
         [](auto& seq_container, const auto& key, const auto& item) { seq_container.emplace_back(key, item.m_value); },
         [](auto& assoc_container, const auto& key, const auto& item) { assoc_container.emplace(key, item.m_value); });
 
@@ -76,7 +77,7 @@ void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
 
     // Reserve space if the container has a reserve() method and a size method().
     hana::if_(
-        hana::and_(traits::stl::has_reserve<C>, traits::stl::has_size<C>),
+        hana::and_(traits::stl::has_reserve<Container>, traits::stl::has_size<Container>),
         [&](auto& c) { c.reserve(c.size() + m_data.size()); },
         [](auto&) {})(container);
 
@@ -86,27 +87,38 @@ void Cache<K, V, I, E, SV, SK, TS>::collect_into(C& container) const
     }
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-bool Cache<K, V, I, E, SV, SK, TS>::insert(K key, V value)
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+bool Cache<K, V, I, E, C, SV, SK, TS>::insert(K key, V value)
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
 
-    const auto   key_size           = static_cast<size_t>(m_measure_key(key));
-    const auto   value_size         = static_cast<size_t>(m_measure_value(value));
-    const size_t item_size          = key_size + value_size;
-    const size_t item_size_overhead = item_size + key_size;
+    const auto key_size   = static_cast<size_t>(m_measure_key(key));
+    const auto value_size = static_cast<size_t>(m_measure_value(value));
 
-    const bool should_insert = compare_evict(key, item_size_overhead);
+    CacheItem new_item{key_size, std::move(value), value_size};
 
-    if (should_insert) {
-        insert_or_update(std::move(key), std::move(value), key_size, value_size);
+    auto it = m_data.find(key);
+    if (it != m_data.end()) {
+        if (check_replace(key, it->second, new_item)) {
+            // We call insert_or_update because we might have evicted the original key to make room for this one.
+            insert_or_update(std::move(key), std::move(new_item));
+            return true;
+        }
+    } else {
+        if (check_insert(key, new_item)) {
+            const auto it_and_ok = m_data.insert_or_assign(std::move(key), std::move(new_item));
+            assert(it_and_ok.second);
+
+            on_insert(it_and_ok.first->first, it_and_ok.first->second);
+            return true;
+        }
     }
 
-    return should_insert;
+    return false;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-bool Cache<K, V, I, E, SV, SK, TS>::remove(const K& key)
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+bool Cache<K, V, I, E, C, SV, SK, TS>::remove(const K& key)
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
 
@@ -118,12 +130,11 @@ bool Cache<K, V, I, E, SV, SK, TS>::remove(const K& key)
     return false;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::clear()
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::clear()
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
 
-    m_current_size = 0;
     m_data.clear();
 
     m_hit_rate_acc      = MeanAccumulator(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size);
@@ -131,11 +142,12 @@ void Cache<K, V, I, E, SV, SK, TS>::clear()
 
     m_insertion_policy->clear();
     m_eviction_policy->clear();
+    m_constraint_policy->clear();
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
 template<class P>
-void Cache<K, V, I, E, SV, SK, TS>::retain(P predicate_fn)
+void Cache<K, V, I, E, C, SV, SK, TS>::retain(P predicate_fn)
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
 
@@ -150,8 +162,8 @@ void Cache<K, V, I, E, SV, SK, TS>::retain(P predicate_fn)
     }
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::swap(CacheType& other)
 {
     // Acquire both cache locks.
     std::unique_lock<std::recursive_mutex> me_guard(lock());
@@ -159,15 +171,11 @@ void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
 
     using std::swap;
 
-    swap(m_current_size, other.m_current_size);
-    swap(m_maximum_size, other.m_maximum_size);
     swap(m_statistics_window_size, other.m_statistics_window_size);
 
     swap(m_insertion_policy, other.m_insertion_policy);
     swap(m_eviction_policy, other.m_eviction_policy);
-
-    swap(m_measure_key, other.m_measure_key);
-    swap(m_measure_value, other.m_measure_value);
+    swap(m_constraint_policy, other.m_constraint_policy);
 
     swap(m_data, other.m_data);
 
@@ -175,68 +183,102 @@ void Cache<K, V, I, E, SV, SK, TS>::swap(CacheType& other)
     swap(m_byte_hit_rate_acc, other.m_byte_hit_rate_acc);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline size_t Cache<K, V, I, E, SV, SK, TS>::number_of_items() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline size_t Cache<K, V, I, E, C, SV, SK, TS>::number_of_items() const
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
     return m_data.size();
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline size_t Cache<K, V, I, E, SV, SK, TS>::size() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+template<typename... Args>
+void Cache<K, V, I, E, C, SV, SK, TS>::update_constraint(Args... args)
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
-    return m_current_size;
-}
+    m_constraint_policy->update(std::forward<Args>(args)...);
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline size_t Cache<K, V, I, E, SV, SK, TS>::maximum_size() const
-{
-    std::unique_lock<std::recursive_mutex> guard(lock());
-    return m_maximum_size;
-}
+    auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && !m_constraint_policy->is_satisfied(); };
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline void Cache<K, V, I, E, SV, SK, TS>::set_maximum_size(size_t max_size)
-{
-    std::unique_lock<std::recursive_mutex> guard(lock());
-    m_maximum_size = max_size;
+    for (auto victim_it = m_eviction_policy->victim_begin(); should_evict_another(victim_it); victim_it = m_eviction_policy->victim_begin()) {
+        const K& key_to_evict = *victim_it;
+        auto     key_and_item = m_data.find(key_to_evict);
 
-    if (m_maximum_size < m_current_size) {
-        const size_t                  amount_to_free = m_current_size - m_maximum_size;
-        [[maybe_unused]] const size_t amount_freed   = free_amount(amount_to_free);
-
-        assert(amount_freed >= amount_to_free);
+        if (key_and_item != m_data.end()) {
+            remove(key_and_item);
+        } else {
+            // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the cache are out of sync.
+            assert(false);
+        }
     }
-    assert(m_current_size <= m_maximum_size);
+
+    assert(m_constraint_policy->is_satisfied());
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline I<K, V>& Cache<K, V, I, E, SV, SK, TS>::insertion_policy()
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline I<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::insertion_policy()
 {
     return *m_insertion_policy;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline E<K, V>& Cache<K, V, I, E, SV, SK, TS>::eviction_policy()
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline const I<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::insertion_policy() const
+{
+    return *m_insertion_policy;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline E<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::eviction_policy()
 {
     return *m_eviction_policy;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline double Cache<K, V, I, E, SV, SK, TS>::hit_rate() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline const E<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::eviction_policy() const
+{
+    return *m_eviction_policy;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline C<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::constraint_policy()
+{
+    return *m_constraint_policy;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline const C<K, V>& Cache<K, V, I, E, C, SV, SK, TS>::constraint_policy() const
+{
+    return *m_constraint_policy;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline double Cache<K, V, I, E, C, SV, SK, TS>::hit_rate() const
 {
     return boost::accumulators::rolling_mean(m_hit_rate_acc);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-inline double Cache<K, V, I, E, SV, SK, TS>::byte_hit_rate() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline double Cache<K, V, I, E, C, SV, SK, TS>::byte_hit_rate() const
 {
     return boost::accumulators::rolling_mean(m_byte_hit_rate_acc);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-std::unique_lock<std::recursive_mutex> Cache<K, V, I, E, SV, SK, TS>::lock() const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline uint32_t Cache<K, V, I, E, C, SV, SK, TS>::statistics_window_size() const
+{
+    return m_statistics_window_size;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+inline void Cache<K, V, I, E, C, SV, SK, TS>::statistics_window_size(uint32_t window_size)
+{
+    m_statistics_window_size = window_size;
+
+    m_hit_rate_acc      = MeanAccumulator(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size);
+    m_byte_hit_rate_acc = MeanAccumulator(boost::accumulators::tag::rolling_window::window_size = m_statistics_window_size);
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+std::unique_lock<std::recursive_mutex> Cache<K, V, I, E, C, SV, SK, TS>::lock() const
 {
     if constexpr (TS) {
         std::unique_lock<std::recursive_mutex> guard{m_mutex};
@@ -247,163 +289,158 @@ std::unique_lock<std::recursive_mutex> Cache<K, V, I, E, SV, SK, TS>::lock() con
     }
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-template<class C>
-void Cache<K, V, I, E, SV, SK, TS>::import(C& collection)
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+template<class Coll>
+void Cache<K, V, I, E, C, SV, SK, TS>::import(Coll& collection)
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
 
     for (auto& [key, value] : collection) {
-        const auto   key_size           = static_cast<size_t>(m_measure_key(key));
-        const auto   value_size         = static_cast<size_t>(m_measure_value(value));
-        const size_t item_size          = key_size + value_size;
-        const size_t item_size_overhead = item_size + key_size;
+        const auto key_size   = static_cast<size_t>(m_measure_key(key));
+        const auto value_size = static_cast<size_t>(m_measure_value(value));
+        CacheItem  item{key_size, std::move(value), value_size};
 
-        if (m_current_size + item_size_overhead > m_maximum_size) {
+        if (!m_constraint_policy->can_add(key, item)) {
             return;
         }
 
-        insert_or_update(std::move(key), std::move(value), key_size, value_size);
+        insert_or_update(std::move(key), std::move(item));
     }
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-bool Cache<K, V, I, E, SV, SK, TS>::compare_evict(const K& candidate_key, size_t candidate_size)
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+bool Cache<K, V, I, E, C, SV, SK, TS>::check_insert(const K& key, const CacheItem& item)
 {
-    if (m_current_size + candidate_size <= m_maximum_size) {
-        // We have enough room. Insert if the policy agrees.
-        return m_insertion_policy->should_add(candidate_key);
-    } else {
-        if (candidate_size > m_maximum_size) {
-            // The item to insert/update is bigger than the maximum size of the cache, no need to attempt an insertion.
-            return false;
-        }
-        // We need to get a list of keys to evict to make room for the candidate. Since we restrict cache inserts by
-        // cache size instead of by nb. of items, we might evict multiple items to insert one. This is bad because it
-        // leads to inaccuracies:
-        //
-        // Say for instance we want to insert a 4 kb item. In order to insert it,
-        // we might need to evict 4 1kb items.
-        // Since this is a feedback cache, insertion policies operate by comparing two keys (the candidate and an
-        // eviction victim) together and inserting/keeping the best one. This means that in order to insert our 4kb
-        // item, we'd need to make 4 calls to the insertion policy, and insert the item only if all 4 calls come out
-        // positive. *However*, this only establishes that the candidate is better than each individual replaced item,
-        // not that it is better than the sum of them... This could be solved in two ways.
-        //
-        // The easiest way to fix the issue would be to change the cache constraint from "allocated memory" to "number
-        // of cached items". This would lead to some inaccuracies in how memory is tracked, it but would
-        // increase the performance of the cache (an insert would always evict [0,1] item).
-        //
-        // The harder way would be to change the interface of the insertion policy. Instead of should_replace(Key&,
-        // Key&), we could do should_replace(Key&, vector<Key&>). This would allow the insertion policy to weigh the
-        // candidate vs. *all* the evicted keys. (e.g. an LFU policy could make sure that the load counts of the
-        // candidate needs to be higher than the _sum_ of load counts of all victims) I consider this method the harder
-        // one because it would make the implementation of all insertion policies considerably harder. (it's not always
-        // trivial to determine whether a key is a better candidate than a given set of keys)
-        //
-        // Those two ways could even be used together: we could change the insertion policy interface *and* provide a
-        // new count-limited cache for improved performance, while keeping the memory-limited cache for when required.
-
-        std::vector<DataMapIt> keys_to_evict;
-        size_t                 freed_amount = 0;
-
-        auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && freed_amount <= candidate_size; };
-
-        for (auto victim_it = m_eviction_policy->victim_begin(); should_evict_another(victim_it); ++victim_it) {
-            const K& key_to_evict = *victim_it;
-            auto     key_and_item = m_data.find(key_to_evict);
-
-            if (key_and_item != m_data.end()) {
-                if (!m_insertion_policy->should_replace(key_to_evict, candidate_key)) {
-                    return false;
-                }
-                const auto total_size_and_overhead = key_and_item->second.m_key_size + key_and_item->second.m_total_size;
-                freed_amount += total_size_and_overhead;
-                keys_to_evict.push_back(key_and_item);
-            } else {
-                // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the
-                // cache are out of sync.
-                assert(false);
-            }
-        }
-
-        // If this trips, something is very wrong with how size is tracked.
-        // This means that evicting all items didn't free enough space in the cache for the candidate,
-        // yet the check at the beginning of this method ensures that the new item is smaller than
-        // the max size of the cache...
-        assert((m_current_size - freed_amount) + candidate_size <= m_maximum_size);
-
-        // Perform the eviction(s).
-        for (auto key_and_item : keys_to_evict) {
-            remove(key_and_item);
-        }
-
-        return true;
+    if (m_constraint_policy->can_add(key, item)) {
+        return m_insertion_policy->should_add(key);
     }
-}
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::insert_or_update(K&& key, V&& value, size_t key_size, size_t value_size)
-{
-    auto key_and_item = m_data.find(key);
-    if (key_and_item != m_data.end()) {
-        // Update.
-        m_current_size = (m_current_size - key_and_item->second.m_value_size) + value_size;
+    // We need to perform some evictions to try and make some room.
+    // Since the insertion process can fail at anytime before we know how many keys to evict (e.g. if should_replace was to return false) however,
+    // we can't directly evict items as we go. To fix this, we copy the constraint policy to see how many keys we'd have to evict. If we manage to
+    // satisfy the constraint copy, we evict the keys we picked and proceed with the insertion.
+    auto                   constraint_copy = std::make_unique<MyConstraintPolicy>(*m_constraint_policy);
+    std::vector<DataMapIt> keys_to_evict;
 
-        key_and_item->second.m_value      = std::move(value);
-        key_and_item->second.m_value_size = value_size;
-        key_and_item->second.m_total_size = key_size + value_size;
+    auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && !constraint_copy->can_add(key, item); };
 
-        on_update(key_and_item->first, key_and_item->second);
-    } else {
-        // Insert.
-        const auto it_and_ok =
-            m_data.emplace(std::piecewise_construct, std::forward_as_tuple(std::move(key)), std::forward_as_tuple(key_size, std::move(value), value_size));
-        assert(it_and_ok.second);
-
-        on_insert(it_and_ok.first->first, it_and_ok.first->second);
-
-        m_current_size += key_size + key_size + value_size;
-    }
-}
-
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-size_t Cache<K, V, I, E, SV, SK, TS>::free_amount(size_t amount_to_free)
-{
-    assert(amount_to_free <= m_current_size);
-    size_t freed_amount = 0;
-
-    auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && freed_amount <= amount_to_free; };
-
-    for (auto victim_it = m_eviction_policy->victim_begin(); should_evict_another(victim_it); victim_it = m_eviction_policy->victim_begin()) {
+    // As long as the constraint isn't satisfied, we keep evicting keys.
+    for (auto victim_it = m_eviction_policy->victim_begin(); should_evict_another(victim_it); ++victim_it) {
         const K& key_to_evict = *victim_it;
         auto     key_and_item = m_data.find(key_to_evict);
 
         if (key_and_item != m_data.end()) {
-            auto total_size_and_overhead = key_and_item->second.m_key_size + key_and_item->second.m_total_size;
-            freed_amount += total_size_and_overhead;
-            remove(key_and_item);
+            if (!m_insertion_policy->should_replace(key_to_evict, key)) {
+                // This key to evict is considered "better" to have in cache than the item to be inserted.
+                // In this case, we abort the insertion.
+                return false;
+            }
+
+            constraint_copy->on_evict(key_and_item->first, key_and_item->second);
+            keys_to_evict.push_back(key_and_item);
         } else {
-            // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the cache are out of sync.
+            // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the
+            // cache are out of sync.
             assert(false);
         }
     }
 
-    return freed_amount;
+    if (constraint_copy->can_add(key, item)) {
+        // The constraint is happy with that, so we actually evict the collected keys.
+        for (auto key_and_item : keys_to_evict) {
+            remove(key_and_item);
+        }
+        return true;
+    }
+
+    return false;
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::remove(DataMapIt it)
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+bool Cache<K, V, I, E, C, SV, SK, TS>::check_replace(const K& key, const CacheItem& old_item, const CacheItem& new_item)
 {
-    const auto total_size_and_overhead = it->second.m_key_size + it->second.m_total_size;
-    m_current_size -= total_size_and_overhead;
+    if (m_constraint_policy->can_replace(key, old_item, new_item)) {
+        return true;
+    }
 
-    on_evict(it->first);
+    // The logic here is very similar to check_insert but with an important modification.
+    // Since in this code path we're updating an existing key instead of adding a new one, we need to handle the case
+    // where the eviction policy recommends the eviction of the key we're trying to insert. If this happens and the constraint
+    // is still not satisfied afterwards, we need to treat all subsequent constraint checks as if we were inserting instead of updating our key
+    // (because the original was evicted).
+    auto constraint_copy      = std::make_unique<MyConstraintPolicy>(*m_constraint_policy);
+    bool evicted_original_key = false;
+
+    auto can_replace = [&]() {
+        if (evicted_original_key) {
+            return constraint_copy->can_add(key, new_item);
+        } else {
+            return constraint_copy->can_replace(key, old_item, new_item);
+        }
+    };
+
+    auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && !can_replace(); };
+
+    // Evict until the constraint copy is happy.
+    std::vector<DataMapIt> keys_to_evict;
+
+    for (auto victim_it = m_eviction_policy->victim_begin(); should_evict_another(victim_it); ++victim_it) {
+        const K& key_to_evict = *victim_it;
+        auto     key_and_item = m_data.find(key_to_evict);
+
+        if (key_and_item != m_data.end()) {
+            if (!m_insertion_policy->should_replace(key_to_evict, key)) {
+                return false;
+            }
+
+            if (!evicted_original_key) {
+                evicted_original_key = key_and_item->first == key;
+            }
+
+            constraint_copy->on_evict(key_and_item->first, key_and_item->second);
+            keys_to_evict.push_back(key_and_item);
+        } else {
+            // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the
+            // cache are out of sync.
+            assert(false);
+        }
+    }
+
+    if (can_replace()) {
+        for (auto key_and_item : keys_to_evict) {
+            remove(key_and_item);
+        }
+        return true;
+    }
+
+    return false;
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::insert_or_update(K&& key, CacheItem&& item)
+{
+    auto key_and_item = m_data.find(key);
+    if (key_and_item != m_data.end()) {
+        using std::swap;
+        swap(key_and_item->second, item);
+        on_update(key_and_item->first, item, key_and_item->second);
+    } else {
+        // Insert.
+        const auto it_and_ok = m_data.insert_or_assign(std::move(key), std::move(item));
+        assert(it_and_ok.second);
+        on_insert(it_and_ok.first->first, it_and_ok.first->second);
+    }
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::remove(DataMapIt it)
+{
+    on_evict(it->first, it->second);
     m_data.erase(it);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::on_insert(const K& key, const CacheItem& item) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::on_insert(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
@@ -415,25 +452,35 @@ void Cache<K, V, I, E, SV, SK, TS>::on_insert(const K& key, const CacheItem& ite
         detail::traits::event::has_on_insert<K, V, E>,
         [&](auto& x) { return x.on_insert(key, item); },
         [](auto&) {})(*m_eviction_policy);
+
+    boost::hana::if_(
+        detail::traits::event::has_on_insert<K, V, C>,
+        [&](auto& x) { return x.on_insert(key, item); },
+        [](auto&) {})(*m_constraint_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::on_update(const K& key, const CacheItem& item) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::on_update(const K& key, const CacheItem& old_item, const CacheItem& new_item) const
 {
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
         detail::traits::event::has_on_update<K, V, I>,
-        [&](auto& x) { return x.on_update(key, item); },
+        [&](auto& x) { return x.on_update(key, old_item, new_item); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
         detail::traits::event::has_on_update<K, V, E>,
-        [&](auto& x) { return x.on_update(key, item); },
+        [&](auto& x) { return x.on_update(key, old_item, new_item); },
         [](auto&) {})(*m_eviction_policy);
+
+    boost::hana::if_(
+        detail::traits::event::has_on_update<K, V, C>,
+        [&](auto& x) { return x.on_update(key, old_item, new_item); },
+        [](auto&) {})(*m_constraint_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::on_cache_hit(const K& key, const CacheItem& item) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::on_cache_hit(const K& key, const CacheItem& item) const
 {
     // Update the cache hit rate accumulators.
     m_hit_rate_acc(1);
@@ -449,10 +496,15 @@ void Cache<K, V, I, E, SV, SK, TS>::on_cache_hit(const K& key, const CacheItem& 
         detail::traits::event::has_on_cachehit<K, V, E>,
         [&](auto& x) { return x.on_cache_hit(key, item); },
         [](auto&) {})(*m_eviction_policy);
+
+    boost::hana::if_(
+        detail::traits::event::has_on_cachehit<K, V, E>,
+        [&](auto& x) { return x.on_cache_hit(key, item); },
+        [](auto&) {})(*m_eviction_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::on_cache_miss(const K& key) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::on_cache_miss(const K& key) const
 {
     // Update the cache hit rate accumulators.
     m_hit_rate_acc(0);
@@ -468,25 +520,35 @@ void Cache<K, V, I, E, SV, SK, TS>::on_cache_miss(const K& key) const
         detail::traits::event::has_on_cachemiss<K, V, E>,
         [&](auto& x) { return x.on_cache_miss(key); },
         [](auto&) {})(*m_eviction_policy);
+
+    boost::hana::if_(
+        detail::traits::event::has_on_cachemiss<K, V, C>,
+        [&](auto& x) { return x.on_cache_miss(key); },
+        [](auto&) {})(*m_constraint_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void Cache<K, V, I, E, SV, SK, TS>::on_evict(const K& key) const
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void Cache<K, V, I, E, C, SV, SK, TS>::on_evict(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
     boost::hana::if_(
         detail::traits::event::has_on_evict<K, V, I>,
-        [&](auto& x) { return x.on_evict(key); },
+        [&](auto& x) { return x.on_evict(key, item); },
         [](auto&) {})(*m_insertion_policy);
 
     boost::hana::if_(
         detail::traits::event::has_on_evict<K, V, E>,
-        [&](auto& x) { return x.on_evict(key); },
+        [&](auto& x) { return x.on_evict(key, item); },
         [](auto&) {})(*m_eviction_policy);
+
+    boost::hana::if_(
+        detail::traits::event::has_on_evict<K, V, C>,
+        [&](auto& x) { return x.on_evict(key, item); },
+        [](auto&) {})(*m_constraint_policy);
 }
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, class SV, class SK, bool TS>
-void swap(Cache<K, V, I, E, SV, SK, TS>& lhs, Cache<K, V, I, E, SV, SK, TS>& rhs)
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void swap(Cache<K, V, I, E, C, SV, SK, TS>& lhs, Cache<K, V, I, E, C, SV, SK, TS>& rhs)
 {
     lhs.swap(rhs);
 }
