@@ -54,11 +54,6 @@ In addition to the shared requirements above, a constraint policy must implement
     satisfying the constraint.
     @note Returning `true` guarantees that the object matching the key will be updated.
 
-* `bool is_invalidated(const Key& key)`
-
-    Should return `true` if the value associated with `key` cannot be kept in cache while still satisfying the constraint.
-    @note Returning `true` guarantees that the object matching the key will be evicted from the cache.
-
 * `bool is_satisfied()`
 
     Should return `true` if the constraint is currently satisfied. The cache uses this method after a constraint update (e.g. a cache resize)

@@ -36,12 +36,6 @@ public:
     /// @return Whether the item can be replaced.
     [[nodiscard]] bool can_replace(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
 
-    /// @brief Returns whether a key being looked up in cache still satisfies the constraint.
-    /// @details For this constraint, can_find always returns true because an item cannot become invalidated.
-    /// @param key The key of the insertion candidate.
-    /// @return Whether the key is still valid.
-    [[nodiscard]] bool is_invalidated(const Key& key);
-
     /// @brief Returns whether the constraint is satisfied.
     /// @details Used by the cache after a constraint update to compute how many items should be evicted, if any.
     /// @return Whether the cache constraint is satisfied.

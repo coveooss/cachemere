@@ -21,11 +21,6 @@ template<typename K, typename V> bool ConstraintMemory<K, V>::can_replace(const 
     return ((m_memory - old_item.m_value_size) + new_item.m_value_size) <= m_maximum_memory;
 }
 
-template<typename K, typename V> bool ConstraintMemory<K, V>::is_invalidated(const K& /*key*/)
-{
-    return false;
-}
-
 template<typename K, typename V> bool ConstraintMemory<K, V>::is_satisfied()
 {
     return m_memory <= m_maximum_memory;

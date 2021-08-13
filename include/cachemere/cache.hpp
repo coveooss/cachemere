@@ -52,13 +52,8 @@ std::optional<V> Cache<K, V, I, E, C, SV, SK, TS>::find(const K& key)
 
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
-        if (!m_constraint_policy->is_invalidated(key)) {
-            on_cache_hit(key_and_item->first, key_and_item->second);
-            return key_and_item->second.m_value;
-        }
-
-        // The constraint policy says this item cannot be in cache anymore, so we remove it and act as if we just had a cache miss.
-        remove(key_and_item);
+        on_cache_hit(key_and_item->first, key_and_item->second);
+        return key_and_item->second.m_value;
     }
 
     on_cache_miss(key);

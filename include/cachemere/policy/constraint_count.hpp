@@ -23,11 +23,6 @@ template<typename K, typename V> bool ConstraintCount<K, V>::can_replace(const K
     return true;
 }
 
-template<typename K, typename V> bool ConstraintCount<K, V>::is_invalidated(const K& /* key */)
-{
-    return false;
-}
-
 template<typename K, typename V> bool ConstraintCount<K, V>::is_satisfied()
 {
     return m_count <= m_maximum_count;
