@@ -398,7 +398,9 @@ bool Cache<K, V, I, E, C, SV, SK, TS>::check_replace(const K& key, const CacheIt
                 return false;
             }
 
-            evicted_original_key |= key_and_item->first == key;
+            if (!evicted_original_key) {
+                evicted_original_key = key_and_item->first == key;
+            }
 
             constraint_copy->on_evict(key_and_item->first, key_and_item->second);
             keys_to_evict.push_back(key_and_item);
