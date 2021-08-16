@@ -18,15 +18,16 @@ namespace cachemere::policy {
 template<typename Key, typename Value> class InsertionTinyLFU
 {
 public:
-    using CacheItem = cachemere::Item<Key, Value>;
+    using CacheItem = cachemere::Item<Value>;
 
     /// @brief Clears the policy.
     void clear();
 
     /// @brief Cache hit event handler.
     /// @details Updates the internal frequency sketches for the given item.
+    /// @param key The key that has been hit.
     /// @param item The item that has been hit.
-    void on_cache_hit(const CacheItem& item);
+    void on_cache_hit(const Key& key, const CacheItem& item);
 
     /// @brief Cache miss event handler.
     /// @details Updates the internal frequency sketches for the given key.
@@ -51,6 +52,7 @@ public:
     ///          estimation for both keys. It will return `true` only if it estimates
     ///          that the candidate key is accessed more frequently than the victim key.
     /// @param victim The key of the victim the candidate will be compared to.
+    /// @param candidate The replacement candidate.
     bool should_replace(const Key& victim, const Key& candidate);
 
 private:

@@ -9,7 +9,7 @@
 using namespace cachemere;
 
 struct Cost {
-    double operator()(const Item<std::string, std::string>& /* item */)
+    double operator()(const std::string& /* key */, const Item<std::string>& /* item */)
     {
         return 1.0;
     }
@@ -34,6 +34,7 @@ using BenchCache = Cache<std::string,
                          std::string,
                          I,
                          E,
+                         policy::ConstraintMemory,
                          measurement::CapacityDynamicallyAllocated<std::string>,
                          measurement::CapacityDynamicallyAllocated<std::string>,
                          ThreadSafe>;

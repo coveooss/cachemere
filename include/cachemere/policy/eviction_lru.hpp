@@ -36,22 +36,22 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::clear()
     m_nodes.clear();
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_insert(const CacheItem& item)
+template<class Key, class Value> void EvictionLRU<Key, Value>::on_insert(const Key& key, const CacheItem& /* item */)
 {
-    assert(m_nodes.find(std::ref(item.m_key)) == m_nodes.end());  // Validate the item is not already in policy.
+    assert(m_nodes.find(std::ref(key)) == m_nodes.end());  // Validate the item is not already in policy.
 
-    m_keys.emplace_front(std::ref(item.m_key));
-    m_nodes.emplace(std::ref(item.m_key), m_keys.begin());
+    m_keys.emplace_front(std::ref(key));
+    m_nodes.emplace(std::ref(key), m_keys.begin());
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_update(const CacheItem& item)
+template<class Key, class Value> void EvictionLRU<Key, Value>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
 {
-    on_cache_hit(item);
+    on_cache_hit(key, new_item);
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_cache_hit(const CacheItem& item)
+template<class Key, class Value> void EvictionLRU<Key, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
 {
-    auto node_it = m_nodes.find(item.m_key);
+    auto node_it = m_nodes.find(key);
     if (node_it != m_nodes.end()) {
         // No need to shuffle stuff around if item is already the hottest item in cache.
         if (node_it->second != m_keys.begin()) {
@@ -63,7 +63,7 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::on_cache_hit(cons
     }
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_evict(const Key& key)
+template<class Key, class Value> void EvictionLRU<Key, Value>::on_evict(const Key& key, const CacheItem& /* item */)
 {
     assert(!m_nodes.empty());
     assert(!m_keys.empty());

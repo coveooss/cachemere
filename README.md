@@ -64,9 +64,9 @@ Cachemere is designed with the explicit goal of providing a single reusable cach
 ### Modular Policy Design
 
 Cachemere tackles this goal in a modular fashion with the concept of _policies_. A `cachemere::Cache` is parameterized
-by an **Insertion Policy** and an **Eviction Policy**.
+by a **Constraint Policy**, an **Insertion Policy**, and an **Eviction Policy**.
 
-Broadly speaking, the job of an **Insertion Policy** is to determine whether an item should be inserted or kept in cache, while the job of an **Eviction
+Broadly speaking, the job of the **Constraint Policy** is to determine whether an item _can_ be in the cache (e.g. if there is enough free space), the job of an **Insertion Policy** is to determine whether an item should be inserted or kept in cache, while the job of an **Eviction
 Policy** is to determine which item(s) should be evicted from the cache. The cache will query its policies when it has to make a
 decision on whether an item should be added or excluded.
 
@@ -76,5 +76,3 @@ policies can also be used with different cache implementations.
 For instance, instead of using more common policies like Least-Recently Used (LRU),
 a product might need to use a custom cache that takes the frequency of access as well as the size of the item into
 consideration when establishing which item to evict. To do this, one could implement a `SizeBasedEvictionPolicy` and use it with the existing `cachemere::Cache`.
-
-Similarly, imagine a cache that limits the amount of memory it uses. Now, imagine a use case that additionally requires constraining the number of items in the cache. To handle this scenario, you could implement a new Cache object parameterized by these two policies and reuse Cachemere's LRU policy with this Cache object.

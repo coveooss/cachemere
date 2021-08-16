@@ -22,7 +22,7 @@ private:
     using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<const Key>>;
 
 public:
-    using CacheItem = cachemere::Item<Key, Value>;
+    using CacheItem = cachemere::Item<Value>;
 
     /// @brief Iterator for iterating over cache items in the order they should be
     //         evicted.
@@ -55,27 +55,32 @@ public:
 
     /// @brief Insertion event handler.
     /// @details Inserts the provided item at the front of the probation segment.
+    /// @param key The key of the inserted item.
     /// @param item The item that has been inserted in the cache.
-    void on_insert(const CacheItem& item);
+    void on_insert(const Key& key, const CacheItem& item);
 
     /// @brief Update event handler.
     /// @details If the item is in the probation segment, it is moved to the protected
     ///          segment. If the item is in the protected segment, it is moved to the front of
     ///          the protected segment.
-    /// @param item The item that has been updated in the cache.
-    void on_update(const CacheItem& item);
+    /// @param key The key that has been updated in the cache.
+    /// @param old_item The old value for this key.
+    /// @param new_item The new value for this key
+    void on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
 
     /// @brief Cache hit event handler.
     /// @details If the item is in the probation segment, it is moved to the protected
     ///          segment. If the item is in the protected segment, it is moved to the front of
     ///          the protected segment.
+    /// @param key The key that has been hit.
     /// @param item The item that has been hit.
-    void on_cache_hit(const CacheItem& item);
+    void on_cache_hit(const Key& key, const CacheItem& item);
 
     /// @brief Eviction event handler.
     /// @details Removes the item from the segment it belongs to.
-    /// @param item The key of the item that was evicted.
-    void on_evict(const Key& item);
+    /// @param key The key that was evicted.
+    /// @param item The item that was evicted.
+    void on_evict(const Key& key, const CacheItem& item);
 
     /// @brief Get an iterator to the first item that should be evicted.
     /// @details Considering that the keys are ordered internally from most-recently used
