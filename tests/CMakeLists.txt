@@ -12,8 +12,12 @@ target_link_libraries(cachemere_tests
 
 target_sources(cachemere_tests
     PRIVATE
+        src/count_cache_tests.cpp
+        src/memory_cache_tests.cpp
         src/cache_tests.cpp
         src/measurement_tests.cpp
+        src/policy/constraint_count_tests.cpp
+        src/policy/constraint_memory_tests.cpp
         src/policy/eviction_lru_tests.cpp
         src/policy/eviction_gdsf_tests.cpp
         src/policy/eviction_segmented_lru_tests.cpp

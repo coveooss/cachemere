@@ -54,32 +54,33 @@ template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>
     m_frequency_sketch = detail::CountingBloomFilter<Key>{cardinality};
 }
 
-template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_insert(const CacheItem& item)
+template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_insert(const Key& key, const CacheItem& item)
 {
-    m_frequency_sketch.add(item.m_key);
+    m_frequency_sketch.add(key);
 
-    PrioritySetIt it                     = m_priority_set.emplace(std::ref(item.m_key), get_h_coefficient(item));
-    m_iterator_map[std::ref(item.m_key)] = std::move(it);
+    PrioritySetIt it              = m_priority_set.emplace(std::ref(key), get_h_coefficient(key, item));
+    m_iterator_map[std::ref(key)] = std::move(it);
 }
 
-template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_update(const CacheItem& item)
+template<class Key, class Value, class Cost>
+void EvictionGDSF<Key, Value, Cost>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
 {
-    on_cache_hit(item);
+    on_cache_hit(key, new_item);
 }
 
-template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_cache_hit(const CacheItem& item)
+template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_cache_hit(const Key& key, const CacheItem& item)
 {
-    auto keyref_and_it = m_iterator_map.find(std::ref(item.m_key));
+    auto keyref_and_it = m_iterator_map.find(std::ref(key));
     assert(keyref_and_it != m_iterator_map.end());
 
     PrioritySetIt it = keyref_and_it->second;
 
     m_priority_set.erase(it);
 
-    on_insert(item);
+    on_insert(key, item);
 }
 
-template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_evict(const Key& key)
+template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>::on_evict(const Key& key, const CacheItem& /* item */)
 {
     auto keyref_and_it = m_iterator_map.find(std::ref(key));
     assert(keyref_and_it != m_iterator_map.end());
@@ -103,10 +104,10 @@ template<class Key, class Value, class Cost> auto EvictionGDSF<Key, Value, Cost>
     return VictimIterator{std::move(m_priority_set.end())};
 }
 
-template<class Key, class Value, class Cost> double EvictionGDSF<Key, Value, Cost>::get_h_coefficient(const CacheItem& item) const noexcept
+template<class Key, class Value, class Cost> double EvictionGDSF<Key, Value, Cost>::get_h_coefficient(const Key& key, const CacheItem& item) const noexcept
 {
     return static_cast<double>(m_clock) +
-           static_cast<double>(m_frequency_sketch.estimate(item.m_key)) * (static_cast<double>(m_measure_cost(item)) / static_cast<double>(item.m_total_size));
+           static_cast<double>(m_frequency_sketch.estimate(key)) * (static_cast<double>(m_measure_cost(key, item)) / static_cast<double>(item.m_total_size));
 }
 
 }  // namespace cachemere::policy

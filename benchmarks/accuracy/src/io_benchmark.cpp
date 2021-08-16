@@ -136,10 +136,10 @@ INSTANTIATE_TEST_SUITE_P(AccuracyBenchmark, CacheSizeFixture, testing::ValuesIn(
 
 TEST_P(CacheSizeFixture, IO_LRU)
 {
-    using LRUCache = cachemere::presets::LRUCache<std::string,
-                                                  std::shared_ptr<Article>,
-                                                  cachemere::measurement::Size<Article>,
-                                                  cachemere::measurement::CapacityDynamicallyAllocated<std::string>>;
+    using LRUCache = cachemere::presets::memory::LRUCache<std::string,
+                                                          std::shared_ptr<Article>,
+                                                          cachemere::measurement::Size<Article>,
+                                                          cachemere::measurement::CapacityDynamicallyAllocated<std::string>>;
 
     const uint32_t cache_size = GetParam();
     auto           cache      = std::make_shared<LRUCache>(cache_size);
@@ -148,10 +148,10 @@ TEST_P(CacheSizeFixture, IO_LRU)
 
 TEST_P(CacheSizeFixture, IO_TINYLFU)
 {
-    using TLFUCache = cachemere::presets::TinyLFUCache<std::string,
-                                                       std::shared_ptr<Article>,
-                                                       cachemere::measurement::Size<Article>,
-                                                       cachemere::measurement::CapacityDynamicallyAllocated<std::string>>;
+    using TLFUCache = cachemere::presets::memory::TinyLFUCache<std::string,
+                                                               std::shared_ptr<Article>,
+                                                               cachemere::measurement::Size<Article>,
+                                                               cachemere::measurement::CapacityDynamicallyAllocated<std::string>>;
 
     const uint32_t cache_size = GetParam();
     auto           cache      = std::make_shared<TLFUCache>(cache_size);
@@ -162,17 +162,17 @@ TEST_P(CacheSizeFixture, IO_TINYLFU)
 TEST_P(CacheSizeFixture, IO_GDSF_CONSTANT_COST)
 {
     struct ConstantCost {
-        double operator()(const cachemere::Item<std::string, std::shared_ptr<Article>>& /* item */)
+        double operator()(const std::string& /* key */, const cachemere::Item<std::shared_ptr<Article>>& /* item */)
         {
             return 1;
         }
     };
 
-    using GDSFCache = cachemere::presets::CustomCostCache<std::string,
-                                                          std::shared_ptr<Article>,
-                                                          ConstantCost,
-                                                          cachemere::measurement::Size<Article>,
-                                                          cachemere::measurement::CapacityDynamicallyAllocated<std::string>>;
+    using GDSFCache = cachemere::presets::memory::CustomCostCache<std::string,
+                                                                  std::shared_ptr<Article>,
+                                                                  ConstantCost,
+                                                                  cachemere::measurement::Size<Article>,
+                                                                  cachemere::measurement::CapacityDynamicallyAllocated<std::string>>;
 
     const uint32_t cache_size = GetParam();
 
@@ -184,17 +184,17 @@ TEST_P(CacheSizeFixture, IO_GDSF_CONSTANT_COST)
 TEST_P(CacheSizeFixture, IO_GDSF_LATENCY_COST)
 {
     struct QuadraticCost {
-        double operator()(const cachemere::Item<std::string, std::shared_ptr<Article>>& item)
+        double operator()(const std::string& /* key */, const cachemere::Item<std::shared_ptr<Article>>& item)
         {
             return static_cast<double>(item.m_value->m_latency_ms);
         }
     };
 
-    using GDSFCache = cachemere::presets::CustomCostCache<std::string,
-                                                          std::shared_ptr<Article>,
-                                                          QuadraticCost,
-                                                          cachemere::measurement::Size<Article>,
-                                                          cachemere::measurement::CapacityDynamicallyAllocated<std::string>>;
+    using GDSFCache = cachemere::presets::memory::CustomCostCache<std::string,
+                                                                  std::shared_ptr<Article>,
+                                                                  QuadraticCost,
+                                                                  cachemere::measurement::Size<Article>,
+                                                                  cachemere::measurement::CapacityDynamicallyAllocated<std::string>>;
 
     const uint32_t cache_size = GetParam();
 

@@ -2,17 +2,31 @@
 #define CACHEMERE_CACHE_H
 
 #include <cstdint>
-#include <map>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <unordered_map>
+#include <vector>
+
+#ifdef _WIN32
+#    pragma warning(push)
+#    pragma warning(disable : 4244)
+#    pragma warning(disable : 4018)
+#endif
 
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
+#include <boost/hana.hpp>
+
+#ifdef _WIN32
+#    pragma warning(pop)
+#endif
 
 #include "item.h"
 #include "measurement.h"
+#include "detail/traits.h"
 
 /// @brief Root namespace
 namespace cachemere {
@@ -26,6 +40,7 @@ namespace cachemere {
 /// @tparam Value The type of the items stored in the cache.
 /// @tparam InsertionPolicy A template parameterized by `Key` and `Value` implementing the insertion policy interface.
 /// @tparam EvictionPolicy A template parameterized by `Key` and `Value` implementing the eviction policy interface.
+/// @tparam ConstraintPolicy A template parameterized by `Key` and `Value` implementing the constraint policy interface.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam ThreadSafe Whether to enable locking. When true, all cache operations will be protected by a lock. `true` by default.
@@ -35,27 +50,30 @@ template<typename Key,
          class InsertionPolicy,
          template<class, class>
          class EvictionPolicy,
+         template<class, class>
+         class ConstraintPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
          bool ThreadSafe       = true>
 class Cache
 {
 public:
-    using MyInsertionPolicy = InsertionPolicy<Key, Value>;
-    using MyEvictionPolicy  = EvictionPolicy<Key, Value>;
-    using CacheType         = Cache<Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe>;
+    using MyInsertionPolicy  = InsertionPolicy<Key, Value>;
+    using MyEvictionPolicy   = EvictionPolicy<Key, Value>;
+    using MyConstraintPolicy = ConstraintPolicy<Key, Value>;
+    using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe>;
 
     /// @brief Simple constructor.
-    /// @param maximum_size The maximum amount of memory to be used by the cache (in bytes).
-    /// @param statistics_window_size The length of the cache history to be kept for statistics.
-    Cache(size_t maximum_size, uint32_t statistics_window_size = 1000);
+    /// @param args Arguments to forward to the constraint policy constructor.
+    template<typename... Args> Cache(Args... args);
 
     /// @brief Constructor to initialize the cache with a set of items.
-    /// @details Will insert items in order in the cache until `maximum_size` is reached.
-    /// @param collection The collection to use to initialize the cache - must be either a map or a collection of pairs.
-    /// @param maximum_size The maximum amount of memory to be used by the cache (in bytes).
-    /// @param statistics_window_size The length of the cache history to be kept for statistics.
-    template<typename C> Cache(C& collection, size_t maximum_size, uint32_t statistics_window_size = 1000);
+    /// @details Will insert items in order in the cache as long as the constraint is satisfied.
+    /// @param collection The collection to use to initialize the cache - must be a collection of pairs.
+    /// @param args Tuple of arguments to forward to the constraint policy constructor.
+    /// @warning Items that are imported from the collection are moved out of the container and left
+    ///          in an unspecified state. The container itself can be reused after clearing it.
+    template<typename C, typename... Args> Cache(C& collection, std::tuple<Args...> args);
 
     /// @brief Check whether a given key is stored in the cache.
     /// @param key The key whose presence to test.
@@ -63,9 +81,11 @@ public:
     bool contains(const Key& key) const;
 
     /// @brief Find a given key in cache returning the associated value when it exists.
+    /// @details If the key exists in cache but is marked as invalidated by the constraint policy,
+    ///          it will be evicted from the cache immediately.
     /// @param key The key to lookup.
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
-    std::optional<Value> find(const Key& key) const;
+    std::optional<Value> find(const Key& key);
 
     /// @brief Copy the cache contents in the provided container.
     /// @details The container should conform to either of the STL's interfaces for associative
@@ -110,30 +130,29 @@ public:
     /// @return How many items are in cache.
     [[nodiscard]] size_t number_of_items() const;
 
-    /// @brief Get the amount of memory currently being used by cache items.
-    /// @details This method returns the amount of memory used by the cache. For every item,
-    ///          the cache stores the key and its value, along with an additional copy of the key.
-    ///          This brings the total memory used by an item to `2 * MeasureKey(key) + MeasureValue(value)`.
-    /// @return The current memory usage, in bytes.
-    [[nodiscard]] size_t size() const;
-
-    /// @brief Get the maximum amount of memory that can be used by the cache.
-    /// @details Once this size is reached, any future successful insertions will trigger
-    ///          evictions of one or more items.
-    /// @return The maximum size, in bytes.
-    [[nodiscard]] size_t maximum_size() const;
-
-    /// @brief Set the maximum amount of memory that can be used by the cache.
-    /// @details If the new maximum size is inferior to the maximum, the cache will resize itself and evict items
-    ///          until the new maximum is respected.
-    /// @param max_size The new maximum size, in bytes.
-    void set_maximum_size(size_t max_size);
+    /// @brief Update the cache constraint.
+    /// @details Forwards the update to the constraint and evicts items from the cache until the
+    ///          constraint is satisfied.
+    /// @param args Arguments to forward to the `Constraint::update()` .
+    template<typename... Args> void update_constraint(Args... args);
 
     /// @brief Get a reference to the insertion policy used by the cache.
     [[nodiscard]] MyInsertionPolicy& insertion_policy();
 
+    /// @brief Get a const reference to the insertion policy used by the cache.
+    [[nodiscard]] const MyInsertionPolicy& insertion_policy() const;
+
     /// @brief Get a reference to the eviction policy used by the cache.
     [[nodiscard]] MyEvictionPolicy& eviction_policy();
+
+    /// @brief Get a const reference to the eviction policy used by the cache.
+    [[nodiscard]] const MyEvictionPolicy& eviction_policy() const;
+
+    /// @brief Get a reference to the constraint policy used by the cache.
+    [[nodiscard]] MyConstraintPolicy& constraint_policy();
+
+    /// @brief Get a const reference to the constraint policy used by the cache.
+    [[nodiscard]] const MyConstraintPolicy& constraint_policy() const;
 
     /// @brief Compute and return the running hit rate of the cache.
     /// @details The hit rate is computed using a sliding window determined by the sliding window
@@ -148,28 +167,38 @@ public:
     /// @return The byte hit rate, in bytes.
     [[nodiscard]] double byte_hit_rate() const;
 
+    /// @brief Get the size of the sliding window used for computing statistics.
+    /// @return The size of the statistics sliding window.
+    [[nodiscard]] uint32_t statistics_window_size() const;
+
+    /// @brief Set the size of the sliding window used for computing statistics.
+    /// @warning This will reset the access log, so cache accesses made prior to calling this will not be
+    ///          counted in the statistics.
+    /// @param window_size The desired statistics window size.
+    void statistics_window_size(uint32_t window_size);
+
 protected:
     std::unique_lock<std::recursive_mutex> lock() const;
     template<typename C> void              import(C& collection);
 
 private:
-    using CacheItem = Item<Key, Value>;
-    using DataMap   = std::map<Key, CacheItem>;
+    using CacheItem = Item<Value>;
+    using DataMap   = std::unordered_map<Key, CacheItem>;
     using DataMapIt = typename DataMap::iterator;
 
-    using MyInsertionPolicySP = std::unique_ptr<MyInsertionPolicy>;
-    using MyEvictionPolicySP  = std::unique_ptr<MyEvictionPolicy>;
+    using MyInsertionPolicySP  = std::unique_ptr<MyInsertionPolicy>;
+    using MyEvictionPolicySP   = std::unique_ptr<MyEvictionPolicy>;
+    using MyConstraintPolicySP = std::unique_ptr<MyConstraintPolicy>;
 
     using RollingMeanTag        = boost::accumulators::tag::rolling_mean;
     using RollingMeanStatistics = boost::accumulators::stats<RollingMeanTag>;
     using MeanAccumulator       = boost::accumulators::accumulator_set<uint32_t, RollingMeanStatistics>;
 
-    size_t   m_current_size;
-    size_t   m_maximum_size;
-    uint32_t m_statistics_window_size;
+    uint32_t m_statistics_window_size = 1000;
 
-    MyInsertionPolicySP m_insertion_policy;
-    MyEvictionPolicySP  m_eviction_policy;
+    MyInsertionPolicySP  m_insertion_policy;
+    MyEvictionPolicySP   m_eviction_policy;
+    MyConstraintPolicySP m_constraint_policy;
 
     MeasureKey   m_measure_key;
     MeasureValue m_measure_value;
@@ -180,20 +209,21 @@ private:
     mutable MeanAccumulator m_hit_rate_acc;
     mutable MeanAccumulator m_byte_hit_rate_acc;
 
-    bool   compare_evict(const Key& candidate_key, size_t candidate_size);
-    void   insert_or_update(Key&& key, Value&& value, size_t key_size, size_t value_size);
-    size_t free_amount(size_t amount_to_free);
-    void   remove(DataMapIt it);
+    bool check_insert(const Key& candidate_key, const CacheItem& item);
+    bool check_replace(const Key& candidate_key, const CacheItem& old_item, const CacheItem& new_item);
 
-    void on_insert(const CacheItem& item) const;
-    void on_update(const CacheItem& item) const;
-    void on_cache_hit(const CacheItem& item) const;
+    void insert_or_update(Key&& key, CacheItem&& value);
+    void remove(DataMapIt it);
+
+    void on_insert(const Key& key, const CacheItem& item) const;
+    void on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item) const;
+    void on_cache_hit(const Key& key, const CacheItem& item) const;
     void on_cache_miss(const Key& key) const;
-    void on_evict(const Key& key) const;
+    void on_evict(const Key& key, const CacheItem& item) const;
 };
 
-template<typename K, typename V, template<class, class> class I, template<class, class> class E, typename SV, typename SK, bool TS>
-void swap(Cache<K, V, I, E, SV, SK, TS>& lhs, Cache<K, V, I, E, SV, SK, TS>& rhs);
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+void swap(Cache<K, V, I, E, C, SV, SK, TS>& lhs, Cache<K, V, I, E, C, SV, SK, TS>& rhs);
 
 }  // namespace cachemere
 

@@ -1,10 +1,21 @@
 #ifndef CACHEMERE_BLOOM_FILTER_H
 #define CACHEMERE_BLOOM_FILTER_H
 
-#include <boost/dynamic_bitset.hpp>
 #include <cstdint>
 #include <functional>
 #include <random>
+
+#ifdef _WIN32
+#    pragma warning(push)
+#    pragma warning(disable : 4244)
+#    pragma warning(disable : 4018)
+#endif
+
+#include <boost/dynamic_bitset.hpp>
+
+#ifdef _WIN32
+#    pragma warning(pop)
+#endif
 
 #include "hash_mixer.h"
 

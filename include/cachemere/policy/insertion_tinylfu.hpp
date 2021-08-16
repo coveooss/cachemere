@@ -6,9 +6,9 @@ template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::clear(
     m_frequency_sketch.clear();
 }
 
-template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::on_cache_hit(const CacheItem& item)
+template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
 {
-    touch_item(item.m_key);
+    touch_item(key);
 }
 
 template<typename Key, typename Value> void InsertionTinyLFU<Key, Value>::on_cache_miss(const Key& key)

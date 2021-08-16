@@ -17,7 +17,7 @@ namespace cachemere::policy {
 ///          Items are then evicted starting with the item with the smallest coefficient.
 /// @tparam Key The type of the keys used to identify items in the cache.
 /// @tparam Value The type of the values stored in the cache.
-/// @tparam Cost A functor taking a `const Item<Key, Value>&` returning the cost to load this item in cache.
+/// @tparam Cost A functor taking a a `Key&` and a `const Item<Value>&` returning the cost to load this item in cache.
 template<typename Key, typename Value, typename Cost> class EvictionGDSF
 {
 private:
@@ -36,7 +36,7 @@ private:
     using PrioritySetIt = typename PrioritySet::const_iterator;
 
 public:
-    using CacheItem = cachemere::Item<Key, Value>;
+    using CacheItem = Item<Value>;
 
     /// @brief Iterator for iterating over cache items in the order they should be
     ///        evicted.
@@ -68,23 +68,28 @@ public:
 
     /// @brief Insertion event handler.
     /// @details Computes a coefficient for the item and inserts it in the priority queue.
+    /// @param key The key of the inserted item.
     /// @param item The item that has been inserted in cache.
-    void on_insert(const CacheItem& item);
+    void on_insert(const Key& key, const CacheItem& item);
 
     /// @brief Update event handler.
     /// @details Updates the coefficient for this item and changes its position in the priority queue.
-    /// @param item The item that has been updated in the cache.
-    void on_update(const CacheItem& item);
+    /// @param key The key that has been updated in the cache.
+    /// @param old_item The old value for this key.
+    /// @param new_item The new value for this key.
+    void on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
 
     /// @brief Cache hit event handler.
     /// @details Updates the coefficient for this item and changes its position in the priority queue.
+    /// @param key The key that has been hit.
     /// @param item The item that has been hit.
-    void on_cache_hit(const CacheItem& item);
+    void on_cache_hit(const Key& key, const CacheItem& item);
 
     /// @brief Eviction event handler.
     /// @details Removes the item from the priority queue.
-    /// @param item The key of the item that was evicted.
-    void on_evict(const Key& key);
+    /// @param key The key that was evicted.
+    /// @param item The item that was evicted.
+    void on_evict(const Key& key, const CacheItem& item);
 
     /// @brief Get an iterator to the first item that should be evicted.
     /// @return An item iterator.
@@ -108,7 +113,7 @@ private:
 
     uint64_t m_clock{0};
 
-    [[nodiscard]] double get_h_coefficient(const CacheItem& item) const noexcept;
+    [[nodiscard]] double get_h_coefficient(const Key& key, const CacheItem& item) const noexcept;
 };
 
 }  // namespace cachemere::policy

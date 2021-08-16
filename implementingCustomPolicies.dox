@@ -4,18 +4,18 @@ Implementing Custom Policies {#implementingCustomPolicies}
 This page is meant to guide you through the implementation of custom policies.
 ## Shared Characteristics
 ### Construction Requirements
-Both types of policies _must_ be [default-constructible](http://www.cplusplus.com/reference/type_traits/is_default_constructible/), because the cache is responsible for instanciating them.
+Insertion and eviction policies _must_ be [default-constructible](http://www.cplusplus.com/reference/type_traits/is_default_constructible/). The constraint policy may take parameters, these parameters will be forwarded to the policy from the cache constructor.
 ### Event Handlers
 The policies _may_ define the following event handlers to be notified of changes in the cache. These handlers do not all need to be implemented; a policy only needs to define the handlers that are relevant to its implementation. The cache will detect available handlers on its policies at compile-time, and will only call those that are defined.
-* `void on_insert(cachemere::detail::Item<K, V>& item)`
+* `void on_insert(K& key, cachemere::detail::Item<V>& item)`
 
     Called immediately after a successful insertion in cache.
 
-* `void on_update(cachemere::detail::Item<K, V>& item)`
+* `void on_update(K& key, cachemere::detail::Item<V>& item)`
 
     Called immediately after an insertion of an item that was already in cache (which has the effect of updating its value).
 
-* `void on_cache_hit(cachemere::detail::Item<K, V>& item)`
+* `void on_cache_hit(K& key, cachemere::detail::Item<V>& item)`
 
     Called immediately after a cache hit (a successful call to `cachemere::Cache::find`).
 
@@ -39,6 +39,26 @@ In addition, policies keeping references to values **must** swap the held refere
 ### Concurrency Requirements
 Policies do not need to take any steps to ensure thread-safety. The cache will properly protect policies to ensure no concurrent operations occur.
 
+## Constraint Policy
+
+In addition to the shared requirements above, a constraint policy must implement the following methods in order to be valid:
+
+* `bool can_add(const Key& key, const Item<Value>& item)`
+
+    Should return `true` if the item can be inserted in the cache while still satisfying the constraint.
+    @note Returning `true` guarantees that the object matching the key will be inserted in cache.
+
+* `bool can_replace(const Key& key, const Item<Value>& old_item, const Item<Value>& new_item)`
+
+    Should return `true` if the value associated with `key` can be changed from `old_item` to `new_item` while still
+    satisfying the constraint.
+    @note Returning `true` guarantees that the object matching the key will be updated.
+
+* `bool is_satisfied()`
+
+    Should return `true` if the constraint is currently satisfied. The cache uses this method after a constraint update (e.g. a cache resize)
+    to determine whether items should be evicted to make some room.
+
 ## Insertion Policy
 
 In addition to the shared requirements above, an insertion policy must implement the following methods in order to be valid:
@@ -51,7 +71,7 @@ In addition to the shared requirements above, an insertion policy must implement
 * `bool should_replace(const Key& victim, const Key& candidate)`
 
     Should return `true` if the policy states that the candidate should replace the victim in cache.
-    @note Returning `true` guarantees that the object matching the `candidate` key will be inserted in cache.
+    @note Returning `true` does not guarantee that the object matching the `candidate` key will be inserted in cache.
 
 ## Eviction Policy
 
