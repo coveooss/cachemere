@@ -87,7 +87,7 @@ TinyLFU Cache</h2>
 <div class="line"><span class="keyword">using</span> ValueMeasure = <a class="code" href="structcachemere_1_1measurement_1_1CapacityDynamicallyAllocated.html">cachemere::measurement::CapacityDynamicallyAllocated&lt;Value&gt;</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// TinyLFUCache is an alias for Cache&lt;policy::InsertionTinyLFU, policy::EvictionSegmentedLRU&gt;.</span></div>
-<div class="line"><span class="keyword">using</span> MyCache = <a class="code" href="classcachemere_1_1Cache.html">cachemere::presets::TinyLFUCache&lt;Key, Value, ValueMeasure, KeyMeasure&gt;</a>;</div>
+<div class="line"><span class="keyword">using</span> MyCache = cachemere::presets::TinyLFUCache&lt;Key, Value, ValueMeasure, KeyMeasure&gt;;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
@@ -114,16 +114,14 @@ Background</h2>
 <p>Cachemere is designed with the explicit goal of providing a single reusable cache that can be customized using different schemes, allowing applications to get the maintainability benefits of a single cache implementation, while at the same time getting all the performance benefits of a purpose-built cache.</p>
 <h2><a class="anchor" id="autotoc_md5"></a>
 Modular Policy Design</h2>
-<p>Cachemere tackles this goal in a modular fashion with the concept of <em>policies</em>. A <code><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">cachemere::Cache</a></code> is parameterized by an <b>Insertion Policy</b> and an <b>Eviction Policy</b>.</p>
-<p>Broadly speaking, the job of an <b>Insertion Policy</b> is to determine whether an item should be inserted or kept in cache, while the job of an <b>Eviction Policy</b> is to determine which item(s) should be evicted from the cache. The cache will query its policies when it has to make a decision on whether an item should be added or excluded.</p>
+<p>Cachemere tackles this goal in a modular fashion with the concept of <em>policies</em>. A <code><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">cachemere::Cache</a></code> is parameterized by a <b>Constraint Policy</b>, an <b>Insertion Policy</b>, and an <b>Eviction Policy</b>.</p>
+<p>Broadly speaking, the job of the <b>Constraint Policy</b> is to determine whether an item <em>can</em> be in the cache (e.g. if there is enough free space), the job of an <b>Insertion Policy</b> is to determine whether an item should be inserted or kept in cache, while the job of an <b>Eviction Policy</b> is to determine which item(s) should be evicted from the cache. The cache will query its policies when it has to make a decision on whether an item should be added or excluded.</p>
 <p>This modular design allows for bi-directional code reuse and customization: the core cache implementation can be used with different policies, and the policies can also be used with different cache implementations.</p>
-<p>For instance, instead of using more common policies like Least-Recently Used (LRU), a product might need to use a custom cache that takes the frequency of access as well as the size of the item into consideration when establishing which item to evict. To do this, one could implement a <code>SizeBasedEvictionPolicy</code> and use it with the existing <code><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">cachemere::Cache</a></code>.</p>
-<p>Similarly, imagine a cache that limits the amount of memory it uses. Now, imagine a use case that additionally requires constraining the number of items in the cache. To handle this scenario, you could implement a new Cache object parameterized by these two policies and reuse Cachemere's LRU policy with this Cache object. </p>
+<p>For instance, instead of using more common policies like Least-Recently Used (LRU), a product might need to use a custom cache that takes the frequency of access as well as the size of the item into consideration when establishing which item to evict. To do this, one could implement a <code>SizeBasedEvictionPolicy</code> and use it with the existing <code><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">cachemere::Cache</a></code>. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <div class="ttc" id="astructcachemere_1_1measurement_1_1CapacityDynamicallyAllocated_html"><div class="ttname"><a href="structcachemere_1_1measurement_1_1CapacityDynamicallyAllocated.html">cachemere::measurement::CapacityDynamicallyAllocated</a></div><div class="ttdoc">Get the size of an object via a user-defined capacity() method.</div><div class="ttdef"><b>Definition:</b> measurement.h:20</div></div>
 <div class="ttc" id="astructcachemere_1_1measurement_1_1SizeOf_html"><div class="ttname"><a href="structcachemere_1_1measurement_1_1SizeOf.html">cachemere::measurement::SizeOf</a></div><div class="ttdoc">Get the size of an object via sizeof().</div><div class="ttdef"><b>Definition:</b> measurement.h:15</div></div>
-<div class="ttc" id="aclasscachemere_1_1Cache_html"><div class="ttname"><a href="classcachemere_1_1Cache.html">cachemere::Cache</a></div><div class="ttdoc">Thread-safe memory-restricted cache.</div><div class="ttdef"><b>Definition:</b> cache.h:41</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

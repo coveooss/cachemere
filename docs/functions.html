@@ -77,20 +77,30 @@ $(function() {
 : <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a2067fabe0cc24c1ef4e40f3282b7fa2e">cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt;</a>
 </li>
 <li>byte_hit_rate()
-: <a class="el" href="classcachemere_1_1Cache.html#ad49385469c4833bd05946fd7592bddad">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a0da0df2c6bfc1cb05dbc622414d42318">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_c"></a>- c -</h3><ul>
 <li>Cache()
-: <a class="el" href="classcachemere_1_1Cache.html#ab1006bf2c7d7dc2e4ff711568d47b54a">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a7e58cf1f7e976717e494c2a82930d1a1">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+</li>
+<li>can_add()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#abc4fff6a75d8f03a326621e59ad7f191">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#aee8c78c372568834ad54980cdb56e247">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
+</li>
+<li>can_replace()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#a1118e6af3830582752efa3b815acb5f0">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#a1735f0ccfc58c2907f9afae194473ea2">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
 </li>
 <li>cardinality()
 : <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a310c3a6073af77a01a7630fb548f80a5">cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt;</a>
 </li>
 <li>clear()
-: <a class="el" href="classcachemere_1_1Cache.html#adabd851c8688db0e0f0b065de0e33339">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a95b972ae64515d9073ada458ab439ae6">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#af525ff8b5d16e247b917e15a9d6f67a1">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#ae68ecc9410e5ec2a4f98095e63d751da">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a14e84da980d8c328176bfa985741b913">cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#adb787b9a19a9690554764b2cf1d2a633">cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3bf6a5a86bf45c64a8aa04c02d8b39eb">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
@@ -100,10 +110,19 @@ $(function() {
 , <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a1357c73b332200196865fcb57b103b6d">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
 </li>
 <li>collect_into()
-: <a class="el" href="classcachemere_1_1Cache.html#a5463c76d8627f6c4920a1b09a7a277aa">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a6973ebec90fb7f75b8935e4a2c1d76ca">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+</li>
+<li>constraint_policy()
+: <a class="el" href="classcachemere_1_1Cache.html#afb9e3dd71e1d14a876c6b4118d5d9398">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+</li>
+<li>ConstraintMemory()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#a5174a1188fc21cb7dfd6445176e2babf">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
 </li>
 <li>contains()
-: <a class="el" href="classcachemere_1_1Cache.html#a77cf1d98dd3a82f7dcca7bfac6944940">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a42cc91e6cc65f9fc7bea93572e4ba4a5">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+</li>
+<li>count()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#ac50804794065951c5e1db7429fd69264">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
 </li>
 <li>CountingBloomFilter()
 : <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#ab7efe8a340699f70aafec2160dd8d3fd">cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt;</a>
@@ -123,14 +142,14 @@ $(function() {
 : <a class="el" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a836f02f188ca1523dff0613c50824739">cachemere::policy::detail::CountingBloomFilter&lt; Item, ItemHash &gt;</a>
 </li>
 <li>eviction_policy()
-: <a class="el" href="classcachemere_1_1Cache.html#a0980e5de1e0878ef73a0034f05d1b721">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a8bfcd871ae6600bea0fdd8bafd7ea87a">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_f"></a>- f -</h3><ul>
 <li>find()
-: <a class="el" href="classcachemere_1_1Cache.html#a054b70f3b46e06c9efb2446aeb26adf4">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 </ul>
 
@@ -140,42 +159,49 @@ $(function() {
 : <a class="el" href="classcachemere_1_1policy_1_1detail_1_1HashMixer.html#a01f51497cd3fafa571c8f0dab6715130">cachemere::policy::detail::HashMixer&lt; Key, KeyHash &gt;</a>
 </li>
 <li>hit_rate()
-: <a class="el" href="classcachemere_1_1Cache.html#a39ce17189a6823a87ff068e7b3a1d82a">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a80fef5d0a61973e6c21b9c720a72f0e0">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_i"></a>- i -</h3><ul>
 <li>insert()
-: <a class="el" href="classcachemere_1_1Cache.html#aaaca1cab732c06269de5e6f506f8f502">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a2b2cb36c96d61e71dc72352c62114323">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 <li>insertion_policy()
-: <a class="el" href="classcachemere_1_1Cache.html#ada7b34b985a815b00f9b2b0a60be129e">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a540e40f335e2f83e91495ae6d10ef7d9">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+</li>
+<li>is_satisfied()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#a3f1914ca67b4c96bc7df2899f229f397">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#a7b9b712bbe37319074d0ff77741f453f">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_m"></a>- m -</h3><ul>
-<li>m_key
-: <a class="el" href="structcachemere_1_1Item.html#aedb225a72b07b2c6fca422b8e48f2592">cachemere::Item&lt; Key, Value &gt;</a>
-</li>
 <li>m_key_size
-: <a class="el" href="structcachemere_1_1Item.html#a030cd2638a41282a76202b20a2114765">cachemere::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#a3f2d1eaed5109b656ba4e57f712ebe79">cachemere::Item&lt; Value &gt;</a>
 </li>
 <li>m_total_size
-: <a class="el" href="structcachemere_1_1Item.html#a895433f7a68b0f48b5ef8860a975454d">cachemere::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#a5927416e04b41f8e0a7cf65b1e7a2d53">cachemere::Item&lt; Value &gt;</a>
 </li>
 <li>m_value
-: <a class="el" href="structcachemere_1_1Item.html#af316cde32b203cab940612995300d73d">cachemere::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#a25a8a9a8d879a82291919144d777bf7b">cachemere::Item&lt; Value &gt;</a>
 </li>
 <li>m_value_size
-: <a class="el" href="structcachemere_1_1Item.html#a9406db7b53687268c0390624aae571e1">cachemere::Item&lt; Key, Value &gt;</a>
+: <a class="el" href="structcachemere_1_1Item.html#af66eaddb89ab985c75d141dcb255e369">cachemere::Item&lt; Value &gt;</a>
 </li>
-<li>maximum_size()
-: <a class="el" href="classcachemere_1_1Cache.html#a1b2ffb6cdc72ed03bb22a7d9157ac96c">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+<li>maximum_count()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#a0f4cc098447d39578b26fea1079c3bcd">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
+</li>
+<li>maximum_memory()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#a6c43e123bee1f8c89c00c5166bfe33ff">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
 </li>
 <li>maybe_contains()
 : <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a6e18f5918524813b94a81b039e84feaf">cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt;</a>
+</li>
+<li>memory()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#a6b36dc852ab313d5a3b3582009daaf70">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
 </li>
 <li>memory_used()
 : <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#ac9b04b1a85ae1aed9061337fd9f1afdf">cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt;</a>
@@ -186,35 +212,40 @@ $(function() {
 
 <h3><a id="index_n"></a>- n -</h3><ul>
 <li>number_of_items()
-: <a class="el" href="classcachemere_1_1Cache.html#aae5d5865c872d9a5a7ba98b8a38ab7b2">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a2e56ba870329889bb7a1e30415be2f48">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_o"></a>- o -</h3><ul>
 <li>on_cache_hit()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a5109e5d0271c939c93c00afaf30f9d83">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#ad02589d2e871775ea77fa48d72610421">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a66203a81f3e53fdb901ace9d9bd1c12f">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#aa693c74bd2381a46befe7c248f818888">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a2a8a8dffe3bb9ebb2d2966e741a3f6e7">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#a1ec334013a1f99d4de9c2fc2249db430">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#abf57b27da1c33805867fde862a5e56d3">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a8740266743a566c50dac7b5e036b8f6f">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
 </li>
 <li>on_cache_miss()
 : <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a38f2786111b95130d48c9b518aa2211c">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
 </li>
 <li>on_evict()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a34afb911f31e1ba6c0f859ef67b6b2f5">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#a56b7e151fcd9bfa0a723d163884f5d47">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a09c434294c5b48d50fbb17f920bf3f7b">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#a1d8c8f76fd2cd9a4944709296b44d90e">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#acecd13d1ecb84c592088044b43061556">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a81a206bdfbf7321c7d770def33265102">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#aa4f00496dd045332193fc560d67fc3bb">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ab9b1c772b58228729ac5888227c12d11">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
 <li>on_insert()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#ae8adfb25809521d6776619101eb8a2ec">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#ac3e011835a562e9c2059ea72f4ce979c">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#aed349d9266d38c9f5ab3851a0a57aba8">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#a10f509de8ab384a3a528748a1e4f0880">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#a3a358f29c4694b7c29b690f340385b27">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3e181e3037eab1affb2d95c0792351e4">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#afd97b717ee93fdabcde3b985ebfc0c07">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a28ce12c7a654ecd7502185f8325d2f3a">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
 <li>on_update()
-: <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a1d50cb9cfe5704916478bc9900617135">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#a8925052de1b9e8318b2f8e49f78ee120">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
-, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a0a5f6be75f07d9212a3acf070d43428b">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#ae6a8083c84d3d75802c3b54c153c3f05">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#abd73c915a52704ed799d867ebaa8e5aa">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html#aa2b082191fd53e14db6c9398721af16c">cachemere::policy::EvictionLRU&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a3f687cc3ae4fb59ab070e27545573a3c">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
 <li>operator()()
 : <a class="el" href="classcachemere_1_1policy_1_1detail_1_1HashMixer.html#a279d101a3b67bb5df1d5754734c2bfb8">cachemere::policy::detail::HashMixer&lt; Key, KeyHash &gt;</a>
@@ -224,10 +255,10 @@ $(function() {
 
 <h3><a id="index_r"></a>- r -</h3><ul>
 <li>remove()
-: <a class="el" href="classcachemere_1_1Cache.html#aa9f722affb48ec87cff3ba7c83f9ac7b">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 <li>retain()
-: <a class="el" href="classcachemere_1_1Cache.html#a02d1be364fcf98e4ae7b3de88e1fed9a">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#a288411b8f38e4c7b507805e9d04edf24">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 </ul>
 
@@ -241,9 +272,6 @@ $(function() {
 : <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a03a8d67d1c18cdd6ca28ee4060f1fbb1">cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a28cc61a4dfecb2b1713514c8e2251c9d">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
 </li>
-<li>set_maximum_size()
-: <a class="el" href="classcachemere_1_1Cache.html#a48c8beb59d70b800d9ba545ec1b2230e">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
-</li>
 <li>set_protected_segment_size()
 : <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ae27e735292643a89a0f2257750ab30ae">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</a>
 </li>
@@ -255,11 +283,22 @@ $(function() {
 : <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html#aab44013d143565cc341cd045ecb73108">cachemere::policy::InsertionAlways&lt; Key, Value &gt;</a>
 , <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a9179a8e12a48c2bacdbbb91e69ce3a95">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</a>
 </li>
-<li>size()
-: <a class="el" href="classcachemere_1_1Cache.html#afdfa08d81e3b165b0465a08c8eeeecc8">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+<li>statistics_window_size()
+: <a class="el" href="classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 <li>swap()
-: <a class="el" href="classcachemere_1_1Cache.html#a7c970feae46340e67211fee443c93ed8">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+: <a class="el" href="classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
+</li>
+</ul>
+
+
+<h3><a id="index_u"></a>- u -</h3><ul>
+<li>update()
+: <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html#a06e0e1ff9a8386a90a24fda6b0a879d3">cachemere::policy::ConstraintCount&lt; Key, Value &gt;</a>
+, <a class="el" href="classcachemere_1_1policy_1_1ConstraintMemory.html#aff3d078f56407c71c053115368165f88">cachemere::policy::ConstraintMemory&lt; Key, Value &gt;</a>
+</li>
+<li>update_constraint()
+: <a class="el" href="classcachemere_1_1Cache.html#ae08f40df4f0a448c6659a156195fb5ed">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</a>
 </li>
 </ul>
 

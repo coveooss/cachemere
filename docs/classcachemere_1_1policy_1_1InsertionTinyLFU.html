@@ -82,9 +82,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ac1f4c32f63bf268424240738d584dfea"><td class="memItemLeft" align="right" valign="top"><a id="ac1f4c32f63bf268424240738d584dfea"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheItem</b> = <a class="el" href="structcachemere_1_1Item.html">cachemere::Item</a>&lt; Key, Value &gt;</td></tr>
-<tr class="separator:ac1f4c32f63bf268424240738d584dfea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87b7528c2c6673ed0b7954ffbbcc9758"><td class="memItemLeft" align="right" valign="top"><a id="a87b7528c2c6673ed0b7954ffbbcc9758"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheItem</b> = <a class="el" href="structcachemere_1_1Item.html">cachemere::Item</a>&lt; Value &gt;</td></tr>
+<tr class="separator:a87b7528c2c6673ed0b7954ffbbcc9758"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -92,9 +92,9 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a1357c73b332200196865fcb57b103b6d">clear</a> ()</td></tr>
 <tr class="memdesc:a1357c73b332200196865fcb57b103b6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the policy. <br /></td></tr>
 <tr class="separator:a1357c73b332200196865fcb57b103b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa693c74bd2381a46befe7c248f818888"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#aa693c74bd2381a46befe7c248f818888">on_cache_hit</a> (const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
-<tr class="memdesc:aa693c74bd2381a46befe7c248f818888"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#aa693c74bd2381a46befe7c248f818888">More...</a><br /></td></tr>
-<tr class="separator:aa693c74bd2381a46befe7c248f818888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8740266743a566c50dac7b5e036b8f6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a8740266743a566c50dac7b5e036b8f6f">on_cache_hit</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
+<tr class="memdesc:a8740266743a566c50dac7b5e036b8f6f"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a8740266743a566c50dac7b5e036b8f6f">More...</a><br /></td></tr>
+<tr class="separator:a8740266743a566c50dac7b5e036b8f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38f2786111b95130d48c9b518aa2211c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a38f2786111b95130d48c9b518aa2211c">on_cache_miss</a> (const Key &amp;key)</td></tr>
 <tr class="memdesc:a38f2786111b95130d48c9b518aa2211c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> miss event handler.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a38f2786111b95130d48c9b518aa2211c">More...</a><br /></td></tr>
 <tr class="separator:a38f2786111b95130d48c9b518aa2211c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,8 +115,8 @@ class cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</h3>
 <p>Tiny Least Frequently Used (TinyLFU) insertion policy. </p>
 <p>TinyLFU is a state-of-the-art insertion policy that helps determine whether a given item should be inserted and/or kept in cache while using a constant amount of memory. The policy uses a combination of frequency sketches to keep track of items that have yet to be inserted in the cache, and uses those sketches to decide which items should me prioritized. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa693c74bd2381a46befe7c248f818888"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa693c74bd2381a46befe7c248f818888">&#9670;&nbsp;</a></span>on_cache_hit()</h2>
+<a id="a8740266743a566c50dac7b5e036b8f6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8740266743a566c50dac7b5e036b8f6f">&#9670;&nbsp;</a></span>on_cache_hit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,9 +126,19 @@ template&lt;typename Key , typename Value &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, Value &gt;::on_cache_hit </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
-          <td class="paramname"><em>item</em></td><td>)</td>
+          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -136,6 +146,7 @@ template&lt;typename Key , typename Value &gt; </div>
 <p><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler. </p>
 <p>Updates the internal frequency sketches for the given item. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">key</td><td>The key that has been hit. </td></tr>
     <tr><td class="paramname">item</td><td>The item that has been hit. </td></tr>
   </table>
   </dd>
@@ -259,6 +270,7 @@ template&lt;typename Key , typename Value &gt; </div>
 <p>TinyLFU will use its internal sketches to build a frequency estimation for both keys. It will return <code>true</code> only if it estimates that the candidate key is accessed more frequently than the victim key. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">victim</td><td>The key of the victim the candidate will be compared to. </td></tr>
+    <tr><td class="paramname">candidate</td><td>The replacement candidate. </td></tr>
   </table>
   </dd>
 </dl>

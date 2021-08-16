@@ -4,5 +4,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node0 [label="cachemere::policy::\ldetail::CountingBloomFilter\l\< Key \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html",tooltip=" "];
+  Node0 [label="cachemere::policy::\ldetail::BloomFilter\l\< Item, ItemHash \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcachemere_1_1policy_1_1detail_1_1BloomFilter.html",tooltip="Probabilistic data structure for representing sets in a space-efficient format."];
 }

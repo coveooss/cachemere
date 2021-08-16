@@ -89,9 +89,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a672df62425a01b7473dc0f95899cc7d4"><td class="memItemLeft" align="right" valign="top"><a id="a672df62425a01b7473dc0f95899cc7d4"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheItem</b> = <a class="el" href="structcachemere_1_1Item.html">cachemere::Item</a>&lt; Key, Value &gt;</td></tr>
-<tr class="separator:a672df62425a01b7473dc0f95899cc7d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07ca32e35f1e9c1ce18e3fe260414a0a"><td class="memItemLeft" align="right" valign="top"><a id="a07ca32e35f1e9c1ce18e3fe260414a0a"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheItem</b> = <a class="el" href="structcachemere_1_1Item.html">Item</a>&lt; Value &gt;</td></tr>
+<tr class="separator:a07ca32e35f1e9c1ce18e3fe260414a0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -102,18 +102,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a03a8d67d1c18cdd6ca28ee4060f1fbb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a03a8d67d1c18cdd6ca28ee4060f1fbb1">set_cardinality</a> (uint32_t cardinality)</td></tr>
 <tr class="memdesc:a03a8d67d1c18cdd6ca28ee4060f1fbb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the cardinality of the policy.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a03a8d67d1c18cdd6ca28ee4060f1fbb1">More...</a><br /></td></tr>
 <tr class="separator:a03a8d67d1c18cdd6ca28ee4060f1fbb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8adfb25809521d6776619101eb8a2ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#ae8adfb25809521d6776619101eb8a2ec">on_insert</a> (const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
-<tr class="memdesc:ae8adfb25809521d6776619101eb8a2ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion event handler.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#ae8adfb25809521d6776619101eb8a2ec">More...</a><br /></td></tr>
-<tr class="separator:ae8adfb25809521d6776619101eb8a2ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d50cb9cfe5704916478bc9900617135"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a1d50cb9cfe5704916478bc9900617135">on_update</a> (const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
-<tr class="memdesc:a1d50cb9cfe5704916478bc9900617135"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update event handler.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a1d50cb9cfe5704916478bc9900617135">More...</a><br /></td></tr>
-<tr class="separator:a1d50cb9cfe5704916478bc9900617135"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5109e5d0271c939c93c00afaf30f9d83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a5109e5d0271c939c93c00afaf30f9d83">on_cache_hit</a> (const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
-<tr class="memdesc:a5109e5d0271c939c93c00afaf30f9d83"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a5109e5d0271c939c93c00afaf30f9d83">More...</a><br /></td></tr>
-<tr class="separator:a5109e5d0271c939c93c00afaf30f9d83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34afb911f31e1ba6c0f859ef67b6b2f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a34afb911f31e1ba6c0f859ef67b6b2f5">on_evict</a> (const Key &amp;key)</td></tr>
-<tr class="memdesc:a34afb911f31e1ba6c0f859ef67b6b2f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Eviction event handler.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a34afb911f31e1ba6c0f859ef67b6b2f5">More...</a><br /></td></tr>
-<tr class="separator:a34afb911f31e1ba6c0f859ef67b6b2f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e181e3037eab1affb2d95c0792351e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3e181e3037eab1affb2d95c0792351e4">on_insert</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
+<tr class="memdesc:a3e181e3037eab1affb2d95c0792351e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion event handler.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3e181e3037eab1affb2d95c0792351e4">More...</a><br /></td></tr>
+<tr class="separator:a3e181e3037eab1affb2d95c0792351e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd73c915a52704ed799d867ebaa8e5aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#abd73c915a52704ed799d867ebaa8e5aa">on_update</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;old_item, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;new_item)</td></tr>
+<tr class="memdesc:abd73c915a52704ed799d867ebaa8e5aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update event handler.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#abd73c915a52704ed799d867ebaa8e5aa">More...</a><br /></td></tr>
+<tr class="separator:abd73c915a52704ed799d867ebaa8e5aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a8a8dffe3bb9ebb2d2966e741a3f6e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a2a8a8dffe3bb9ebb2d2966e741a3f6e7">on_cache_hit</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
+<tr class="memdesc:a2a8a8dffe3bb9ebb2d2966e741a3f6e7"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a2a8a8dffe3bb9ebb2d2966e741a3f6e7">More...</a><br /></td></tr>
+<tr class="separator:a2a8a8dffe3bb9ebb2d2966e741a3f6e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81a206bdfbf7321c7d770def33265102"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a81a206bdfbf7321c7d770def33265102">on_evict</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
+<tr class="memdesc:a81a206bdfbf7321c7d770def33265102"><td class="mdescLeft">&#160;</td><td class="mdescRight">Eviction event handler.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a81a206bdfbf7321c7d770def33265102">More...</a><br /></td></tr>
+<tr class="separator:a81a206bdfbf7321c7d770def33265102"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a7370a90d1ea463f3028ad8b3c086cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a7a7370a90d1ea463f3028ad8b3c086cd">victim_begin</a> () const</td></tr>
 <tr class="memdesc:a7a7370a90d1ea463f3028ad8b3c086cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an iterator to the first item that should be evicted.  <a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a7a7370a90d1ea463f3028ad8b3c086cd">More...</a><br /></td></tr>
 <tr class="separator:a7a7370a90d1ea463f3028ad8b3c086cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,13 +130,13 @@ class cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;</h3>
   <table class="tparams">
     <tr><td class="paramname">Key</td><td>The type of the keys used to identify items in the cache. </td></tr>
     <tr><td class="paramname">Value</td><td>The type of the values stored in the cache. </td></tr>
-    <tr><td class="paramname">Cost</td><td>A functor taking a <code>const <a class="el" href="structcachemere_1_1Item.html" title="A wrapper for items stored in the cache.">Item</a>&lt;Key, Value&gt;&amp;</code> returning the cost to load this item in cache. </td></tr>
+    <tr><td class="paramname">Cost</td><td>A functor taking a a <code>Key&amp;</code> and a <code>const <a class="el" href="structcachemere_1_1Item.html" title="A wrapper for items stored in the cache.">Item</a>&lt;Value&gt;&amp;</code> returning the cost to load this item in cache. </td></tr>
   </table>
   </dd>
 </dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5109e5d0271c939c93c00afaf30f9d83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5109e5d0271c939c93c00afaf30f9d83">&#9670;&nbsp;</a></span>on_cache_hit()</h2>
+<a id="a2a8a8dffe3bb9ebb2d2966e741a3f6e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a8a8dffe3bb9ebb2d2966e741a3f6e7">&#9670;&nbsp;</a></span>on_cache_hit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,9 +146,19 @@ template&lt;class Key , class Value , class Cost &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html">cachemere::policy::EvictionGDSF</a>&lt; Key, Value, Cost &gt;::on_cache_hit </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
-          <td class="paramname"><em>item</em></td><td>)</td>
+          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -156,6 +166,7 @@ template&lt;class Key , class Value , class Cost &gt; </div>
 <p><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler. </p>
 <p>Updates the coefficient for this item and changes its position in the priority queue. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">key</td><td>The key that has been hit. </td></tr>
     <tr><td class="paramname">item</td><td>The item that has been hit. </td></tr>
   </table>
   </dd>
@@ -163,8 +174,8 @@ template&lt;class Key , class Value , class Cost &gt; </div>
 
 </div>
 </div>
-<a id="a34afb911f31e1ba6c0f859ef67b6b2f5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34afb911f31e1ba6c0f859ef67b6b2f5">&#9670;&nbsp;</a></span>on_evict()</h2>
+<a id="a81a206bdfbf7321c7d770def33265102"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81a206bdfbf7321c7d770def33265102">&#9670;&nbsp;</a></span>on_evict()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,8 +186,18 @@ template&lt;class Key , class Value , class Cost &gt; </div>
           <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html">cachemere::policy::EvictionGDSF</a>&lt; Key, Value, Cost &gt;::on_evict </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
-          <td class="paramname"><em>key</em></td><td>)</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -184,15 +205,16 @@ template&lt;class Key , class Value , class Cost &gt; </div>
 <p>Eviction event handler. </p>
 <p>Removes the item from the priority queue. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">item</td><td>The key of the item that was evicted. </td></tr>
+    <tr><td class="paramname">key</td><td>The key that was evicted. </td></tr>
+    <tr><td class="paramname">item</td><td>The item that was evicted. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="ae8adfb25809521d6776619101eb8a2ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8adfb25809521d6776619101eb8a2ec">&#9670;&nbsp;</a></span>on_insert()</h2>
+<a id="a3e181e3037eab1affb2d95c0792351e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e181e3037eab1affb2d95c0792351e4">&#9670;&nbsp;</a></span>on_insert()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -202,9 +224,19 @@ template&lt;class Key , class Value , class Cost &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html">cachemere::policy::EvictionGDSF</a>&lt; Key, Value, Cost &gt;::on_insert </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
-          <td class="paramname"><em>item</em></td><td>)</td>
+          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -212,6 +244,7 @@ template&lt;class Key , class Value , class Cost &gt; </div>
 <p>Insertion event handler. </p>
 <p>Computes a coefficient for the item and inserts it in the priority queue. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">key</td><td>The key of the inserted item. </td></tr>
     <tr><td class="paramname">item</td><td>The item that has been inserted in cache. </td></tr>
   </table>
   </dd>
@@ -219,8 +252,8 @@ template&lt;class Key , class Value , class Cost &gt; </div>
 
 </div>
 </div>
-<a id="a1d50cb9cfe5704916478bc9900617135"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d50cb9cfe5704916478bc9900617135">&#9670;&nbsp;</a></span>on_update()</h2>
+<a id="abd73c915a52704ed799d867ebaa8e5aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd73c915a52704ed799d867ebaa8e5aa">&#9670;&nbsp;</a></span>on_update()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -230,9 +263,25 @@ template&lt;class Key , class Value , class Cost &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html">cachemere::policy::EvictionGDSF</a>&lt; Key, Value, Cost &gt;::on_update </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
-          <td class="paramname"><em>item</em></td><td>)</td>
+          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
+          <td class="paramname"><em>old_item</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;&#160;</td>
+          <td class="paramname"><em>new_item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -240,7 +289,9 @@ template&lt;class Key , class Value , class Cost &gt; </div>
 <p>Update event handler. </p>
 <p>Updates the coefficient for this item and changes its position in the priority queue. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">item</td><td>The item that has been updated in the cache. </td></tr>
+    <tr><td class="paramname">key</td><td>The key that has been updated in the cache. </td></tr>
+    <tr><td class="paramname">old_item</td><td>The old value for this key. </td></tr>
+    <tr><td class="paramname">new_item</td><td>The new value for this key. </td></tr>
   </table>
   </dd>
 </dl>

@@ -71,21 +71,21 @@ $(function() {
 Shared Characteristics</h1>
 <h2><a class="anchor" id="autotoc_md7"></a>
 Construction Requirements</h2>
-<p>Both types of policies <em>must</em> be <a href="http://www.cplusplus.com/reference/type_traits/is_default_constructible/">default-constructible</a>, because the cache is responsible for instanciating them. </p>
+<p>Insertion and eviction policies <em>must</em> be <a href="http://www.cplusplus.com/reference/type_traits/is_default_constructible/">default-constructible</a>. The constraint policy may take parameters, these parameters will be forwarded to the policy from the cache constructor. </p>
 <h2><a class="anchor" id="autotoc_md8"></a>
 Event Handlers</h2>
 <p>The policies <em>may</em> define the following event handlers to be notified of changes in the cache. These handlers do not all need to be implemented; a policy only needs to define the handlers that are relevant to its implementation. The cache will detect available handlers on its policies at compile-time, and will only call those that are defined.</p><ul>
-<li><p class="startli"><code>void on_insert(cachemere::detail::Item&lt;K, V&gt;&amp; item)</code></p>
+<li><p class="startli"><code>void on_insert(K&amp; key, cachemere::detail::Item&lt;V&gt;&amp; item)</code></p>
 <p class="startli">Called immediately after a successful insertion in cache.</p>
 </li>
-<li><p class="startli"><code>void on_update(cachemere::detail::Item&lt;K, V&gt;&amp; item)</code></p>
+<li><p class="startli"><code>void on_update(K&amp; key, cachemere::detail::Item&lt;V&gt;&amp; item)</code></p>
 <p class="startli">Called immediately after an insertion of an item that was already in cache (which has the effect of updating its value).</p>
 </li>
-<li><p class="startli"><code>void on_cache_hit(cachemere::detail::Item&lt;K, V&gt;&amp; item)</code></p>
-<p class="startli">Called immediately after a cache hit (a successful call to <code><a class="el" href="classcachemere_1_1Cache.html#a054b70f3b46e06c9efb2446aeb26adf4" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
+<li><p class="startli"><code>void on_cache_hit(K&amp; key, cachemere::detail::Item&lt;V&gt;&amp; item)</code></p>
+<p class="startli">Called immediately after a cache hit (a successful call to <code><a class="el" href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
 </li>
 <li><p class="startli"><code>void on_cache_miss(K&amp; key)</code></p>
-<p class="startli">Called immediately after a cache miss (an unsuccessful call to <code><a class="el" href="classcachemere_1_1Cache.html#a054b70f3b46e06c9efb2446aeb26adf4" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
+<p class="startli">Called immediately after a cache miss (an unsuccessful call to <code><a class="el" href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
 </li>
 <li><p class="startli"><code>void on_evict(K&amp; key)</code></p>
 <p class="startli">Called immediately <em>before</em> dropping the provided key from the cache. The call is done this way to allow policies to keep references to cached items instead of copies.</p>
@@ -100,6 +100,20 @@ Lifetime Requirements</h2>
 Concurrency Requirements</h2>
 <p>Policies do not need to take any steps to ensure thread-safety. The cache will properly protect policies to ensure no concurrent operations occur.</p>
 <h1><a class="anchor" id="autotoc_md11"></a>
+Constraint Policy</h1>
+<p>In addition to the shared requirements above, a constraint policy must implement the following methods in order to be valid:</p>
+<ul>
+<li><p class="startli"><code>bool can_add(const Key&amp; key, const Item&lt;Value&gt;&amp; item)</code></p>
+<p class="startli">Should return <code>true</code> if the item can be inserted in the cache while still satisfying the constraint. </p><dl class="section note"><dt>Note</dt><dd>Returning <code>true</code> guarantees that the object matching the key will be inserted in cache.</dd></dl>
+</li>
+<li><p class="startli"><code>bool can_replace(const Key&amp; key, const Item&lt;Value&gt;&amp; old_item, const Item&lt;Value&gt;&amp; new_item)</code></p>
+<p class="startli">Should return <code>true</code> if the value associated with <code>key</code> can be changed from <code>old_item</code> to <code>new_item</code> while still satisfying the constraint. </p><dl class="section note"><dt>Note</dt><dd>Returning <code>true</code> guarantees that the object matching the key will be updated.</dd></dl>
+</li>
+<li><p class="startli"><code>bool is_satisfied()</code></p>
+<p class="startli">Should return <code>true</code> if the constraint is currently satisfied. The cache uses this method after a constraint update (e.g. a cache resize) to determine whether items should be evicted to make some room.</p>
+</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md12"></a>
 Insertion Policy</h1>
 <p>In addition to the shared requirements above, an insertion policy must implement the following methods in order to be valid:</p>
 <ul>
@@ -107,10 +121,10 @@ Insertion Policy</h1>
 <p class="startli">Should return <code>true</code> if the policy allows the specified key to be inserted in cache. </p><dl class="section note"><dt>Note</dt><dd>Returning <code>true</code> guarantees that the object matching the key will be inserted in cache.</dd></dl>
 </li>
 <li><p class="startli"><code>bool should_replace(const Key&amp; victim, const Key&amp; candidate)</code></p>
-<p class="startli">Should return <code>true</code> if the policy states that the candidate should replace the victim in cache. </p><dl class="section note"><dt>Note</dt><dd>Returning <code>true</code> guarantees that the object matching the <code>candidate</code> key will be inserted in cache.</dd></dl>
+<p class="startli">Should return <code>true</code> if the policy states that the candidate should replace the victim in cache. </p><dl class="section note"><dt>Note</dt><dd>Returning <code>true</code> does not guarantee that the object matching the <code>candidate</code> key will be inserted in cache.</dd></dl>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md13"></a>
 Eviction Policy</h1>
 <p>In addition to the shared requirements above, an eviction policy must implement the following methods in order to be valid:</p>
 <ul>
