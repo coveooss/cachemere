@@ -127,100 +127,99 @@ $(function() {
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcachemere_1_1Cache.html#a42cc91e6cc65f9fc7bea93572e4ba4a5">contains</a>(<span class="keyword">const</span> Key&amp; key) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    std::optional&lt;Value&gt; <a class="code" href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355">find</a>(<span class="keyword">const</span> Key&amp; key);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> C&gt; <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a6973ebec90fb7f75b8935e4a2c1d76ca">collect_into</a>(C&amp; container) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcachemere_1_1Cache.html#a2b2cb36c96d61e71dc72352c62114323">insert</a>(Key key, Value value);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8">remove</a>(<span class="keyword">const</span> Key&amp; key);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a95b972ae64515d9073ada458ab439ae6">clear</a>();</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> P&gt; <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a288411b8f38e4c7b507805e9d04edf24">retain</a>(P predicate_fn);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092">swap</a>(<a class="code" href="classcachemere_1_1Cache.html">CacheType</a>&amp; other);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    [[nodiscard]] <span class="keywordtype">size_t</span> <a class="code" href="classcachemere_1_1Cache.html#a2e56ba870329889bb7a1e30415be2f48">number_of_items</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt; <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#ae08f40df4f0a448c6659a156195fb5ed">update_constraint</a>(Args... args);</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    [[nodiscard]] MyInsertionPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#a540e40f335e2f83e91495ae6d10ef7d9">insertion_policy</a>();</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    [[nodiscard]] <span class="keyword">const</span> MyInsertionPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#a540e40f335e2f83e91495ae6d10ef7d9">insertion_policy</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    [[nodiscard]] MyEvictionPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#ae9367163f148353f47e68aabc320e17c">eviction_policy</a>();</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    [[nodiscard]] <span class="keyword">const</span> MyEvictionPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#ae9367163f148353f47e68aabc320e17c">eviction_policy</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    [[nodiscard]] MyConstraintPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#ab22c30daecfa8dc9e011de59891c87d8">constraint_policy</a>();</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    [[nodiscard]] <span class="keyword">const</span> MyConstraintPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#ab22c30daecfa8dc9e011de59891c87d8">constraint_policy</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    [[nodiscard]] <span class="keywordtype">double</span> <a class="code" href="classcachemere_1_1Cache.html#a80fef5d0a61973e6c21b9c720a72f0e0">hit_rate</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    [[nodiscard]] <span class="keywordtype">double</span> <a class="code" href="classcachemere_1_1Cache.html#a0da0df2c6bfc1cb05dbc622414d42318">byte_hit_rate</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    [[nodiscard]] uint32_t <a class="code" href="classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1">statistics_window_size</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1">statistics_window_size</a>(uint32_t window_size);</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; lock() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> C&gt; <span class="keywordtype">void</span>              <span class="keyword">import</span>(C&amp; collection);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keyword">using</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a> = <a class="code" href="structcachemere_1_1Item.html">Item&lt;Value&gt;</a>;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keyword">using</span> DataMap   = std::unordered_map&lt;Key, CacheItem&gt;;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keyword">using</span> DataMapIt = <span class="keyword">typename</span> DataMap::iterator;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keyword">using</span> MyInsertionPolicySP  = std::unique_ptr&lt;MyInsertionPolicy&gt;;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keyword">using</span> MyEvictionPolicySP   = std::unique_ptr&lt;MyEvictionPolicy&gt;;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keyword">using</span> MyConstraintPolicySP = std::unique_ptr&lt;MyConstraintPolicy&gt;;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="keyword">using</span> RollingMeanTag        = boost::accumulators::tag::rolling_mean;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keyword">using</span> RollingMeanStatistics = boost::accumulators::stats&lt;RollingMeanTag&gt;;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <span class="keyword">using</span> MeanAccumulator       = boost::accumulators::accumulator_set&lt;uint32_t, RollingMeanStatistics&gt;;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    std::optional&lt;Value&gt; <a class="code" href="classcachemere_1_1Cache.html#a563b737e0c1e791cf7e0343d545d8437">find</a>(<span class="keyword">const</span> Key&amp; key) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> C&gt; <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a6973ebec90fb7f75b8935e4a2c1d76ca">collect_into</a>(C&amp; container) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcachemere_1_1Cache.html#a2b2cb36c96d61e71dc72352c62114323">insert</a>(Key key, Value value);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8">remove</a>(<span class="keyword">const</span> Key&amp; key);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a95b972ae64515d9073ada458ab439ae6">clear</a>();</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> P&gt; <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a288411b8f38e4c7b507805e9d04edf24">retain</a>(P predicate_fn);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092">swap</a>(<a class="code" href="classcachemere_1_1Cache.html">CacheType</a>&amp; other);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    [[nodiscard]] <span class="keywordtype">size_t</span> <a class="code" href="classcachemere_1_1Cache.html#a2e56ba870329889bb7a1e30415be2f48">number_of_items</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt; <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#ae08f40df4f0a448c6659a156195fb5ed">update_constraint</a>(Args... args);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    [[nodiscard]] MyInsertionPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#a540e40f335e2f83e91495ae6d10ef7d9">insertion_policy</a>();</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    [[nodiscard]] <span class="keyword">const</span> MyInsertionPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#a540e40f335e2f83e91495ae6d10ef7d9">insertion_policy</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    [[nodiscard]] MyEvictionPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#ae9367163f148353f47e68aabc320e17c">eviction_policy</a>();</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    [[nodiscard]] <span class="keyword">const</span> MyEvictionPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#ae9367163f148353f47e68aabc320e17c">eviction_policy</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    [[nodiscard]] MyConstraintPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#ab22c30daecfa8dc9e011de59891c87d8">constraint_policy</a>();</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    [[nodiscard]] <span class="keyword">const</span> MyConstraintPolicy&amp; <a class="code" href="classcachemere_1_1Cache.html#ab22c30daecfa8dc9e011de59891c87d8">constraint_policy</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    [[nodiscard]] <span class="keywordtype">double</span> <a class="code" href="classcachemere_1_1Cache.html#a80fef5d0a61973e6c21b9c720a72f0e0">hit_rate</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    [[nodiscard]] <span class="keywordtype">double</span> <a class="code" href="classcachemere_1_1Cache.html#a0da0df2c6bfc1cb05dbc622414d42318">byte_hit_rate</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    [[nodiscard]] uint32_t <a class="code" href="classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1">statistics_window_size</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1">statistics_window_size</a>(uint32_t window_size);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    std::unique_lock&lt;std::recursive_mutex&gt; lock() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> C&gt; <span class="keywordtype">void</span>              <span class="keyword">import</span>(C&amp; collection);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keyword">using</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a> = <a class="code" href="structcachemere_1_1Item.html">Item&lt;Value&gt;</a>;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <span class="keyword">using</span> DataMap   = std::unordered_map&lt;Key, CacheItem&gt;;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keyword">using</span> DataMapIt = <span class="keyword">typename</span> DataMap::iterator;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keyword">using</span> MyInsertionPolicySP  = std::unique_ptr&lt;MyInsertionPolicy&gt;;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keyword">using</span> MyEvictionPolicySP   = std::unique_ptr&lt;MyEvictionPolicy&gt;;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keyword">using</span> MyConstraintPolicySP = std::unique_ptr&lt;MyConstraintPolicy&gt;;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keyword">using</span> RollingMeanTag        = boost::accumulators::tag::rolling_mean;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keyword">using</span> RollingMeanStatistics = boost::accumulators::stats&lt;RollingMeanTag&gt;;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="keyword">using</span> MeanAccumulator       = boost::accumulators::accumulator_set&lt;uint32_t, RollingMeanStatistics&gt;;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    uint32_t m_statistics_window_size = 1000;</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    uint32_t m_statistics_window_size = 1000;</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    MyInsertionPolicySP  m_insertion_policy;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    MyEvictionPolicySP   m_eviction_policy;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    MyConstraintPolicySP m_constraint_policy;</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    MeasureKey   m_measure_key;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    MeasureValue m_measure_value;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="keyword">mutable</span> std::recursive_mutex m_mutex;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    DataMap                      m_data;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="keyword">mutable</span> MeanAccumulator m_hit_rate_acc;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="keyword">mutable</span> MeanAccumulator m_byte_hit_rate_acc;</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    <span class="keywordtype">bool</span> check_insert(<span class="keyword">const</span> Key&amp; candidate_key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item);</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordtype">bool</span> check_replace(<span class="keyword">const</span> Key&amp; candidate_key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; old_item, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; new_item);</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <span class="keywordtype">void</span> insert_or_update(Key&amp;&amp; key, <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp;&amp; value);</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8">remove</a>(DataMapIt it);</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keywordtype">void</span> on_insert(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordtype">void</span> on_update(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; old_item, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; new_item) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    <span class="keywordtype">void</span> on_cache_hit(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <span class="keywordtype">void</span> on_cache_miss(<span class="keyword">const</span> Key&amp; key) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="keywordtype">void</span> on_evict(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;};</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>C, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="keywordtype">void</span> swap(<a class="code" href="classcachemere_1_1Cache.html">Cache&lt;K, V, I, E, C, SV, SK, TS&gt;</a>&amp; lhs, <a class="code" href="classcachemere_1_1Cache.html">Cache&lt;K, V, I, E, C, SV, SK, TS&gt;</a>&amp; rhs);</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    MyInsertionPolicySP  m_insertion_policy;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    MyEvictionPolicySP   m_eviction_policy;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    MyConstraintPolicySP m_constraint_policy;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    MeasureKey   m_measure_key;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    MeasureValue m_measure_value;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keyword">mutable</span> std::recursive_mutex m_mutex;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    DataMap                      m_data;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keyword">mutable</span> MeanAccumulator m_hit_rate_acc;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keyword">mutable</span> MeanAccumulator m_byte_hit_rate_acc;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="keywordtype">bool</span> check_insert(<span class="keyword">const</span> Key&amp; candidate_key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item);</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keywordtype">bool</span> check_replace(<span class="keyword">const</span> Key&amp; candidate_key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; old_item, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; new_item);</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordtype">void</span> insert_or_update(Key&amp;&amp; key, <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp;&amp; value);</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8">remove</a>(DataMapIt it);</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordtype">void</span> on_insert(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    <span class="keywordtype">void</span> on_update(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; old_item, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; new_item) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keywordtype">void</span> on_cache_hit(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordtype">void</span> on_cache_miss(<span class="keyword">const</span> Key&amp; key) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    <span class="keywordtype">void</span> on_evict(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;};</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>I, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>E, <span class="keyword">template</span>&lt;<span class="keyword">class</span>, <span class="keyword">class</span>&gt; <span class="keyword">class </span>C, <span class="keyword">class </span>SV, <span class="keyword">class </span>SK, <span class="keywordtype">bool</span> TS&gt;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="keywordtype">void</span> swap(<a class="code" href="classcachemere_1_1Cache.html">Cache&lt;K, V, I, E, C, SV, SK, TS&gt;</a>&amp; lhs, <a class="code" href="classcachemere_1_1Cache.html">Cache&lt;K, V, I, E, C, SV, SK, TS&gt;</a>&amp; rhs);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;}  <span class="comment">// namespace cachemere</span></div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;}  <span class="comment">// namespace cachemere</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="preprocessor">#include &quot;cache.hpp&quot;</span></div>
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="preprocessor">#include &quot;cache.hpp&quot;</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a42cc91e6cc65f9fc7bea93572e4ba4a5"><div class="ttname"><a href="classcachemere_1_1Cache.html#a42cc91e6cc65f9fc7bea93572e4ba4a5">cachemere::Cache::contains</a></div><div class="ttdeci">bool contains(const Key &amp;key) const</div><div class="ttdoc">Check whether a given key is stored in the cache.</div><div class="ttdef"><b>Definition:</b> cache.hpp:42</div></div>
-<div class="ttc" id="aclasscachemere_1_1Cache_html_a2075579728f01a9b5e2f83d4e1d20355"><div class="ttname"><a href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355">cachemere::Cache::find</a></div><div class="ttdeci">std::optional&lt; Value &gt; find(const Key &amp;key)</div><div class="ttdoc">Find a given key in cache returning the associated value when it exists.</div><div class="ttdef"><b>Definition:</b> cache.hpp:49</div></div>
 <div class="ttc" id="astructcachemere_1_1measurement_1_1Size_html"><div class="ttname"><a href="structcachemere_1_1measurement_1_1Size.html">cachemere::measurement::Size&lt; Value &gt;</a></div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a2b2cb36c96d61e71dc72352c62114323"><div class="ttname"><a href="classcachemere_1_1Cache.html#a2b2cb36c96d61e71dc72352c62114323">cachemere::Cache::insert</a></div><div class="ttdeci">bool insert(Key key, Value value)</div><div class="ttdoc">Insert a key/value pair in the cache.</div><div class="ttdef"><b>Definition:</b> cache.hpp:91</div></div>
 <div class="ttc" id="astructcachemere_1_1Item_html"><div class="ttname"><a href="structcachemere_1_1Item.html">cachemere::Item</a></div><div class="ttdoc">A wrapper for items stored in the cache.</div><div class="ttdef"><b>Definition:</b> item.h:9</div></div>
@@ -238,6 +237,7 @@ $(function() {
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a2e56ba870329889bb7a1e30415be2f48"><div class="ttname"><a href="classcachemere_1_1Cache.html#a2e56ba870329889bb7a1e30415be2f48">cachemere::Cache::number_of_items</a></div><div class="ttdeci">size_t number_of_items() const</div><div class="ttdoc">Get the number of items currently stored in the cache.</div><div class="ttdef"><b>Definition:</b> cache.hpp:187</div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a7e58cf1f7e976717e494c2a82930d1a1"><div class="ttname"><a href="classcachemere_1_1Cache.html#a7e58cf1f7e976717e494c2a82930d1a1">cachemere::Cache::Cache</a></div><div class="ttdeci">Cache(Args... args)</div><div class="ttdoc">Simple constructor.</div><div class="ttdef"><b>Definition:</b> cache.hpp:15</div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a0da0df2c6bfc1cb05dbc622414d42318"><div class="ttname"><a href="classcachemere_1_1Cache.html#a0da0df2c6bfc1cb05dbc622414d42318">cachemere::Cache::byte_hit_rate</a></div><div class="ttdeci">double byte_hit_rate() const</div><div class="ttdoc">Compute and return the running byte hit rate of the cache, in bytes.</div><div class="ttdef"><b>Definition:</b> cache.hpp:260</div></div>
+<div class="ttc" id="aclasscachemere_1_1Cache_html_a563b737e0c1e791cf7e0343d545d8437"><div class="ttname"><a href="classcachemere_1_1Cache.html#a563b737e0c1e791cf7e0343d545d8437">cachemere::Cache::find</a></div><div class="ttdeci">std::optional&lt; Value &gt; find(const Key &amp;key) const</div><div class="ttdoc">Find a given key in cache returning the associated value when it exists.</div><div class="ttdef"><b>Definition:</b> cache.hpp:49</div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_a95b972ae64515d9073ada458ab439ae6"><div class="ttname"><a href="classcachemere_1_1Cache.html#a95b972ae64515d9073ada458ab439ae6">cachemere::Cache::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">Clears the cache contents.</div><div class="ttdef"><b>Definition:</b> cache.hpp:134</div></div>
 <div class="ttc" id="aclasscachemere_1_1Cache_html_aa9b1d3e571f1489d1a01dd3ae42122e8"><div class="ttname"><a href="classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8">cachemere::Cache::remove</a></div><div class="ttdeci">bool remove(const Key &amp;key)</div><div class="ttdoc">Remove a key and its value from the cache.</div></div>
 <!-- start footer part -->

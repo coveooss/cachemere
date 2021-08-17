@@ -82,10 +82,10 @@ Event Handlers</h2>
 <p class="startli">Called immediately after an insertion of an item that was already in cache (which has the effect of updating its value).</p>
 </li>
 <li><p class="startli"><code>void on_cache_hit(K&amp; key, cachemere::detail::Item&lt;V&gt;&amp; item)</code></p>
-<p class="startli">Called immediately after a cache hit (a successful call to <code><a class="el" href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
+<p class="startli">Called immediately after a cache hit (a successful call to <code><a class="el" href="classcachemere_1_1Cache.html#a563b737e0c1e791cf7e0343d545d8437" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
 </li>
 <li><p class="startli"><code>void on_cache_miss(K&amp; key)</code></p>
-<p class="startli">Called immediately after a cache miss (an unsuccessful call to <code><a class="el" href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
+<p class="startli">Called immediately after a cache miss (an unsuccessful call to <code><a class="el" href="classcachemere_1_1Cache.html#a563b737e0c1e791cf7e0343d545d8437" title="Find a given key in cache returning the associated value when it exists.">cachemere::Cache::find</a></code>).</p>
 </li>
 <li><p class="startli"><code>void on_evict(K&amp; key)</code></p>
 <p class="startli">Called immediately <em>before</em> dropping the provided key from the cache. The call is done this way to allow policies to keep references to cached items instead of copies.</p>

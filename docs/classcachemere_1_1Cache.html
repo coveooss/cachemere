@@ -109,9 +109,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a42cc91e6cc65f9fc7bea93572e4ba4a5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a42cc91e6cc65f9fc7bea93572e4ba4a5">contains</a> (const Key &amp;key) const</td></tr>
 <tr class="memdesc:a42cc91e6cc65f9fc7bea93572e4ba4a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a given key is stored in the cache.  <a href="classcachemere_1_1Cache.html#a42cc91e6cc65f9fc7bea93572e4ba4a5">More...</a><br /></td></tr>
 <tr class="separator:a42cc91e6cc65f9fc7bea93572e4ba4a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2075579728f01a9b5e2f83d4e1d20355"><td class="memItemLeft" align="right" valign="top">std::optional&lt; Value &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355">find</a> (const Key &amp;key)</td></tr>
-<tr class="memdesc:a2075579728f01a9b5e2f83d4e1d20355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a given key in cache returning the associated value when it exists.  <a href="classcachemere_1_1Cache.html#a2075579728f01a9b5e2f83d4e1d20355">More...</a><br /></td></tr>
-<tr class="separator:a2075579728f01a9b5e2f83d4e1d20355"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a563b737e0c1e791cf7e0343d545d8437"><td class="memItemLeft" align="right" valign="top">std::optional&lt; Value &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a563b737e0c1e791cf7e0343d545d8437">find</a> (const Key &amp;key) const</td></tr>
+<tr class="memdesc:a563b737e0c1e791cf7e0343d545d8437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a given key in cache returning the associated value when it exists.  <a href="classcachemere_1_1Cache.html#a563b737e0c1e791cf7e0343d545d8437">More...</a><br /></td></tr>
+<tr class="separator:a563b737e0c1e791cf7e0343d545d8437"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6973ebec90fb7f75b8935e4a2c1d76ca"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
 <tr class="memitem:a6973ebec90fb7f75b8935e4a2c1d76ca"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a6973ebec90fb7f75b8935e4a2c1d76ca">collect_into</a> (C &amp;container) const</td></tr>
 <tr class="memdesc:a6973ebec90fb7f75b8935e4a2c1d76ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the cache contents in the provided container.  <a href="classcachemere_1_1Cache.html#a6973ebec90fb7f75b8935e4a2c1d76ca">More...</a><br /></td></tr>
@@ -386,8 +386,8 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 
 </div>
 </div>
-<a id="a2075579728f01a9b5e2f83d4e1d20355"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2075579728f01a9b5e2f83d4e1d20355">&#9670;&nbsp;</a></span>find()</h2>
+<a id="a563b737e0c1e791cf7e0343d545d8437"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a563b737e0c1e791cf7e0343d545d8437">&#9670;&nbsp;</a></span>find()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -399,13 +399,13 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Find a given key in cache returning the associated value when it exists. </p>
-<p>If the key exists in cache but is marked as invalidated by the constraint policy, it will be evicted from the cache immediately. </p><dl class="params"><dt>Parameters</dt><dd>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key to lookup. </td></tr>
   </table>
