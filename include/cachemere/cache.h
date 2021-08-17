@@ -81,11 +81,9 @@ public:
     bool contains(const Key& key) const;
 
     /// @brief Find a given key in cache returning the associated value when it exists.
-    /// @details If the key exists in cache but is marked as invalidated by the constraint policy,
-    ///          it will be evicted from the cache immediately.
     /// @param key The key to lookup.
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
-    std::optional<Value> find(const Key& key);
+    std::optional<Value> find(const Key& key) const;
 
     /// @brief Copy the cache contents in the provided container.
     /// @details The container should conform to either of the STL's interfaces for associative
