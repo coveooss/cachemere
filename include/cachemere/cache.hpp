@@ -46,7 +46,7 @@ inline bool Cache<K, V, I, E, C, SV, SK, TS>::contains(const K& key) const
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
-std::optional<V> Cache<K, V, I, E, C, SV, SK, TS>::find(const K& key)
+std::optional<V> Cache<K, V, I, E, C, SV, SK, TS>::find(const K& key) const
 {
     std::unique_lock<std::recursive_mutex> guard(lock());
 

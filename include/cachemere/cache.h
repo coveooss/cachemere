@@ -85,7 +85,7 @@ public:
     ///          it will be evicted from the cache immediately.
     /// @param key The key to lookup.
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
-    std::optional<Value> find(const Key& key);
+    std::optional<Value> find(const Key& key) const;
 
     /// @brief Copy the cache contents in the provided container.
     /// @details The container should conform to either of the STL's interfaces for associative
