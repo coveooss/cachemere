@@ -64,11 +64,10 @@ template<class K, class V, template<class, class> class I, template<class, class
 template<class Container>
 void Cache<K, V, I, E, C, SV, SK, TS>::collect_into(Container& container) const
 {
-    using namespace boost;
     using namespace detail;
 
     // Use emplace_back if container is a sequence container, or emplace if container is an associative container.
-    constexpr auto emplace_fn = hana::if_(
+    constexpr auto emplace_fn = boost::hana::if_(
         traits::stl::has_emplace_back<Container, K, V>,
         [](auto& seq_container, const auto& key, const auto& item) { seq_container.emplace_back(key, item.m_value); },
         [](auto& assoc_container, const auto& key, const auto& item) { assoc_container.emplace(key, item.m_value); });
@@ -76,8 +75,8 @@ void Cache<K, V, I, E, C, SV, SK, TS>::collect_into(Container& container) const
     std::unique_lock<std::recursive_mutex> guard(lock());
 
     // Reserve space if the container has a reserve() method and a size method().
-    hana::if_(
-        hana::and_(traits::stl::has_reserve<Container>, traits::stl::has_size<Container>),
+    boost::hana::if_(
+        boost::hana::and_(traits::stl::has_reserve<Container>, traits::stl::has_size<Container>),
         [&](auto& c) { c.reserve(c.size() + m_data.size()); },
         [](auto&) {})(container);
 
