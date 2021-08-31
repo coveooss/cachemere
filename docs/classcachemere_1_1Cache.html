@@ -95,6 +95,9 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>MyConstraintPolicy</
 <tr class="memitem:a20e866c6a9be1020390c01c2dda1eaf5"><td class="memItemLeft" align="right" valign="top"><a id="a20e866c6a9be1020390c01c2dda1eaf5"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheType</b> = <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</td></tr>
 <tr class="separator:a20e866c6a9be1020390c01c2dda1eaf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38a0840a55c5c027fdcfe56c4433c7e9"><td class="memItemLeft" align="right" valign="top"><a id="a38a0840a55c5c027fdcfe56c4433c7e9"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>LockGuard</b> = std::unique_lock&lt; std::recursive_mutex &gt;</td></tr>
+<tr class="separator:a38a0840a55c5c027fdcfe56c4433c7e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -191,9 +194,15 @@ template&lt;class Coll &gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a02faff71b4673804f1c931015b35274c"><td class="memItemLeft" align="right" valign="top"><a id="a02faff71b4673804f1c931015b35274c"></a>
-std::unique_lock&lt; std::recursive_mutex &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> () const</td></tr>
-<tr class="separator:a02faff71b4673804f1c931015b35274c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a640abd43b47e11fcceb738f3e105c468"><td class="memItemLeft" align="right" valign="top"><a id="a640abd43b47e11fcceb738f3e105c468"></a>
+LockGuard&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> () const</td></tr>
+<tr class="separator:a640abd43b47e11fcceb738f3e105c468"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a43f24b5bac010c4ab393b8523213b9"><td class="memItemLeft" align="right" valign="top"><a id="a7a43f24b5bac010c4ab393b8523213b9"></a>
+LockGuard&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> (std::defer_lock_t defer_lock_tag) const</td></tr>
+<tr class="separator:a7a43f24b5bac010c4ab393b8523213b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7f419d3b4a3392189af52c34e3957e5"><td class="memItemLeft" align="right" valign="top"><a id="aa7f419d3b4a3392189af52c34e3957e5"></a>
+std::pair&lt; LockGuard, LockGuard &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>lock_pair</b> (<a class="el" href="classcachemere_1_1Cache.html">CacheType</a> &amp;other) const</td></tr>
+<tr class="separator:aa7f419d3b4a3392189af52c34e3957e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0c49346cfdc61f82f80292b54b290c8"><td class="memTemplParams" colspan="2"><a id="ae0c49346cfdc61f82f80292b54b290c8"></a>
 template&lt;typename C &gt; </td></tr>
 <tr class="memitem:ae0c49346cfdc61f82f80292b54b290c8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>import</b> (C &amp;collection)</td></tr>
