@@ -63,12 +63,10 @@ using TestTypes = testing::Types<MemoryLRUCache, MemoryTinyLFUCache, MemoryCusto
 class NonCopyString : public std::string
 {
 private:
-    NonCopyString()
-    {
-    }
+    NonCopyString() = default;
 
 public:
-    NonCopyString(std::string a) : std::string(a)
+    NonCopyString(std::string a) : std::string(std::move(a))
     {
     }
 
@@ -119,7 +117,7 @@ TYPED_TEST(CacheTest, MultiThreadLong)
     points.reserve(item_count);
 
     for (uint32_t i = 0; i < item_count; ++i) {
-        points.push_back(Point3D{i, i, i});
+        points.emplace_back(Point3D{i, i, i});
     }
 
     std::vector<std::thread> workers;
@@ -340,4 +338,16 @@ TEST(CacheTest, NoKeyCopyOnImportConstruction)
     TestCache cache{items, std::make_tuple(10 * sizeof(Point3D))};
 
     EXPECT_TRUE(cache.contains(NonCopyString("a")));
+}
+
+TEST(CacheTest, SingleThreadSwapDoesntThrow)
+{
+    using SingleThreadCache = presets::memory::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>, false>;
+
+    SingleThreadCache cache_a{10 * sizeof(Point3D)};
+    SingleThreadCache cache_b{10 * sizeof(Point3D)};
+
+    // std::lock throws when locking an empty guard, so we need to make sure we don't get in that code path when locking single threaded caches.
+    using std::swap;
+    swap(cache_a, cache_b);
 }
