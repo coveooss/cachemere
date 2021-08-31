@@ -62,6 +62,7 @@ public:
     using MyEvictionPolicy   = EvictionPolicy<Key, Value>;
     using MyConstraintPolicy = ConstraintPolicy<Key, Value>;
     using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe>;
+    using LockGuard          = std::unique_lock<std::recursive_mutex>;
 
     /// @brief Simple constructor.
     /// @param args Arguments to forward to the constraint policy constructor.
@@ -176,8 +177,11 @@ public:
     void statistics_window_size(uint32_t window_size);
 
 protected:
-    std::unique_lock<std::recursive_mutex> lock() const;
-    template<typename C> void              import(C& collection);
+    LockGuard                       lock() const;
+    LockGuard                       lock(std::defer_lock_t defer_lock_tag) const;
+    std::pair<LockGuard, LockGuard> lock_pair(CacheType& other) const;
+
+    template<typename C> void import(C& collection);
 
 private:
     using CacheItem = Item<Value>;
