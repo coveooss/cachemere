@@ -82,89 +82,91 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>cachemere::policy {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classcachemere_1_1policy_1_1EvictionGDSF.html">   21</a></span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Key, <span class="keyword">typename</span> Value, <span class="keyword">typename</span> Cost&gt; <span class="keyword">class </span><a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html">EvictionGDSF</a></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">using</span> KeyRef = std::reference_wrapper&lt;const Key&gt;;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">struct </span>PriorityEntry {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        PriorityEntry(KeyRef key, <span class="keywordtype">double</span> coefficient);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">bool</span> operator&lt;(<span class="keyword">const</span> PriorityEntry&amp; other) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">//          The cost must not exceed 2^64 and should ideally be quite a bit below this limit since the cost of the item is added to the</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">//          policy&#39;s internal 64-bit clock on every insertion.</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classcachemere_1_1policy_1_1EvictionGDSF.html">   23</a></span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Key, <span class="keyword">typename</span> Value, <span class="keyword">typename</span> Cost&gt; <span class="keyword">class </span><a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html">EvictionGDSF</a></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">using</span> KeyRef = std::reference_wrapper&lt;const Key&gt;;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">struct </span>PriorityEntry {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        PriorityEntry(KeyRef key, <span class="keywordtype">double</span> coefficient);</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        KeyRef m_key;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordtype">double</span> m_h_coefficient;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    };</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">using</span> PrioritySet   = std::multiset&lt;PriorityEntry&gt;;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">using</span> PrioritySetIt = <span class="keyword">typename</span> PrioritySet::const_iterator;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">using</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a> = <a class="code" href="structcachemere_1_1Item.html">Item&lt;Value&gt;</a>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">   43</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>(PrioritySetIt iterator);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">const</span> Key&amp;      operator*() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>&amp; operator++();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>  operator++(<span class="keywordtype">int</span>);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordtype">bool</span>            operator==(<span class="keyword">const</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>&amp; other) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordtype">bool</span>            operator!=(<span class="keyword">const</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>&amp; other) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        PrioritySetIt m_iterator;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    };</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3bf6a5a86bf45c64a8aa04c02d8b39eb">clear</a>();</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a03a8d67d1c18cdd6ca28ee4060f1fbb1">set_cardinality</a>(uint32_t cardinality);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3e181e3037eab1affb2d95c0792351e4">on_insert</a>(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#abd73c915a52704ed799d867ebaa8e5aa">on_update</a>(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; old_item, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; new_item);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a2a8a8dffe3bb9ebb2d2966e741a3f6e7">on_cache_hit</a>(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a81a206bdfbf7321c7d770def33265102">on_evict</a>(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    [[nodiscard]] <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a7a7370a90d1ea463f3028ad8b3c086cd">victim_begin</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    [[nodiscard]] <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a98743edafca906d21676d9d368afa7b3">victim_end</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keyword">using</span> IteratorMap = std::map&lt;KeyRef, PrioritySetIt, std::less&lt;const Key&gt;&gt;;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">const</span> <span class="keyword">static</span> uint32_t            DEFAULT_CACHE_CARDINALITY = 2000;               <span class="comment">// The expected cache cardinality, for the counting bloom filter.</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keyword">mutable</span> Cost                     m_measure_cost;                                 <span class="comment">// The functor to measure the cost metric of cached items.</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">detail::CountingBloomFilter&lt;Key&gt;</a> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};  <span class="comment">// TODO: Replace with a count-min sketch to get rid of cardinality</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    PrioritySet m_priority_set;  <span class="comment">// A multiset of keys sorted by H-coefficients in ascending order.</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">bool</span> operator&lt;(<span class="keyword">const</span> PriorityEntry&amp; other) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        KeyRef m_key;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">double</span> m_h_coefficient;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    };</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">using</span> PrioritySet   = std::multiset&lt;PriorityEntry&gt;;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">using</span> PrioritySetIt = <span class="keyword">typename</span> PrioritySet::const_iterator;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">using</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a> = <a class="code" href="structcachemere_1_1Item.html">Item&lt;Value&gt;</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">   45</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>(PrioritySetIt iterator);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">const</span> Key&amp;      operator*() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>&amp; operator++();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>  operator++(<span class="keywordtype">int</span>);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordtype">bool</span>            operator==(<span class="keyword">const</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>&amp; other) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">bool</span>            operator!=(<span class="keyword">const</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a>&amp; other) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        PrioritySetIt m_iterator;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    };</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3bf6a5a86bf45c64a8aa04c02d8b39eb">clear</a>();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a03a8d67d1c18cdd6ca28ee4060f1fbb1">set_cardinality</a>(uint32_t cardinality);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3e181e3037eab1affb2d95c0792351e4">on_insert</a>(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#abd73c915a52704ed799d867ebaa8e5aa">on_update</a>(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; old_item, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; new_item);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a2a8a8dffe3bb9ebb2d2966e741a3f6e7">on_cache_hit</a>(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a81a206bdfbf7321c7d770def33265102">on_evict</a>(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">CacheItem</a>&amp; item);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    [[nodiscard]] <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a7a7370a90d1ea463f3028ad8b3c086cd">victim_begin</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    [[nodiscard]] <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">VictimIterator</a> <a class="code" href="classcachemere_1_1policy_1_1EvictionGDSF.html#a98743edafca906d21676d9d368afa7b3">victim_end</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">using</span> IteratorMap = std::map&lt;KeyRef, PrioritySetIt, std::less&lt;const Key&gt;&gt;;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">const</span> <span class="keyword">static</span> uint32_t            DEFAULT_CACHE_CARDINALITY = 2000;               <span class="comment">// The expected cache cardinality, for the counting bloom filter.</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keyword">mutable</span> Cost                     m_measure_cost;                                 <span class="comment">// The functor to measure the cost metric of cached items.</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <a class="code" href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">detail::CountingBloomFilter&lt;Key&gt;</a> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};  <span class="comment">// TODO: Replace with a count-min sketch to get rid of cardinality</span></div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    IteratorMap m_iterator_map;  <span class="comment">// A map of keys pointing to the corresponding iterator in the priority set. This is necessary because since PrioritySet uses</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                                 <span class="comment">// coefficients to compare items to one another, we can&#39;t test for key membership directly.</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    uint64_t m_clock{0};</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    PrioritySet m_priority_set;  <span class="comment">// A multiset of keys sorted by H-coefficients in ascending order.</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    IteratorMap m_iterator_map;  <span class="comment">// A map of keys pointing to the corresponding iterator in the priority set. This is necessary because since PrioritySet uses</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                                 <span class="comment">// coefficients to compare items to one another, we can&#39;t test for key membership directly.</span></div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    [[nodiscard]] <span class="keywordtype">double</span> get_h_coefficient(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> CacheItem&amp; item) <span class="keyword">const</span> noexcept;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;};</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;}  <span class="comment">// namespace cachemere::policy</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    uint64_t m_clock{0};</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    [[nodiscard]] <span class="keywordtype">double</span> get_h_coefficient(<span class="keyword">const</span> Key&amp; key, <span class="keyword">const</span> CacheItem&amp; item) <span class="keyword">const</span> noexcept;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;};</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">#include &quot;eviction_gdsf.hpp&quot;</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;}  <span class="comment">// namespace cachemere::policy</span></div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">#include &quot;eviction_gdsf.hpp&quot;</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html_a2a8a8dffe3bb9ebb2d2966e741a3f6e7"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a2a8a8dffe3bb9ebb2d2966e741a3f6e7">cachemere::policy::EvictionGDSF::on_cache_hit</a></div><div class="ttdeci">void on_cache_hit(const Key &amp;key, const CacheItem &amp;item)</div><div class="ttdoc">Cache hit event handler.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.hpp:71</div></div>
 <div class="ttc" id="aclasscachemere_1_1policy_1_1detail_1_1CountingBloomFilter_html"><div class="ttname"><a href="classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html">cachemere::policy::detail::CountingBloomFilter&lt; Key &gt;</a></div></div>
 <div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html_a3e181e3037eab1affb2d95c0792351e4"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3e181e3037eab1affb2d95c0792351e4">cachemere::policy::EvictionGDSF::on_insert</a></div><div class="ttdeci">void on_insert(const Key &amp;key, const CacheItem &amp;item)</div><div class="ttdoc">Insertion event handler.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.hpp:57</div></div>
 <div class="ttc" id="astructcachemere_1_1Item_html"><div class="ttname"><a href="structcachemere_1_1Item.html">cachemere::Item</a></div><div class="ttdoc">A wrapper for items stored in the cache.</div><div class="ttdef"><b>Definition:</b> item.h:9</div></div>
 <div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html_a03a8d67d1c18cdd6ca28ee4060f1fbb1"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a03a8d67d1c18cdd6ca28ee4060f1fbb1">cachemere::policy::EvictionGDSF::set_cardinality</a></div><div class="ttdeci">void set_cardinality(uint32_t cardinality)</div><div class="ttdoc">Set the cardinality of the policy.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.hpp:52</div></div>
-<div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html">cachemere::policy::EvictionGDSF</a></div><div class="ttdoc">Greedy-Dual-Size-Frequency (GDSF) eviction policy.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.h:21</div></div>
+<div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html">cachemere::policy::EvictionGDSF</a></div><div class="ttdoc">Greedy-Dual-Size-Frequency (GDSF) eviction policy.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.h:23</div></div>
 <div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html_a7a7370a90d1ea463f3028ad8b3c086cd"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a7a7370a90d1ea463f3028ad8b3c086cd">cachemere::policy::EvictionGDSF::victim_begin</a></div><div class="ttdeci">VictimIterator victim_begin() const</div><div class="ttdoc">Get an iterator to the first item that should be evicted.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.hpp:97</div></div>
 <div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html_a98743edafca906d21676d9d368afa7b3"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a98743edafca906d21676d9d368afa7b3">cachemere::policy::EvictionGDSF::victim_end</a></div><div class="ttdeci">VictimIterator victim_end() const</div><div class="ttdoc">Get an end iterator.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.hpp:102</div></div>
-<div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator_html"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">cachemere::policy::EvictionGDSF::VictimIterator</a></div><div class="ttdoc">Iterator for iterating over cache items in the order they should be evicted.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.h:43</div></div>
+<div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator_html"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html">cachemere::policy::EvictionGDSF::VictimIterator</a></div><div class="ttdoc">Iterator for iterating over cache items in the order they should be evicted.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.h:45</div></div>
 <div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html_a3bf6a5a86bf45c64a8aa04c02d8b39eb"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a3bf6a5a86bf45c64a8aa04c02d8b39eb">cachemere::policy::EvictionGDSF::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">Clears the policy.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.hpp:45</div></div>
 <div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html_abd73c915a52704ed799d867ebaa8e5aa"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html#abd73c915a52704ed799d867ebaa8e5aa">cachemere::policy::EvictionGDSF::on_update</a></div><div class="ttdeci">void on_update(const Key &amp;key, const CacheItem &amp;old_item, const CacheItem &amp;new_item)</div><div class="ttdoc">Update event handler.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.hpp:66</div></div>
 <div class="ttc" id="aclasscachemere_1_1policy_1_1EvictionGDSF_html_a81a206bdfbf7321c7d770def33265102"><div class="ttname"><a href="classcachemere_1_1policy_1_1EvictionGDSF.html#a81a206bdfbf7321c7d770def33265102">cachemere::policy::EvictionGDSF::on_evict</a></div><div class="ttdeci">void on_evict(const Key &amp;key, const CacheItem &amp;item)</div><div class="ttdoc">Eviction event handler.</div><div class="ttdef"><b>Definition:</b> eviction_gdsf.hpp:83</div></div>
