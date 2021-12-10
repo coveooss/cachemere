@@ -86,7 +86,7 @@ template<class Key, class Value, class Cost> void EvictionGDSF<Key, Value, Cost>
     assert(keyref_and_it != m_iterator_map.end());
 
     PrioritySetIt it = keyref_and_it->second;
-    m_clock          = std::max(static_cast<double>(m_clock), it->m_h_coefficient);
+    m_clock          = std::max(m_clock, static_cast<uint64_t>(it->m_h_coefficient));
 
     m_priority_set.erase(it);
     m_iterator_map.erase(keyref_and_it);
