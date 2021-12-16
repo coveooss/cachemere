@@ -2,6 +2,7 @@
 #define CACHEMERE_ITEM_H
 
 #include <cstring>
+#include <utility>
 
 namespace cachemere {
 
@@ -14,10 +15,10 @@ template<typename Value> struct Item {
        m_total_size{key_size + value_size}
     {
     }
-    Item(Item&& other)      = default;
-    Item(const Item& other) = delete;
+    Item(Item&& other) noexcept = default;
+    Item(const Item& other)     = delete;
     Item& operator=(const Item&) = delete;
-    Item& operator=(Item&&) = default;
+    Item& operator=(Item&&) noexcept = default;
 
     size_t m_key_size;  //!< The size of the key.
 
@@ -26,6 +27,16 @@ template<typename Value> struct Item {
 
     size_t m_total_size;  //!< The total size of the item (`m_key_size + m_value_size`)
 };
+
+template<typename Value> void swap(Item<Value>& a, Item<Value>& b)
+{
+    using std::swap;
+
+    swap(a.m_key_size, b.m_key_size);
+    swap(a.m_value, b.m_value);
+    swap(a.m_value_size, b.m_value_size);
+    swap(a.m_total_size, b.m_total_size);
+}
 
 }  // namespace cachemere
 
