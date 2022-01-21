@@ -162,6 +162,16 @@ void Cache<K, V, I, E, C, SV, SK, TS>::retain(P predicate_fn)
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
+template<class P>
+void Cache<K, V, I, E, C, SV, SK, TS>::for_each(P predicate_fn)
+{
+    LockGuard guard(lock());
+    for (const auto& [key, value] : m_data) {
+        predicate_fn(key, value.m_value);
+    }
+}
+
+template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
 void Cache<K, V, I, E, C, SV, SK, TS>::swap(CacheType& other)
 {
     // Acquire both cache locks.
