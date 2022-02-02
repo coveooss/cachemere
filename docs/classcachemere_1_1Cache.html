@@ -133,6 +133,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a288411b8f38e4c7b507805e9d04edf24"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a288411b8f38e4c7b507805e9d04edf24">retain</a> (P predicate_fn)</td></tr>
 <tr class="memdesc:a288411b8f38e4c7b507805e9d04edf24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retain all objects matching a predicate.  <a href="classcachemere_1_1Cache.html#a288411b8f38e4c7b507805e9d04edf24">More...</a><br /></td></tr>
 <tr class="separator:a288411b8f38e4c7b507805e9d04edf24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3870b6e0cc0712a857e3c7430de54bd"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
+<tr class="memitem:ae3870b6e0cc0712a857e3c7430de54bd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ae3870b6e0cc0712a857e3c7430de54bd">for_each</a> (F unary_function)</td></tr>
+<tr class="memdesc:ae3870b6e0cc0712a857e3c7430de54bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a function to all objects in cache.  <a href="classcachemere_1_1Cache.html#ae3870b6e0cc0712a857e3c7430de54bd">More...</a><br /></td></tr>
+<tr class="separator:ae3870b6e0cc0712a857e3c7430de54bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac712099d550ec81fc9ff268c5ac3d092"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092">swap</a> (<a class="el" href="classcachemere_1_1Cache.html">CacheType</a> &amp;other)</td></tr>
 <tr class="memdesc:ac712099d550ec81fc9ff268c5ac3d092"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swaps the current cache with another cache of the same type.  <a href="classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092">More...</a><br /></td></tr>
 <tr class="separator:ac712099d550ec81fc9ff268c5ac3d092"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -421,6 +425,36 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value if <code>key</code> is in cache, <code>std::nullopt</code> otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="ae3870b6e0cc0712a857e3c7430de54bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3870b6e0cc0712a857e3c7430de54bd">&#9670;&nbsp;</a></span>for_each()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+<div class="memtemplate">
+template&lt;class F &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::for_each </td>
+          <td>(</td>
+          <td class="paramtype">F&#160;</td>
+          <td class="paramname"><em>unary_function</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Apply a function to all objects in cache. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">unary_function</td><td>The function to be applied to all items in cache. The function should have the signature <code>void fn(const Key&amp; key, const Value&amp; value)</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
