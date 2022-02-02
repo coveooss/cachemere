@@ -208,6 +208,22 @@ TYPED_TEST(CacheTest, Retain)
     }
 }
 
+TYPED_TEST(CacheTest, ForEach)
+{
+    auto cache = TestFixture::new_cache(10 * sizeof(Point3D));
+
+    const uint32_t number_of_items = 5;
+    for (uint32_t point_id = 0; point_id < number_of_items; ++point_id) {
+        cache->find(point_id);
+        cache->insert(point_id, Point3D{point_id, point_id, point_id});
+    }
+
+    std::vector<uint32_t> keys;
+    cache->for_each([&](const uint32_t& key, const Point3D& /* value */) { keys.push_back(key); });
+
+    EXPECT_EQ(keys.size(), number_of_items);
+}
+
 TYPED_TEST(CacheTest, Collect)
 {
     const uint32_t                            number_of_items = 5;

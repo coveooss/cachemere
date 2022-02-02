@@ -119,6 +119,11 @@ public:
     ///           The predicate should have the signature `bool fn(const Key& key, const Value& value)`.
     template<typename P> void retain(P predicate_fn);
 
+    /// @brief Apply a function to all objects in cache.
+    /// @param unary_function The function to be applied to all items in cache.
+    ///                       The function should have the signature `void fn(const Key& key, const Value& value)`.
+    template<typename F> void for_each(F unary_function);
+
     /// @brief Swaps the current cache with another cache of the same type.
     /// @param other The cache to swap this instance with.
     void swap(CacheType& other);
