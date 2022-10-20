@@ -36,7 +36,10 @@
     "benchmarks": {
       "description": "The accuracy and performance benchmarks",
       "dependencies": [
-        "benchmark",
+        {
+          "name": "benchmark",
+          "version>=": "1.6.1"
+        },
         "gtest",
         "tbb"
       ]
