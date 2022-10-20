@@ -202,6 +202,9 @@ void Cache<K, V, I, E, C, SV, SK, TS>::swap(CacheType& other) noexcept
         // Since both those errors are unrecoverable, we'll validate that the error code is one of the two we expect, and we'll terminate.
         assert(e.code() == std::errc::operation_not_permitted || e.code() == std::errc::resource_deadlock_would_occur);
         std::terminate();
+    } catch (...) {
+        // Even though this is technically not possible in the current state of the code, we'll catch any leftover exception to satisfy clang-tidy.
+        std::terminate();
     }
 }
 
