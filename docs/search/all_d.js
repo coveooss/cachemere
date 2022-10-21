@@ -10,5 +10,5 @@ var searchData=
   ['size_3c_20value_20_3e_68',['Size&lt; Value &gt;',['../structcachemere_1_1measurement_1_1Size.html',1,'cachemere::measurement']]],
   ['sizeof_69',['SizeOf',['../structcachemere_1_1measurement_1_1SizeOf.html',1,'cachemere::measurement']]],
   ['statistics_5fwindow_5fsize_70',['statistics_window_size',['../classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1',1,'cachemere::Cache::statistics_window_size() const'],['../classcachemere_1_1Cache.html#a70f19566b05307dd2e5f2f7ff9c200aa',1,'cachemere::Cache::statistics_window_size(uint32_t window_size)']]],
-  ['swap_71',['swap',['../classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092',1,'cachemere::Cache']]]
+  ['swap_71',['swap',['../classcachemere_1_1Cache.html#acfb6bcabd0e48485fa4bf79f2b36725b',1,'cachemere::Cache']]]
 ];

@@ -86,9 +86,9 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;       <a class="code" href="structcachemere_1_1Item.html#a5927416e04b41f8e0a7cf65b1e7a2d53">m_total_size</a>{key_size + value_size}</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>(<a class="code" href="structcachemere_1_1Item.html">Item</a>&amp;&amp; other) noexcept = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>(<span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp; other)     = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>(<a class="code" href="structcachemere_1_1Item.html">Item</a>&amp;&amp; other) noexcept      = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>(<span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp; other)          = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp;)     = <span class="keyword">delete</span>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="structcachemere_1_1Item.html">Item</a>&amp; operator=(<a class="code" href="structcachemere_1_1Item.html">Item</a>&amp;&amp;) noexcept = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structcachemere_1_1Item.html#a3f2d1eaed5109b656ba4e57f712ebe79">   23</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="structcachemere_1_1Item.html#a3f2d1eaed5109b656ba4e57f712ebe79">m_key_size</a>;  </div>
@@ -99,14 +99,14 @@ $(function() {
 <div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structcachemere_1_1Item.html#a5927416e04b41f8e0a7cf65b1e7a2d53">   28</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="structcachemere_1_1Item.html#a5927416e04b41f8e0a7cf65b1e7a2d53">m_total_size</a>;  </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;};</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Value&gt; <span class="keywordtype">void</span> swap(<a class="code" href="structcachemere_1_1Item.html">Item&lt;Value&gt;</a>&amp; a, <a class="code" href="structcachemere_1_1Item.html">Item&lt;Value&gt;</a>&amp; b)</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Value&gt; <span class="keywordtype">void</span> swap(<a class="code" href="structcachemere_1_1Item.html">Item&lt;Value&gt;</a>&amp; a, <a class="code" href="structcachemere_1_1Item.html">Item&lt;Value&gt;</a>&amp; b) noexcept</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">using</span> std::swap;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    swap(a.<a class="code" href="structcachemere_1_1Item.html#a3f2d1eaed5109b656ba4e57f712ebe79">m_key_size</a>, b.<a class="code" href="structcachemere_1_1Item.html#a3f2d1eaed5109b656ba4e57f712ebe79">m_key_size</a>);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    swap(a.<a class="code" href="structcachemere_1_1Item.html#a25a8a9a8d879a82291919144d777bf7b">m_value</a>, b.<a class="code" href="structcachemere_1_1Item.html#a25a8a9a8d879a82291919144d777bf7b">m_value</a>);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    swap(a.<a class="code" href="structcachemere_1_1Item.html#af66eaddb89ab985c75d141dcb255e369">m_value_size</a>, b.<a class="code" href="structcachemere_1_1Item.html#af66eaddb89ab985c75d141dcb255e369">m_value_size</a>);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    swap(a.<a class="code" href="structcachemere_1_1Item.html#a5927416e04b41f8e0a7cf65b1e7a2d53">m_total_size</a>, b.<a class="code" href="structcachemere_1_1Item.html#a5927416e04b41f8e0a7cf65b1e7a2d53">m_total_size</a>);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    swap(a.m_key_size, b.m_key_size);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    swap(a.m_value, b.m_value);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    swap(a.m_value_size, b.m_value_size);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    swap(a.m_total_size, b.m_total_size);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;}</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}  <span class="comment">// namespace cachemere</span></div>

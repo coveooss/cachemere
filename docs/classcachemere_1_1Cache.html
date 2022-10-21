@@ -137,9 +137,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ae3870b6e0cc0712a857e3c7430de54bd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ae3870b6e0cc0712a857e3c7430de54bd">for_each</a> (F unary_function)</td></tr>
 <tr class="memdesc:ae3870b6e0cc0712a857e3c7430de54bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a function to all objects in cache.  <a href="classcachemere_1_1Cache.html#ae3870b6e0cc0712a857e3c7430de54bd">More...</a><br /></td></tr>
 <tr class="separator:ae3870b6e0cc0712a857e3c7430de54bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac712099d550ec81fc9ff268c5ac3d092"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092">swap</a> (<a class="el" href="classcachemere_1_1Cache.html">CacheType</a> &amp;other)</td></tr>
-<tr class="memdesc:ac712099d550ec81fc9ff268c5ac3d092"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swaps the current cache with another cache of the same type.  <a href="classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092">More...</a><br /></td></tr>
-<tr class="separator:ac712099d550ec81fc9ff268c5ac3d092"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfb6bcabd0e48485fa4bf79f2b36725b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#acfb6bcabd0e48485fa4bf79f2b36725b">swap</a> (<a class="el" href="classcachemere_1_1Cache.html">CacheType</a> &amp;other) noexcept</td></tr>
+<tr class="memdesc:acfb6bcabd0e48485fa4bf79f2b36725b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swaps the current cache with another cache of the same type.  <a href="classcachemere_1_1Cache.html#acfb6bcabd0e48485fa4bf79f2b36725b">More...</a><br /></td></tr>
+<tr class="separator:acfb6bcabd0e48485fa4bf79f2b36725b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e56ba870329889bb7a1e30415be2f48"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a2e56ba870329889bb7a1e30415be2f48">number_of_items</a> () const</td></tr>
 <tr class="memdesc:a2e56ba870329889bb7a1e30415be2f48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of items currently stored in the cache.  <a href="classcachemere_1_1Cache.html#a2e56ba870329889bb7a1e30415be2f48">More...</a><br /></td></tr>
 <tr class="separator:a2e56ba870329889bb7a1e30415be2f48"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -682,13 +682,16 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 
 </div>
 </div>
-<a id="ac712099d550ec81fc9ff268c5ac3d092"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac712099d550ec81fc9ff268c5ac3d092">&#9670;&nbsp;</a></span>swap()</h2>
+<a id="acfb6bcabd0e48485fa4bf79f2b36725b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfb6bcabd0e48485fa4bf79f2b36725b">&#9670;&nbsp;</a></span>swap()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::swap </td>
@@ -698,10 +701,15 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Swaps the current cache with another cache of the same type. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Calls <code>std::terminate</code> if the cache runs in thread-safe mode and an exception is thrown while locking its mutex. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td>The cache to swap this instance with. </td></tr>
   </table>

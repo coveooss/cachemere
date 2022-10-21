@@ -6,5 +6,5 @@ var searchData=
   ['should_5fadd_145',['should_add',['../classcachemere_1_1policy_1_1InsertionAlways.html#a5a4e421ec8735d1b575bf68ebdc6d2c9',1,'cachemere::policy::InsertionAlways::should_add()'],['../classcachemere_1_1policy_1_1InsertionTinyLFU.html#a2a2bb514d2cd57f8c485ad4525bdef9a',1,'cachemere::policy::InsertionTinyLFU::should_add()']]],
   ['should_5freplace_146',['should_replace',['../classcachemere_1_1policy_1_1InsertionAlways.html#aab44013d143565cc341cd045ecb73108',1,'cachemere::policy::InsertionAlways::should_replace()'],['../classcachemere_1_1policy_1_1InsertionTinyLFU.html#a9179a8e12a48c2bacdbbb91e69ce3a95',1,'cachemere::policy::InsertionTinyLFU::should_replace()']]],
   ['statistics_5fwindow_5fsize_147',['statistics_window_size',['../classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1',1,'cachemere::Cache::statistics_window_size() const'],['../classcachemere_1_1Cache.html#a70f19566b05307dd2e5f2f7ff9c200aa',1,'cachemere::Cache::statistics_window_size(uint32_t window_size)']]],
-  ['swap_148',['swap',['../classcachemere_1_1Cache.html#ac712099d550ec81fc9ff268c5ac3d092',1,'cachemere::Cache']]]
+  ['swap_148',['swap',['../classcachemere_1_1Cache.html#acfb6bcabd0e48485fa4bf79f2b36725b',1,'cachemere::Cache']]]
 ];
