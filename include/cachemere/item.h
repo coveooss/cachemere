@@ -15,9 +15,9 @@ template<typename Value> struct Item {
        m_total_size{key_size + value_size}
     {
     }
-    Item(Item&& other) noexcept = default;
-    Item(const Item& other)     = delete;
-    Item& operator=(const Item&) = delete;
+    Item(Item&& other) noexcept      = default;
+    Item(const Item& other)          = delete;
+    Item& operator=(const Item&)     = delete;
     Item& operator=(Item&&) noexcept = default;
 
     size_t m_key_size;  //!< The size of the key.
@@ -28,7 +28,7 @@ template<typename Value> struct Item {
     size_t m_total_size;  //!< The total size of the item (`m_key_size + m_value_size`)
 };
 
-template<typename Value> void swap(Item<Value>& a, Item<Value>& b)
+template<typename Value> void swap(Item<Value>& a, Item<Value>& b) noexcept
 {
     using std::swap;
 

@@ -125,8 +125,9 @@ public:
     template<typename F> void for_each(F unary_function);
 
     /// @brief Swaps the current cache with another cache of the same type.
+    /// @details Calls `std::terminate` if the cache runs in thread-safe mode and an exception is thrown while locking its mutex.
     /// @param other The cache to swap this instance with.
-    void swap(CacheType& other);
+    void swap(CacheType& other) noexcept;
 
     /// @brief Get the number of items currently stored in the cache.
     /// @warning This method acquires a mutual exclusion lock to secure the item count.
@@ -230,7 +231,7 @@ private:
 };
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
-void swap(Cache<K, V, I, E, C, SV, SK, TS>& lhs, Cache<K, V, I, E, C, SV, SK, TS>& rhs);
+void swap(Cache<K, V, I, E, C, SV, SK, TS>& lhs, Cache<K, V, I, E, C, SV, SK, TS>& rhs) noexcept;
 
 }  // namespace cachemere
 

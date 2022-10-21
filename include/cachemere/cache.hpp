@@ -172,23 +172,40 @@ void Cache<K, V, I, E, C, SV, SK, TS>::for_each(F unary_function)
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
-void Cache<K, V, I, E, C, SV, SK, TS>::swap(CacheType& other)
+void Cache<K, V, I, E, C, SV, SK, TS>::swap(CacheType& other) noexcept
 {
-    // Acquire both cache locks.
-    std::pair<LockGuard, LockGuard> guards{lock_pair(other)};
+    try {
+        // Acquire both cache locks.
+        std::pair<LockGuard, LockGuard> guards{lock_pair(other)};
 
-    using std::swap;
+        using std::swap;
 
-    swap(m_statistics_window_size, other.m_statistics_window_size);
+        swap(m_statistics_window_size, other.m_statistics_window_size);
 
-    swap(m_insertion_policy, other.m_insertion_policy);
-    swap(m_eviction_policy, other.m_eviction_policy);
-    swap(m_constraint_policy, other.m_constraint_policy);
+        swap(m_insertion_policy, other.m_insertion_policy);
+        swap(m_eviction_policy, other.m_eviction_policy);
+        swap(m_constraint_policy, other.m_constraint_policy);
 
-    swap(m_data, other.m_data);
+        swap(m_data, other.m_data);
 
-    swap(m_hit_rate_acc, other.m_hit_rate_acc);
-    swap(m_byte_hit_rate_acc, other.m_byte_hit_rate_acc);
+        swap(m_hit_rate_acc, other.m_hit_rate_acc);
+        swap(m_byte_hit_rate_acc, other.m_byte_hit_rate_acc);
+    } catch (std::system_error e) {
+        // The only exception that can sensibly be thrown in the above block is a `system_error` when acquiring the mutexes of both caches (if the caches are
+        // running in thread-safe mode).
+        //
+        // According to the [reference for std mutexes](https://en.cppreference.com/w/cpp/named_req/Mutex), this exception can be thrown for one of two
+        // reasons:
+        //   - If the calling thread does not have the required privileges.
+        //   - If the implementation determines that acquiring the lock would lead to a deadlock.
+        //
+        // Since both those errors are unrecoverable, we'll validate that the error code is one of the two we expect, and we'll terminate.
+        assert(e.code() == std::errc::operation_not_permitted || e.code() == std::errc::resource_deadlock_would_occur);
+        std::terminate();
+    } catch (...) {
+        // Even though this is technically not possible in the current state of the code, we'll catch any leftover exception to satisfy clang-tidy.
+        std::terminate();
+    }
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
@@ -581,7 +598,7 @@ void Cache<K, V, I, E, C, SV, SK, TS>::on_evict(const K& key, const CacheItem& i
 }
 
 template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
-void swap(Cache<K, V, I, E, C, SV, SK, TS>& lhs, Cache<K, V, I, E, C, SV, SK, TS>& rhs)
+void swap(Cache<K, V, I, E, C, SV, SK, TS>& lhs, Cache<K, V, I, E, C, SV, SK, TS>& rhs) noexcept
 {
     lhs.swap(rhs);
 }
