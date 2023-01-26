@@ -21,9 +21,9 @@ namespace memory {
 
 template<typename Key,
          typename Value,
-         template<class, class>
+         template<class, class, class>
          class InsertionPolicy,
-         template<class, class>
+         template<class, class, class>
          class EvictionPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
@@ -93,9 +93,9 @@ namespace count {
 
 template<typename Key,
          typename Value,
-         template<class, class>
+         template<class, class, class>
          class InsertionPolicy,
-         template<class, class>
+         template<class, class, class>
          class EvictionPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,

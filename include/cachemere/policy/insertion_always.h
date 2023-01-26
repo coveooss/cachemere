@@ -6,7 +6,7 @@
 namespace cachemere::policy {
 
 /// @brief Simplest insertion policy. Always accepts insertions.
-template<typename Key, typename Value> class InsertionAlways
+template<typename Key, typename KeyHash, typename Value> class InsertionAlways
 {
 public:
     /// @brief Clears the policy.

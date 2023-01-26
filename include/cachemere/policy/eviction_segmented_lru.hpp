@@ -1,9 +1,9 @@
 namespace cachemere::policy {
 
-template<class Key, class Value>
-EvictionSegmentedLRU<Key, Value>::VictimIterator::VictimIterator(const KeyRefReverseIt& probation_iterator,
-                                                                 const KeyRefReverseIt& probation_end_iterator,
-                                                                 const KeyRefReverseIt& protected_iterator)
+template<class Key, class KeyHash, class Value>
+EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::VictimIterator(const KeyRefReverseIt& probation_iterator,
+                                                                          const KeyRefReverseIt& probation_end_iterator,
+                                                                          const KeyRefReverseIt& protected_iterator)
  : m_probation_iterator{probation_iterator},
    m_probation_end_iterator{probation_end_iterator},
    m_protected_iterator{protected_iterator},
@@ -11,13 +11,13 @@ EvictionSegmentedLRU<Key, Value>::VictimIterator::VictimIterator(const KeyRefRev
 {
 }
 
-template<class Key, class Value> const Key& EvictionSegmentedLRU<Key, Value>::VictimIterator::operator*() const
+template<class Key, class KeyHash, class Value> const Key& EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator*() const
 {
     const auto it = m_done_with_probation ? m_protected_iterator : m_probation_iterator;
     return *it;
 }
 
-template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::VictimIterator::operator++() -> VictimIterator&
+template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator++() -> VictimIterator&
 {
     if (m_done_with_probation) {
         ++m_protected_iterator;
@@ -28,25 +28,25 @@ template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::VictimIt
     return *this;
 }
 
-template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::VictimIterator::operator++(int) -> VictimIterator
+template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator++(int) -> VictimIterator
 {
     auto tmp = *this;
     ++*this;
     return tmp;
 }
 
-template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::VictimIterator::operator==(const VictimIterator& other) const
+template<class Key, class KeyHash, class Value> bool EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator==(const VictimIterator& other) const
 {
     return m_protected_iterator == other.m_protected_iterator && m_probation_iterator == other.m_probation_iterator &&
            m_done_with_probation == other.m_done_with_probation;
 }
 
-template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::VictimIterator::operator!=(const VictimIterator& other) const
+template<class Key, class KeyHash, class Value> bool EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator!=(const VictimIterator& other) const
 {
     return !(*this == other);
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::clear()
+template<class Key, class KeyHash, class Value> void EvictionSegmentedLRU<Key, KeyHash, Value>::clear()
 {
     m_probation_list.clear();
     m_probation_nodes.clear();
@@ -55,12 +55,12 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::clear()
     m_protected_nodes.clear();
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::set_protected_segment_size(size_t size)
+template<class Key, class KeyHash, class Value> void EvictionSegmentedLRU<Key, KeyHash, Value>::set_protected_segment_size(size_t size)
 {
     m_protected_segment_size = size;
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_insert(const Key& key, const CacheItem& /* item */)
+template<class Key, class KeyHash, class Value> void EvictionSegmentedLRU<Key, KeyHash, Value>::on_insert(const Key& key, const CacheItem& /* item */)
 {
     assert(m_probation_nodes.find(key) == m_probation_nodes.end());
 
@@ -68,12 +68,13 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_inser
     m_probation_nodes.emplace(std::ref(key), m_probation_list.begin());
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
+template<class Key, class KeyHash, class Value>
+void EvictionSegmentedLRU<Key, KeyHash, Value>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
 {
     on_cache_hit(key, new_item);
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
+template<class Key, class KeyHash, class Value> void EvictionSegmentedLRU<Key, KeyHash, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
 {
     assert(m_probation_nodes.size() == m_probation_list.size());
     assert(m_protected_nodes.size() == m_protected_list.size());
@@ -100,7 +101,7 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_cache
     assert(m_protected_nodes.size() == m_protected_list.size());
 }
 
-template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_evict(const Key& key, const CacheItem& /* item */)
+template<class Key, class KeyHash, class Value> void EvictionSegmentedLRU<Key, KeyHash, Value>::on_evict(const Key& key, const CacheItem& /* item */)
 {
     assert((!m_protected_list.empty()) || !m_probation_list.empty());
 
@@ -116,17 +117,17 @@ template<class Key, class Value> void EvictionSegmentedLRU<Key, Value>::on_evict
     }
 }
 
-template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::victim_begin() const -> VictimIterator
+template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::victim_begin() const -> VictimIterator
 {
     return VictimIterator{m_probation_list.rbegin(), m_probation_list.rend(), m_protected_list.rbegin()};
 }
 
-template<class Key, class Value> auto EvictionSegmentedLRU<Key, Value>::victim_end() const -> VictimIterator
+template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::victim_end() const -> VictimIterator
 {
     return VictimIterator{m_probation_list.rend(), m_probation_list.rend(), m_protected_list.rend()};
 }
 
-template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::move_to_protected(const Key& key)
+template<class Key, class KeyHash, class Value> bool EvictionSegmentedLRU<Key, KeyHash, Value>::move_to_protected(const Key& key)
 {
     auto probation_node_it = m_probation_nodes.find(key);
     if (probation_node_it == m_probation_nodes.end()) {
@@ -139,7 +140,7 @@ template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::move_to_
     return true;
 }
 
-template<class Key, class Value> bool EvictionSegmentedLRU<Key, Value>::pop_to_probation()
+template<class Key, class KeyHash, class Value> bool EvictionSegmentedLRU<Key, KeyHash, Value>::pop_to_probation()
 {
     if (m_protected_list.empty()) {
         return false;

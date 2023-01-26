@@ -46,11 +46,11 @@ namespace cachemere {
 /// @tparam ThreadSafe Whether to enable locking. When true, all cache operations will be protected by a lock. `true` by default.
 template<typename Key,
          typename Value,
-         template<class, class>
+         template<class, class, class>
          class InsertionPolicy,
-         template<class, class>
+         template<class, class, class>
          class EvictionPolicy,
-         template<class, class>
+         template<class, class, class>
          class ConstraintPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
@@ -59,9 +59,9 @@ template<typename Key,
 class Cache
 {
 public:
-    using MyInsertionPolicy  = InsertionPolicy<Key, Value>;
-    using MyEvictionPolicy   = EvictionPolicy<Key, Value>;
-    using MyConstraintPolicy = ConstraintPolicy<Key, Value>;
+    using MyInsertionPolicy  = InsertionPolicy<Key, KeyHash, Value>;
+    using MyEvictionPolicy   = EvictionPolicy<Key, KeyHash, Value>;
+    using MyConstraintPolicy = ConstraintPolicy<Key, KeyHash, Value>;
     using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
     using LockGuard          = std::unique_lock<std::recursive_mutex>;
 
@@ -233,11 +233,11 @@ private:
 
 template<class K,
          class V,
-         template<class, class>
+         template<class, class, class>
          class I,
-         template<class, class>
+         template<class, class, class>
          class E,
-         template<class, class>
+         template<class, class, class>
          class C,
          class SV,
          class SK,

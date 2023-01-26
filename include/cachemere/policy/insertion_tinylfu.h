@@ -15,7 +15,7 @@ namespace cachemere::policy {
 ///          inserted and/or kept in cache while using a constant amount of memory. The policy uses a combination
 ///          of frequency sketches to keep track of items that have yet to be inserted in the cache, and uses those
 ///          sketches to decide which items should me prioritized.
-template<typename Key, typename Value> class InsertionTinyLFU
+template<typename Key, typename KeyHash, typename Value> class InsertionTinyLFU
 {
 public:
     using CacheItem = cachemere::Item<Value>;

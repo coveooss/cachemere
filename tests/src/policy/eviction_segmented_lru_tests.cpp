@@ -8,7 +8,7 @@
 
 using namespace cachemere;
 
-using TestSLRU = policy::EvictionSegmentedLRU<std::string, int32_t>;
+using TestSLRU = policy::EvictionSegmentedLRU<std::string, std::hash<std::string>, int32_t>;
 using TestItem = Item<int32_t>;
 using ItemMap  = std::map<std::string, TestItem>;
 

@@ -10,7 +10,7 @@
 
 using namespace cachemere;
 
-using TestLRU  = policy::EvictionLRU<std::string, int32_t>;
+using TestLRU  = policy::EvictionLRU<std::string, std::hash<std::string>, int32_t>;
 using TestItem = Item<int32_t>;
 using ItemMap  = std::map<std::string, TestItem>;
 

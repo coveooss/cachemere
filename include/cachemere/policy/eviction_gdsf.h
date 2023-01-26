@@ -20,7 +20,7 @@ namespace cachemere::policy {
 /// @tparam Cost A functor taking a a `Key&` and a `const Item<Value>&` returning the cost to load this item in cache.
 //          The cost must not exceed 2^64 and should ideally be quite a bit below this limit since the cost of the item is added to the
 //          policy's internal 64-bit clock on every insertion.
-template<typename Key, typename Value, typename Cost> class EvictionGDSF
+template<typename Key, typename KeyHash, typename Value, typename Cost> class EvictionGDSF
 {
 private:
     using KeyRef = std::reference_wrapper<const Key>;

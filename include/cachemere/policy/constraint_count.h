@@ -9,7 +9,7 @@ namespace cachemere::policy {
 /// @details Use this when the constraint of the cache should be the number of items in cache.
 /// @tparam Key The type of the keys used to identify items in the cache.
 /// @tparam Value The type of the values stored in the cache.
-template<typename Key, typename Value> class ConstraintCount
+template<typename Key, typename KeyHash, typename Value> class ConstraintCount
 {
     using CacheItem = Item<Value>;
 

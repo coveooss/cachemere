@@ -16,7 +16,7 @@ namespace cachemere::policy {
 ///          Only stores references to keys kept alive by the cache.
 /// @tparam Key The type of the keys used to identify items in the cache.
 /// @tparam Value The type of the values stored in the cache.
-template<typename Key, typename Value> class EvictionLRU
+template<typename Key, typename KeyHash, typename Value> class EvictionLRU
 {
 private:
     using KeyRef    = std::reference_wrapper<const Key>;

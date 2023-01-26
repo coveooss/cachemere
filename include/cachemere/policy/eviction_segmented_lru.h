@@ -14,7 +14,7 @@ namespace cachemere::policy {
 ///          If the protected segment is full, the item that was least-recently accessed is downgraded to
 ///          the probation segment. This architecture has the effect of reducing cache churn and keeping
 ///          "good" items in cache a bit longer.
-template<typename Key, typename Value> class EvictionSegmentedLRU
+template<typename Key, typename KeyHash, typename Value> class EvictionSegmentedLRU
 {
 private:
     using KeyRef    = std::reference_wrapper<const Key>;
