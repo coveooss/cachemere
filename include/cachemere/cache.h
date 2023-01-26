@@ -6,8 +6,10 @@
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <unordered_map>
 #include <vector>
+
+#include <absl/container/node_hash_map.h>
+#include <absl/hash/hash.h>
 
 #ifdef _WIN32
 #    pragma warning(push)
@@ -38,30 +40,32 @@ namespace cachemere {
 ///          Some logic is delegated to the insertion and eviction policies. For details, see the \ref index "Main Page".
 /// @tparam Key The type of the key used for retrieving items.
 /// @tparam Value The type of the items stored in the cache.
-/// @tparam InsertionPolicy A template parameterized by `Key` and `Value` implementing the insertion policy interface.
-/// @tparam EvictionPolicy A template parameterized by `Key` and `Value` implementing the eviction policy interface.
-/// @tparam ConstraintPolicy A template parameterized by `Key` and `Value` implementing the constraint policy interface.
+/// @tparam InsertionPolicy A template parameterized by `Key`, `KeyHash`, and `Value` implementing the insertion policy interface.
+/// @tparam EvictionPolicy A template parameterized by `Key` `KeyHash`, and `Value` implementing the eviction policy interface.
+/// @tparam ConstraintPolicy A template parameterized by `Key` `KeyHash`, and `Value` implementing the constraint policy interface.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam ThreadSafe Whether to enable locking. When true, all cache operations will be protected by a lock. `true` by default.
 template<typename Key,
          typename Value,
-         template<class, class>
+         template<class, class, class>
          class InsertionPolicy,
-         template<class, class>
+         template<class, class, class>
          class EvictionPolicy,
-         template<class, class>
+         template<class, class, class>
          class ConstraintPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 class Cache
 {
 public:
-    using MyInsertionPolicy  = InsertionPolicy<Key, Value>;
-    using MyEvictionPolicy   = EvictionPolicy<Key, Value>;
-    using MyConstraintPolicy = ConstraintPolicy<Key, Value>;
-    using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe>;
+    using MyInsertionPolicy  = InsertionPolicy<Key, KeyHash, Value>;
+    using MyEvictionPolicy   = EvictionPolicy<Key, KeyHash, Value>;
+    using MyConstraintPolicy = ConstraintPolicy<Key, KeyHash, Value>;
+    using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
     using LockGuard          = std::unique_lock<std::recursive_mutex>;
 
     /// @brief Simple constructor.
@@ -191,7 +195,9 @@ protected:
 
 private:
     using CacheItem = Item<Value>;
-    using DataMap   = std::unordered_map<Key, CacheItem>;
+
+    using DataMap = absl::node_hash_map<Key, CacheItem, KeyHash>;
+
     using DataMapIt = typename DataMap::iterator;
 
     using MyInsertionPolicySP  = std::unique_ptr<MyInsertionPolicy>;
@@ -230,8 +236,19 @@ private:
     void on_evict(const Key& key, const CacheItem& item) const;
 };
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
-void swap(Cache<K, V, I, E, C, SV, SK, TS>& lhs, Cache<K, V, I, E, C, SV, SK, TS>& rhs) noexcept;
+template<class K,
+         class V,
+         template<class, class, class>
+         class I,
+         template<class, class, class>
+         class E,
+         template<class, class, class>
+         class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
+void swap(Cache<K, V, I, E, C, SV, SK, KH, TS>& lhs, Cache<K, V, I, E, C, SV, SK, KH, TS>& rhs) noexcept;
 
 }  // namespace cachemere
 

@@ -2,8 +2,8 @@
 #define CACHEMERE_EVICTION_GDSF
 
 #include <algorithm>
-#include <map>
-#include <set>
+
+#include <absl/container/btree_map.h>
 
 #include "cachemere/item.h"
 #include "cachemere/policy/detail/counting_bloom_filter.h"
@@ -16,11 +16,12 @@ namespace cachemere::policy {
 ///          GDSF is implemented using a priority queue sorted by a coefficient computed for each item.
 ///          Items are then evicted starting with the item with the smallest coefficient.
 /// @tparam Key The type of the keys used to identify items in the cache.
+/// @tparam KeyHash The type of the hasher used to hash item keys.
 /// @tparam Value The type of the values stored in the cache.
 /// @tparam Cost A functor taking a a `Key&` and a `const Item<Value>&` returning the cost to load this item in cache.
 //          The cost must not exceed 2^64 and should ideally be quite a bit below this limit since the cost of the item is added to the
 //          policy's internal 64-bit clock on every insertion.
-template<typename Key, typename Value, typename Cost> class EvictionGDSF
+template<typename Key, typename KeyHash, typename Value, typename Cost> class EvictionGDSF
 {
 private:
     using KeyRef = std::reference_wrapper<const Key>;
@@ -102,7 +103,7 @@ public:
     [[nodiscard]] VictimIterator victim_end() const;
 
 private:
-    using IteratorMap = std::map<KeyRef, PrioritySetIt, std::less<const Key>>;
+    using IteratorMap = absl::btree_map<KeyRef, PrioritySetIt, std::less<const Key>>;
 
     const static uint32_t            DEFAULT_CACHE_CARDINALITY = 2000;               // The expected cache cardinality, for the counting bloom filter.
     mutable Cost                     m_measure_cost;                                 // The functor to measure the cost metric of cached items.

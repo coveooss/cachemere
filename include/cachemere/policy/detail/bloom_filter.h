@@ -12,6 +12,7 @@
 #endif
 
 #include <boost/dynamic_bitset.hpp>
+#include <absl/hash/hash.h>
 
 #ifdef _WIN32
 #    pragma warning(pop)
@@ -27,7 +28,7 @@ namespace cachemere::policy::detail {
 ///          filter membership tests.
 /// @tparam Item The type of the items that will be inserted into the set.
 /// @tparam ItemHash Functor used for hashing the items inserted in the set.
-template<typename Item, typename ItemHash = std::hash<Item>> class BloomFilter
+template<typename Item, typename ItemHash = absl::Hash<Item>> class BloomFilter
 {
 public:
     /// @brief Constructor.

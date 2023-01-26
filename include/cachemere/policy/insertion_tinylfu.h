@@ -15,7 +15,10 @@ namespace cachemere::policy {
 ///          inserted and/or kept in cache while using a constant amount of memory. The policy uses a combination
 ///          of frequency sketches to keep track of items that have yet to be inserted in the cache, and uses those
 ///          sketches to decide which items should me prioritized.
-template<typename Key, typename Value> class InsertionTinyLFU
+/// @tparam Key The type of the keys used to identify items in the cache.
+/// @tparam KeyHash The type of the hasher used to hash item keys.
+/// @tparam Value The type of the values stored in the cache.
+template<typename Key, typename KeyHash, typename Value> class InsertionTinyLFU
 {
 public:
     using CacheItem = cachemere::Item<Value>;
@@ -56,9 +59,10 @@ public:
     bool should_replace(const Key& victim, const Key& candidate);
 
 private:
-    const static uint32_t            DEFAULT_CACHE_CARDINALITY = 2000;
-    detail::BloomFilter<Key>         m_gatekeeper{DEFAULT_CACHE_CARDINALITY};        // TODO: Investigate using cuckoo filter here instead.
-    detail::CountingBloomFilter<Key> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};  // TODO: Replace with count-min sketch to get rid of cardinality param.
+    const static uint32_t                     DEFAULT_CACHE_CARDINALITY = 2000;
+    detail::BloomFilter<Key, KeyHash>         m_gatekeeper{DEFAULT_CACHE_CARDINALITY};  // TODO: Investigate using cuckoo filter here instead.
+    detail::CountingBloomFilter<Key, KeyHash> m_frequency_sketch{
+        DEFAULT_CACHE_CARDINALITY};  // TODO: Replace with count-min sketch to get rid of cardinality param.
 
     uint32_t estimate_count_for_key(const Key& key) const;
     void     reset();

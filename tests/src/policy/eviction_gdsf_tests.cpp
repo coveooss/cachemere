@@ -4,6 +4,8 @@
 #include <set>
 #include <string>
 
+#include <absl/hash/hash.h>
+
 #include "cachemere/policy/eviction_gdsf.h"
 
 using namespace cachemere;
@@ -25,8 +27,8 @@ struct QuadraticSizeCost {
     }
 };
 
-using ConstantCostGDSF  = policy::EvictionGDSF<std::string, int32_t, ConstantCost>;
-using QuadraticCostGDSF = policy::EvictionGDSF<std::string, int32_t, QuadraticSizeCost>;
+using ConstantCostGDSF  = policy::EvictionGDSF<std::string, absl::Hash<std::string>, int32_t, ConstantCost>;
+using QuadraticCostGDSF = policy::EvictionGDSF<std::string, absl::Hash<std::string>, int32_t, QuadraticSizeCost>;
 
 template<typename Policy> void insert_item(std::string key, int32_t value, Policy& policy, ItemMap& item_map)
 {

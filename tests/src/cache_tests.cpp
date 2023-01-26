@@ -10,6 +10,8 @@
 #include <thread>
 #include <unordered_map>
 
+#include <absl/hash/hash_testing.h>
+
 #include "cachemere/cache.h"
 #include "cachemere/measurement.h"
 #include "cachemere/presets.h"
@@ -72,18 +74,25 @@ public:
 
     NonCopyString(NonCopyString&& a) = default;
 
-    NonCopyString(const NonCopyString&) = delete;
+    NonCopyString(const NonCopyString&)            = delete;
     NonCopyString& operator=(const NonCopyString&) = delete;
-};
+    NonCopyString& operator=(NonCopyString&&)      = default;
 
-namespace std {
-template<> struct hash<NonCopyString> {
-    size_t operator()(const NonCopyString& s) const noexcept
+    template<typename H> friend H AbslHashValue(H h, const NonCopyString& s)
     {
-        return std::hash<std::string>{}(static_cast<const std::string&>(s));
+        return H::combine(std::move(h), static_cast<const std::string&>(s));
     }
 };
-}  // namespace std
+
+TEST(NonCopyString, SupportsAbslHash)
+{
+    EXPECT_TRUE(absl::VerifyTypeImplementsAbslHashCorrectly({
+        NonCopyString("asdf"),
+        NonCopyString("hjkl"),
+        NonCopyString(""),
+        NonCopyString("bing bang bong"),
+    }));
+};
 
 TYPED_TEST_SUITE(CacheTest, TestTypes);
 
@@ -117,7 +126,7 @@ TYPED_TEST(CacheTest, MultiThreadLong)
     points.reserve(item_count);
 
     for (uint32_t i = 0; i < item_count; ++i) {
-        points.emplace_back(Point3D{i, i, i});
+        points.emplace_back(i, i, i);
     }
 
     std::vector<std::thread> workers;
@@ -358,7 +367,8 @@ TEST(CacheTest, NoKeyCopyOnImportConstruction)
 
 TEST(CacheTest, SingleThreadSwapDoesntThrow)
 {
-    using SingleThreadCache = presets::memory::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>, false>;
+    using SingleThreadCache =
+        presets::memory::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>, absl::Hash<uint32_t>, false>;
 
     SingleThreadCache cache_a{10 * sizeof(Point3D)};
     SingleThreadCache cache_b{10 * sizeof(Point3D)};
