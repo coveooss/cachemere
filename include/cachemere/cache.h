@@ -192,7 +192,7 @@ protected:
 
 private:
     using CacheItem = Item<Value>;
-    using DataMap   = std::unordered_map<Key, CacheItem>;
+    using DataMap   = std::unordered_map<Key, CacheItem, KeyHash>;
     using DataMapIt = typename DataMap::iterator;
 
     using MyInsertionPolicySP  = std::unique_ptr<MyInsertionPolicy>;
