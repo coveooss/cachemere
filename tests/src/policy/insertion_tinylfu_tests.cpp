@@ -4,7 +4,7 @@
 
 using namespace cachemere;
 
-using TestPolicy = policy::InsertionTinyLFU<uint32_t, std::hash<std::string>, uint32_t>;
+using TestPolicy = policy::InsertionTinyLFU<uint32_t, std::hash<uint32_t>, uint32_t>;
 
 TEST(InsertionTinyLFU, ShouldAddAlwaysTrue)
 {

@@ -21,7 +21,7 @@ template<typename Key, typename KeyHash, typename Value> class EvictionLRU
 private:
     using KeyRef    = std::reference_wrapper<const Key>;
     using KeyRefIt  = typename std::list<KeyRef>::iterator;
-    using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<const Key>>;
+    using KeyRefMap = std::unordered_map<KeyRef, KeyRefIt, KeyHash, std::equal_to<Key>>;
 
 public:
     using CacheItem = cachemere::Item<Value>;
