@@ -54,6 +54,7 @@ template<typename Key,
          class ConstraintPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
          bool ThreadSafe       = true>
 class Cache
 {
@@ -61,7 +62,7 @@ public:
     using MyInsertionPolicy  = InsertionPolicy<Key, Value>;
     using MyEvictionPolicy   = EvictionPolicy<Key, Value>;
     using MyConstraintPolicy = ConstraintPolicy<Key, Value>;
-    using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe>;
+    using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
     using LockGuard          = std::unique_lock<std::recursive_mutex>;
 
     /// @brief Simple constructor.
@@ -230,8 +231,19 @@ private:
     void on_evict(const Key& key, const CacheItem& item) const;
 };
 
-template<class K, class V, template<class, class> class I, template<class, class> class E, template<class, class> class C, class SV, class SK, bool TS>
-void swap(Cache<K, V, I, E, C, SV, SK, TS>& lhs, Cache<K, V, I, E, C, SV, SK, TS>& rhs) noexcept;
+template<class K,
+         class V,
+         template<class, class>
+         class I,
+         template<class, class>
+         class E,
+         template<class, class>
+         class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
+void swap(Cache<K, V, I, E, C, SV, SK, KH, TS>& lhs, Cache<K, V, I, E, C, SV, SK, KH, TS>& rhs) noexcept;
 
 }  // namespace cachemere
 

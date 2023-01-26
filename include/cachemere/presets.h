@@ -27,8 +27,9 @@ template<typename Key,
          class EvictionPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
          bool ThreadSafe       = true>
-using MemoryConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintMemory, MeasureValue, MeasureKey, ThreadSafe>;
+using MemoryConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintMemory, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
 /// @brief Least-Recently-Used Cache.
 /// @details Uses a linked list to order items from hottest (most recently accessed) to coldest (least recently accessed).
@@ -37,8 +38,13 @@ using MemoryConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
-template<typename Key, typename Value, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>, bool ThreadSafe = true>
-using LRUCache = MemoryConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, ThreadSafe>;
+template<typename Key,
+         typename Value,
+         typename MeasureValue = measurement::Size<Value>,
+         typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
+         bool ThreadSafe       = true>
+using LRUCache = MemoryConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
 /// @brief TinyLFU Cache.
 /// @details Uses a combination of frequency sketches to gather a decent estimate of the access frequency of most keys.
@@ -48,8 +54,13 @@ using LRUCache = MemoryConstrainedCache<Key, Value, policy::InsertionAlways, pol
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
-template<typename Key, typename Value, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>, bool ThreadSafe = true>
-using TinyLFUCache = MemoryConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, ThreadSafe>;
+template<typename Key,
+         typename Value,
+         typename MeasureValue = measurement::Size<Value>,
+         typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
+         bool ThreadSafe       = true>
+using TinyLFUCache = MemoryConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
 /// @brief Custom-Cost Cache.
 /// @details The use of this cache should be favored in scenarios where the cost of a cache miss varies greatly from one item to the next.
@@ -64,9 +75,16 @@ template<typename Key,
          typename Cost,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
          bool ThreadSafe       = true>
-using CustomCostCache =
-    MemoryConstrainedCache<Key, Value, policy::InsertionAlways, policy::bind<policy::EvictionGDSF, Cost>::template ttype, MeasureValue, MeasureKey, ThreadSafe>;
+using CustomCostCache = MemoryConstrainedCache<Key,
+                                               Value,
+                                               policy::InsertionAlways,
+                                               policy::bind<policy::EvictionGDSF, Cost>::template ttype,
+                                               MeasureValue,
+                                               MeasureKey,
+                                               KeyHash,
+                                               ThreadSafe>;
 
 }  // namespace memory
 
@@ -81,8 +99,9 @@ template<typename Key,
          class EvictionPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
          bool ThreadSafe       = true>
-using CountConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintCount, MeasureValue, MeasureKey, ThreadSafe>;
+using CountConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintCount, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
 /// @brief Least-Recently-Used Cache.
 /// @details Uses a linked list to order items from hottest (most recently accessed) to coldest (least recently accessed).
@@ -91,8 +110,13 @@ using CountConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy,
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
-template<typename Key, typename Value, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>, bool ThreadSafe = true>
-using LRUCache = CountConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, ThreadSafe>;
+template<typename Key,
+         typename Value,
+         typename MeasureValue = measurement::Size<Value>,
+         typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
+         bool ThreadSafe       = true>
+using LRUCache = CountConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
 /// @brief TinyLFU Cache.
 /// @details Uses a combination of frequency sketches to gather a decent estimate of the access frequency of most keys.
@@ -102,8 +126,13 @@ using LRUCache = CountConstrainedCache<Key, Value, policy::InsertionAlways, poli
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
-template<typename Key, typename Value, typename MeasureValue = measurement::Size<Value>, typename MeasureKey = measurement::Size<Key>, bool ThreadSafe = true>
-using TinyLFUCache = CountConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, ThreadSafe>;
+template<typename Key,
+         typename Value,
+         typename MeasureValue = measurement::Size<Value>,
+         typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
+         bool ThreadSafe       = true>
+using TinyLFUCache = CountConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
 /// @brief Custom-Cost Cache.
 /// @details The use of this cache should be favored in scenarios where the cost of a cache miss varies greatly from one item to the next.
@@ -118,9 +147,16 @@ template<typename Key,
          typename Cost,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
+         typename KeyHash      = std::hash<Key>,
          bool ThreadSafe       = true>
-using CustomCostCache =
-    CountConstrainedCache<Key, Value, policy::InsertionAlways, policy::bind<policy::EvictionGDSF, Cost>::template ttype, MeasureValue, MeasureKey, ThreadSafe>;
+using CustomCostCache = CountConstrainedCache<Key,
+                                              Value,
+                                              policy::InsertionAlways,
+                                              policy::bind<policy::EvictionGDSF, Cost>::template ttype,
+                                              MeasureValue,
+                                              MeasureKey,
+                                              KeyHash,
+                                              ThreadSafe>;
 }  // namespace count
 
 }  // namespace cachemere::presets

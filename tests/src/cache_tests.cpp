@@ -72,7 +72,7 @@ public:
 
     NonCopyString(NonCopyString&& a) = default;
 
-    NonCopyString(const NonCopyString&) = delete;
+    NonCopyString(const NonCopyString&)            = delete;
     NonCopyString& operator=(const NonCopyString&) = delete;
 };
 
@@ -358,7 +358,8 @@ TEST(CacheTest, NoKeyCopyOnImportConstruction)
 
 TEST(CacheTest, SingleThreadSwapDoesntThrow)
 {
-    using SingleThreadCache = presets::memory::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>, false>;
+    using SingleThreadCache =
+        presets::memory::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>, std::hash<uint32_t>, false>;
 
     SingleThreadCache cache_a{10 * sizeof(Point3D)};
     SingleThreadCache cache_b{10 * sizeof(Point3D)};
