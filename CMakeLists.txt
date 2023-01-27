@@ -7,26 +7,26 @@ option(USE_VCPKG "Use vcpkg for dependencies" OFF)
 if (USE_VCPKG)
     set(VCPKG_FEATURE_FLAGS "versions")
 
-    if(DEFINED ENV{VCPKG_ROOT})
+    if (DEFINED ENV{VCPKG_ROOT})
         set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
-            CACHE STRING "Vcpkg toolchain file")
-    else()
+                CACHE STRING "Vcpkg toolchain file")
+    else ()
         set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
-            CACHE STRING "Vcpkg toolchain file")
-    endif()
+                CACHE STRING "Vcpkg toolchain file")
+    endif ()
 
     if (BUILD_TESTS)
         list(APPEND VCPKG_MANIFEST_FEATURES "tests")
-    endif()
+    endif ()
 
     if (BUILD_BENCHMARKS)
         list(APPEND VCPKG_MANIFEST_FEATURES "benchmarks")
-    endif()
-endif()
+    endif ()
+endif ()
 
 if (BUILD_TESTS OR BUILD_BENCHMARKS)
     enable_testing()
-endif()
+endif ()
 
 project(cachemere)
 
@@ -34,50 +34,56 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Boost 1.65 REQUIRED)
+find_package(absl CONFIG REQUIRED)
 
 add_library(cachemere INTERFACE)
 
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"))
-  add_compile_options("-Wall" "-Wextra")
+    add_compile_options("-Wall" "-Wextra")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  add_compile_options("/W4")
-endif()
+    add_compile_options("/W4")
+endif ()
 
 target_link_libraries(cachemere
-    INTERFACE
+        INTERFACE
         Boost::boost
-)
+
+        absl::container_common
+        absl::btree
+        absl::flat_hash_map
+        absl::node_hash_map
+        )
 
 include(GNUInstallDirs)
 target_include_directories(cachemere
-    INTERFACE
+        INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
+        )
 set(INSTALL_CMAKEDIR "${CMAKE_INSTALL_DATAROOTDIR}/cachemere")
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(TARGETS cachemere EXPORT cachemere-targets)
 install(EXPORT cachemere-targets
-    DESTINATION "${INSTALL_CMAKEDIR}"
-    NAMESPACE cachemere::
-)
+        DESTINATION "${INSTALL_CMAKEDIR}"
+        NAMESPACE cachemere::
+        )
 include(CMakePackageConfigHelpers)
 configure_package_config_file(cachemereConfig.cmake.in
-    ${PROJECT_BINARY_DIR}/cachemereConfig.cmake
-    INSTALL_DESTINATION "${INSTALL_CMAKEDIR}"
-)
+        ${PROJECT_BINARY_DIR}/cachemereConfig.cmake
+        INSTALL_DESTINATION "${INSTALL_CMAKEDIR}"
+        )
 install(FILES ${PROJECT_BINARY_DIR}/cachemereConfig.cmake DESTINATION ${INSTALL_CMAKEDIR})
 
 if (BUILD_BENCHMARKS)
     add_subdirectory(benchmarks)
-endif()
+endif ()
 
 if (BUILD_TESTS)
     add_subdirectory(tests)
-endif()
+endif ()
 
 target_sources(cachemere
-    INTERFACE
+        INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/cache.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/cache.hpp>
@@ -109,4 +115,4 @@ target_sources(cachemere
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/detail/counting_bloom_filter.hpp>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/detail/hash_mixer.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/policy/detail/hash_mixer.hpp>
-)
+        )

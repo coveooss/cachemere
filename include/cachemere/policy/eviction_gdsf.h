@@ -2,8 +2,8 @@
 #define CACHEMERE_EVICTION_GDSF
 
 #include <algorithm>
-#include <map>
-#include <set>
+
+#include <absl/container/btree_map.h>
 
 #include "cachemere/item.h"
 #include "cachemere/policy/detail/counting_bloom_filter.h"
@@ -102,7 +102,7 @@ public:
     [[nodiscard]] VictimIterator victim_end() const;
 
 private:
-    using IteratorMap = std::map<KeyRef, PrioritySetIt, std::less<const Key>>;
+    using IteratorMap = absl::btree_map<KeyRef, PrioritySetIt, std::less<const Key>>;
 
     const static uint32_t            DEFAULT_CACHE_CARDINALITY = 2000;               // The expected cache cardinality, for the counting bloom filter.
     mutable Cost                     m_measure_cost;                                 // The functor to measure the cost metric of cached items.

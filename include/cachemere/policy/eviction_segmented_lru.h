@@ -3,6 +3,8 @@
 
 #include <list>
 
+#include <absl/container/flat_hash_map.h>
+
 #include "cachemere/item.h"
 
 namespace cachemere::policy {
@@ -19,7 +21,7 @@ template<typename Key, typename KeyHash, typename Value> class EvictionSegmented
 private:
     using KeyRef    = std::reference_wrapper<const Key>;
     using KeyRefIt  = typename std::list<KeyRef>::iterator;
-    using KeyRefMap = std::unordered_map<KeyRef, KeyRefIt, KeyHash, std::equal_to<Key>>;
+    using KeyRefMap = absl::flat_hash_map<KeyRef, KeyRefIt, KeyHash, std::equal_to<Key>>;
 
 public:
     using CacheItem = cachemere::Item<Value>;

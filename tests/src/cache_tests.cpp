@@ -74,6 +74,7 @@ public:
 
     NonCopyString(const NonCopyString&)            = delete;
     NonCopyString& operator=(const NonCopyString&) = delete;
+    NonCopyString& operator=(NonCopyString&&)      = default;
 };
 
 namespace std {
@@ -117,7 +118,7 @@ TYPED_TEST(CacheTest, MultiThreadLong)
     points.reserve(item_count);
 
     for (uint32_t i = 0; i < item_count; ++i) {
-        points.emplace_back(Point3D{i, i, i});
+        points.emplace_back(i, i, i);
     }
 
     std::vector<std::thread> workers;

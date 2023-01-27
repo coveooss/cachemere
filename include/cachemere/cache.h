@@ -6,8 +6,9 @@
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <unordered_map>
 #include <vector>
+
+#include <absl/container/node_hash_map.h>
 
 #ifdef _WIN32
 #    pragma warning(push)
@@ -192,7 +193,9 @@ protected:
 
 private:
     using CacheItem = Item<Value>;
-    using DataMap   = std::unordered_map<Key, CacheItem, KeyHash>;
+
+    using DataMap = absl::node_hash_map<Key, CacheItem, KeyHash>;
+
     using DataMapIt = typename DataMap::iterator;
 
     using MyInsertionPolicySP  = std::unique_ptr<MyInsertionPolicy>;
