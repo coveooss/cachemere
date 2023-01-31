@@ -1,6 +1,8 @@
 #ifndef CACHEMERE_PRESETS_H
 #define CACHEMERE_PRESETS_H
 
+#include <absl/hash/hash.h>
+
 #include "cache.h"
 #include "measurement.h"
 
@@ -27,7 +29,7 @@ template<typename Key,
          class EvictionPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 using MemoryConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintMemory, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
@@ -42,7 +44,7 @@ template<typename Key,
          typename Value,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 using LRUCache = MemoryConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
@@ -58,7 +60,7 @@ template<typename Key,
          typename Value,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 using TinyLFUCache = MemoryConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
@@ -75,7 +77,7 @@ template<typename Key,
          typename Cost,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 using CustomCostCache = MemoryConstrainedCache<Key,
                                                Value,
@@ -99,7 +101,7 @@ template<typename Key,
          class EvictionPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 using CountConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintCount, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
@@ -114,7 +116,7 @@ template<typename Key,
          typename Value,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 using LRUCache = CountConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
@@ -130,7 +132,7 @@ template<typename Key,
          typename Value,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 using TinyLFUCache = CountConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
 
@@ -147,7 +149,7 @@ template<typename Key,
          typename Cost,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 using CustomCostCache = CountConstrainedCache<Key,
                                               Value,

@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cstdlib>
@@ -29,7 +28,7 @@ struct Article {
     Article(const std::string& uri)
     {
         // Seed the RNG with a hash of our URI, this way items will have the same size & latency every time.
-        std::minstd_rand rng{static_cast<std::minstd_rand::result_type>(std::hash<std::string>()(uri))};
+        std::minstd_rand rng{static_cast<std::minstd_rand::result_type>(absl::Hash<std::string>()(uri))};
 
         // Generate random sizes & latencies from two similarly-skewed gamma distributions.
         std::gamma_distribution<double> size_distribution{3, 0.8};

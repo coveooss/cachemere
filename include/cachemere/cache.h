@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <absl/container/node_hash_map.h>
+#include <absl/hash/hash.h>
 
 #ifdef _WIN32
 #    pragma warning(push)
@@ -55,7 +56,7 @@ template<typename Key,
          class ConstraintPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = std::hash<Key>,
+         typename KeyHash      = absl::Hash<Key>,
          bool ThreadSafe       = true>
 class Cache
 {

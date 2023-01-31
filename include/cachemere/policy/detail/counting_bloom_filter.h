@@ -4,6 +4,8 @@
 #include <functional>
 #include <vector>
 
+#include <absl/hash/hash.h>
+
 #include "hash_mixer.h"
 
 namespace cachemere::policy::detail {
@@ -13,7 +15,7 @@ namespace cachemere::policy::detail {
 /// @details A counting bloom filter is a constant-sized data structure, which means that insertions will never
 ///          make the filter allocate more memory. However, too many inserts will severly impact the accuracy
 ///          of counter estimates.
-template<typename Item, typename ItemHash = std::hash<Item>> class CountingBloomFilter
+template<typename Item, typename ItemHash = absl::Hash<Item>> class CountingBloomFilter
 {
 public:
     /// @brief Constructor.

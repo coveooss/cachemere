@@ -5,12 +5,14 @@
 #include <tuple>
 #include <vector>
 
+#include <absl/hash/hash.h>
+
 #include "cachemere/item.h"
 #include "cachemere/policy/eviction_lru.h"
 
 using namespace cachemere;
 
-using TestLRU  = policy::EvictionLRU<std::string, std::hash<std::string>, int32_t>;
+using TestLRU  = policy::EvictionLRU<std::string, absl::Hash<std::string>, int32_t>;
 using TestItem = Item<int32_t>;
 using ItemMap  = std::map<std::string, TestItem>;
 
@@ -22,7 +24,7 @@ void insert_item(std::string key, int32_t value, TestLRU& policy, ItemMap& item_
     policy.on_insert(key_and_item->first, key_and_item->second);
 }
 
-void expect_victims(const TestLRU& policy, std::vector<std::string> expected_victims)
+void expect_victims(const TestLRU& policy, const std::vector<std::string>& expected_victims)
 {
     std::vector<std::string> victims;
     for (auto it = policy.victim_begin(); it != policy.victim_end(); ++it) {

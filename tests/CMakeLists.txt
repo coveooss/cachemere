@@ -9,6 +9,7 @@ target_link_libraries(cachemere_tests
 
         absl::container_common
         absl::flat_hash_map
+        absl::hash
         absl::node_hash_map
 
         cachemere

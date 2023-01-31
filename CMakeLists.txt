@@ -50,6 +50,7 @@ target_link_libraries(cachemere
 
         absl::container_common
         absl::btree
+        absl::hash
         absl::flat_hash_map
         absl::node_hash_map
         )

@@ -1,12 +1,14 @@
 #include <gtest/gtest.h>
 
+#include <absl/hash/hash.h>
+
 #include "cachemere/item.h"
 #include "cachemere/policy/constraint_count.h"
 
 using namespace cachemere;
 
 using TestItem       = Item<uint32_t>;
-using TestConstraint = policy::ConstraintCount<std::string, std::hash<std::string>, uint32_t>;
+using TestConstraint = policy::ConstraintCount<std::string, absl::Hash<std::string>, uint32_t>;
 
 TEST(ConstraintCount, InitializesMaxCountAndCount)
 {

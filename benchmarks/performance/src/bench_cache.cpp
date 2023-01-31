@@ -4,6 +4,8 @@
 #include <fstream>
 #include <string>
 
+#include <absl/hash/hash.h>
+
 #include "cachemere.h"
 
 using namespace cachemere;
@@ -37,7 +39,7 @@ using BenchCache = Cache<std::string,
                          policy::ConstraintMemory,
                          measurement::CapacityDynamicallyAllocated<std::string>,
                          measurement::CapacityDynamicallyAllocated<std::string>,
-                         std::hash<std::string>,
+                         absl::Hash<std::string>,
                          ThreadSafe>;
 
 template<class C> std::unique_ptr<C> setup(size_t item_count)

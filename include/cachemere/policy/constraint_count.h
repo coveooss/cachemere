@@ -58,11 +58,11 @@ public:
 
     /// @brief Get the number of items currently in the cache.
     /// @return The number of items in cache.
-    size_t count() const;
+    [[nodiscard]] size_t count() const;
 
     /// @brief Get the maximum number of items allowed in cache.
     /// @return The maximum number of items allowed in cache.
-    size_t maximum_count() const;
+    [[nodiscard]] size_t maximum_count() const;
 
 private:
     size_t m_maximum_count;
