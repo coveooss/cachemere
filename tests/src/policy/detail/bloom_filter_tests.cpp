@@ -1,3 +1,4 @@
+#include <absl/hash/hash.h>
 #include <gtest/gtest.h>
 
 #include "cachemere/policy/detail/bloom_filter.h"
@@ -6,7 +7,7 @@ using namespace cachemere::policy::detail;
 
 TEST(BloomFilter, BasicAdd)
 {
-    BloomFilter<std::string> filter{5};
+    BloomFilter<absl::Hash<std::string>> filter{5};
     filter.add("hello world");
     ASSERT_TRUE(filter.maybe_contains("hello world"));
 }
@@ -15,7 +16,7 @@ TEST(BloomFilter, FalsePositiveRate)
 {
     const uint32_t cardinality = 100;
 
-    BloomFilter<uint32_t> filter{cardinality};
+    BloomFilter<absl::Hash<uint32_t>> filter{cardinality};
 
     for (uint32_t i = 0; i < cardinality; ++i) {
         filter.add(i);
@@ -39,8 +40,8 @@ TEST(BloomFilter, FalsePositiveRate)
 
 TEST(BloomFilter, FilterSaturation)
 {
-    const uint32_t        cardinality = 5;
-    BloomFilter<uint32_t> filter{cardinality};
+    const uint32_t                    cardinality = 5;
+    BloomFilter<absl::Hash<uint32_t>> filter{cardinality};
 
     // Completely saturate the filter. After this, every filter bit should be set to `1`.
     for (uint32_t i = 0; i < cardinality * 100; ++i) {
@@ -57,7 +58,7 @@ TEST(BloomFilter, FilterSaturation)
 
 TEST(BloomFilter, Clear)
 {
-    BloomFilter<uint32_t> filter{5};
+    BloomFilter<absl::Hash<uint32_t>> filter{5};
 
     filter.add(42);
     EXPECT_TRUE(filter.maybe_contains(42));

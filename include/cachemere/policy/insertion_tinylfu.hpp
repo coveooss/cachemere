@@ -18,8 +18,8 @@ template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHa
 
 template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHash, Value>::set_cardinality(uint32_t cardinality)
 {
-    m_gatekeeper       = detail::BloomFilter<Key, KeyHash>(cardinality);
-    m_frequency_sketch = detail::CountingBloomFilter<Key, KeyHash>(cardinality);
+    m_gatekeeper       = detail::BloomFilter<KeyHash>(cardinality);
+    m_frequency_sketch = detail::CountingBloomFilter<KeyHash>(cardinality);
 }
 
 template<class Key, class KeyHash, class Value> bool InsertionTinyLFU<Key, KeyHash, Value>::should_add(const Key& key)
