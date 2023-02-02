@@ -28,6 +28,7 @@
 
 #include "item.h"
 #include "measurement.h"
+#include "detail/transparent_eq.h"
 #include "detail/traits.h"
 
 /// @brief Root namespace
@@ -88,7 +89,7 @@ public:
     /// @brief Find a given key in cache returning the associated value when it exists.
     /// @param key The key to lookup.
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
-    std::optional<Value> find(const Key& key) const;
+    template<typename KeyView> std::optional<Value> find(const KeyView& key) const;
 
     /// @brief Copy the cache contents in the provided container.
     /// @details The container should conform to either of the STL's interfaces for associative
@@ -196,7 +197,7 @@ protected:
 private:
     using CacheItem = Item<Value>;
 
-    using DataMap = absl::node_hash_map<Key, CacheItem, KeyHash>;
+    using DataMap = absl::node_hash_map<Key, CacheItem, KeyHash, detail::TransparentEq<Key>>;
 
     using DataMapIt = typename DataMap::iterator;
 
@@ -229,11 +230,11 @@ private:
     void insert_or_update(Key&& key, CacheItem&& value);
     void remove(DataMapIt it);
 
-    void on_insert(const Key& key, const CacheItem& item) const;
-    void on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item) const;
-    void on_cache_hit(const Key& key, const CacheItem& item) const;
-    void on_cache_miss(const Key& key) const;
-    void on_evict(const Key& key, const CacheItem& item) const;
+    void                            on_insert(const Key& key, const CacheItem& item) const;
+    void                            on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item) const;
+    void                            on_cache_hit(const Key& key, const CacheItem& item) const;
+    template<typename KeyView> void on_cache_miss(const KeyView& key) const;
+    void                            on_evict(const Key& key, const CacheItem& item) const;
 };
 
 template<class K,

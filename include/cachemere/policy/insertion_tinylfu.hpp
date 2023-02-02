@@ -11,7 +11,7 @@ template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHa
     touch_item(key);
 }
 
-template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHash, Value>::on_cache_miss(const Key& key)
+template<class Key, class KeyHash, class Value> template<class KeyType> void InsertionTinyLFU<Key, KeyHash, Value>::on_cache_miss(const KeyType& key)
 {
     touch_item(key);
 }
@@ -48,7 +48,7 @@ template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHa
     m_frequency_sketch.decay();
 }
 
-template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHash, Value>::touch_item(const Key& key)
+template<class Key, class KeyHash, class Value> template<class KeyType> void InsertionTinyLFU<Key, KeyHash, Value>::touch_item(const KeyType& key)
 {
     if (m_gatekeeper.maybe_contains(key)) {
         m_frequency_sketch.add(key);

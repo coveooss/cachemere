@@ -15,10 +15,16 @@
 #include "cachemere/cache.h"
 #include "cachemere/measurement.h"
 #include "cachemere/presets.h"
+#include "cachemere/hash.h"
 
 struct Point3D {
     Point3D(uint32_t a, uint32_t b, uint32_t c) : x(a), y(b), z(c)
     {
+    }
+
+    bool operator==(const Point3D& other) const
+    {
+        return x == other.x && y == other.y && z == other.z;
     }
 
     uint32_t x;
@@ -376,4 +382,62 @@ TEST(CacheTest, SingleThreadSwapDoesntThrow)
     // std::lock throws when locking an empty guard, so we need to make sure we don't get in that code path when locking single threaded caches.
     using std::swap;
     swap(cache_a, cache_b);
+}
+
+struct CompositeKey {
+    std::string first_part;
+    std::string second_part;
+
+    template<typename H> friend H AbslHashValue(H h, const CompositeKey& s)
+    {
+        return H::combine(std::move(h), s.first_part, s.second_part);
+    }
+
+    bool operator==(const CompositeKey& other) const
+    {
+        return first_part == other.first_part && second_part == other.second_part;
+    }
+};
+
+struct CompositeKeyView {
+    std::string_view first_part;
+    std::string_view second_part;
+
+    bool operator==(const CompositeKeyView& other) const
+    {
+        return first_part == other.first_part && second_part == other.second_part;
+    }
+
+    bool operator==(const CompositeKey& other) const
+    {
+        return first_part == other.first_part && second_part == other.second_part;
+    }
+
+    template<typename H> friend H AbslHashValue(H h, const CompositeKeyView& s)
+    {
+        return H::combine(std::move(h), s.first_part, s.second_part);
+    }
+};
+
+TEST(CacheTest, FindViewCompositeKey)
+{
+    // Can hash either a `CompositeKey` with `absl::Hash` or a `CompositeKeyView` with absl::Hash.
+    using Hasher = MultiHash<CompositeKey, absl::Hash<CompositeKey>, CompositeKeyView, absl::Hash<CompositeKeyView>>;
+
+    using TestCache = presets::memory::TinyLFUCache<CompositeKey, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<CompositeKey>, Hasher>;
+
+    TestCache cache{100 * sizeof(Point3D)};
+
+    CompositeKey     key{"asdf", "hjkl"};
+    CompositeKeyView key_view{"asdf", "hjkl"};
+
+    Point3D value{1, 1, 1};
+
+    cache.find(key_view);
+    cache.insert(key, value);
+
+    auto actual_value = cache.find(key_view);
+
+    EXPECT_TRUE(actual_value.has_value());
+    EXPECT_EQ(*actual_value, value);
 }

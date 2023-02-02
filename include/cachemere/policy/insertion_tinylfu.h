@@ -35,7 +35,7 @@ public:
     /// @brief Cache miss event handler.
     /// @details Updates the internal frequency sketches for the given key.
     /// @param key The key that was missed.
-    void on_cache_miss(const Key& key);
+    template<typename KeyType> void on_cache_miss(const KeyType& key);
 
     /// @brief Set the cardinality of the policy.
     /// @details The set cardinality should be a decent approximation of the cardinality
@@ -65,7 +65,8 @@ private:
 
     uint32_t estimate_count_for_key(const Key& key) const;
     void     reset();
-    void     touch_item(const Key& key);
+
+    template<typename KeyType> void touch_item(const KeyType& key);
 };
 
 }  // namespace cachemere::policy
