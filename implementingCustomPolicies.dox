@@ -22,8 +22,9 @@ The policies _may_ define the following event handlers to be notified of changes
 
     Called immediately after a cache hit (a successful call to `cachemere::Cache::find`).
 
-* `void on_cache_miss(K& key)`
+* `template<typename KeyType> void on_cache_miss(const KeyView& key)`
 
+    Where `KeyType` is a type that hashes to the same value as its corresponding `Key` using `KeyHash`.
     Called immediately after a cache miss (an unsuccessful call to `cachemere::Cache::find`).
 
 * `void on_evict(K& key)`
