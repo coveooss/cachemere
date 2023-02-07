@@ -39,6 +39,7 @@ using MemoryConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy
 /// @tparam Value The type of the items stored in the cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
 template<typename Key,
          typename Value,
@@ -55,6 +56,7 @@ using LRUCache = MemoryConstrainedCache<Key, Value, policy::InsertionAlways, pol
 /// @tparam Value The type of the items stored in the cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
 template<typename Key,
          typename Value,
@@ -71,6 +73,7 @@ using TinyLFUCache = MemoryConstrainedCache<Key, Value, policy::InsertionTinyLFU
 /// @tparam Cost A functor taking a `const Item<Key, Value>&` returning the cost to load this item in cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
 template<typename Key,
          typename Value,
@@ -111,6 +114,7 @@ using CountConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy,
 /// @tparam Value The type of the items stored in the cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
 template<typename Key,
          typename Value,
@@ -127,6 +131,7 @@ using LRUCache = CountConstrainedCache<Key, Value, policy::InsertionAlways, poli
 /// @tparam Value The type of the items stored in the cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
 template<typename Key,
          typename Value,
@@ -143,6 +148,7 @@ using TinyLFUCache = CountConstrainedCache<Key, Value, policy::InsertionTinyLFU,
 /// @tparam Cost A functor taking a `const Item<Key, Value>&` returning the cost to load this item in cache.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
 template<typename Key,
          typename Value,

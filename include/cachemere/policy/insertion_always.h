@@ -6,6 +6,9 @@
 namespace cachemere::policy {
 
 /// @brief Simplest insertion policy. Always accepts insertions.
+/// @tparam Key The type of the keys used to identify items in the cache.
+/// @tparam KeyHash The type of the hasher used to hash item keys.
+/// @tparam Value The type of the values stored in the cache.
 template<typename Key, typename KeyHash, typename Value> class InsertionAlways
 {
 public:

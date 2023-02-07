@@ -40,11 +40,12 @@ namespace cachemere {
 ///          Some logic is delegated to the insertion and eviction policies. For details, see the \ref index "Main Page".
 /// @tparam Key The type of the key used for retrieving items.
 /// @tparam Value The type of the items stored in the cache.
-/// @tparam InsertionPolicy A template parameterized by `Key` and `Value` implementing the insertion policy interface.
-/// @tparam EvictionPolicy A template parameterized by `Key` and `Value` implementing the eviction policy interface.
-/// @tparam ConstraintPolicy A template parameterized by `Key` and `Value` implementing the constraint policy interface.
+/// @tparam InsertionPolicy A template parameterized by `Key`, `KeyHash`, and `Value` implementing the insertion policy interface.
+/// @tparam EvictionPolicy A template parameterized by `Key` `KeyHash`, and `Value` implementing the eviction policy interface.
+/// @tparam ConstraintPolicy A template parameterized by `Key` `KeyHash`, and `Value` implementing the constraint policy interface.
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam ThreadSafe Whether to enable locking. When true, all cache operations will be protected by a lock. `true` by default.
 template<typename Key,
          typename Value,

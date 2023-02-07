@@ -15,6 +15,9 @@ namespace cachemere::policy {
 ///          inserted and/or kept in cache while using a constant amount of memory. The policy uses a combination
 ///          of frequency sketches to keep track of items that have yet to be inserted in the cache, and uses those
 ///          sketches to decide which items should me prioritized.
+/// @tparam Key The type of the keys used to identify items in the cache.
+/// @tparam KeyHash The type of the hasher used to hash item keys.
+/// @tparam Value The type of the values stored in the cache.
 template<typename Key, typename KeyHash, typename Value> class InsertionTinyLFU
 {
 public:

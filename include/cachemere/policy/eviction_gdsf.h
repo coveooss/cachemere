@@ -16,6 +16,7 @@ namespace cachemere::policy {
 ///          GDSF is implemented using a priority queue sorted by a coefficient computed for each item.
 ///          Items are then evicted starting with the item with the smallest coefficient.
 /// @tparam Key The type of the keys used to identify items in the cache.
+/// @tparam KeyHash The type of the hasher used to hash item keys.
 /// @tparam Value The type of the values stored in the cache.
 /// @tparam Cost A functor taking a a `Key&` and a `const Item<Value>&` returning the cost to load this item in cache.
 //          The cost must not exceed 2^64 and should ideally be quite a bit below this limit since the cost of the item is added to the
