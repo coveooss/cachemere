@@ -5,8 +5,9 @@
 
 namespace cachemere {
 
-/// Takes pairs of template parameters of the form [(T, Hash<T>), (U, Hash<U>), ...] and generates an override of the call operator to hash that particular
-/// type using its hasher.
+/// @brief Allows combining hashers for multiple types into a single hashing object.
+/// @details Takes pairs of template parameters of the form [(T, Hash<T>), (U, Hash<U>), ...] and generates an override of the call operator to hash that
+///        particular type using its hasher.
 template<typename Key, typename KeyHash, typename... Tail> struct MultiHash;
 
 // Base case.
