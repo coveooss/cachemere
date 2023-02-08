@@ -82,11 +82,13 @@ public:
     template<typename C, typename... Args> Cache(C& collection, std::tuple<Args...> args);
 
     /// @brief Check whether a given key is stored in the cache.
+    /// @tparam KeyView The type of the key used for retrieving items.
     /// @param key The key whose presence to test.
     /// @return Whether the key is in cache.
-    bool contains(const Key& key) const;
+    template<typename KeyView> bool contains(const KeyView& key) const;
 
     /// @brief Find a given key in cache returning the associated value when it exists.
+    /// @tparam KeyView The type of the key used for retrieving items.
     /// @param key The key to lookup.
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
     template<typename KeyView> std::optional<Value> find(const KeyView& key) const;

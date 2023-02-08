@@ -419,7 +419,7 @@ struct CompositeKeyView {
     }
 };
 
-TEST(CacheTest, FindViewCompositeKey)
+TEST(CacheTest, FindHeterogeneousLookup)
 {
     // Can hash either a `CompositeKey` with `absl::Hash` or a `CompositeKeyView` with absl::Hash.
     using Hasher = MultiHash<CompositeKey, absl::Hash<CompositeKey>, CompositeKeyView, absl::Hash<CompositeKeyView>>;
@@ -440,4 +440,24 @@ TEST(CacheTest, FindViewCompositeKey)
 
     EXPECT_TRUE(actual_value.has_value());
     EXPECT_EQ(*actual_value, value);
+}
+
+TEST(CacheTest, ContainsHeterogeneousLookup)
+{
+    using Hasher    = MultiHash<CompositeKey, absl::Hash<CompositeKey>, CompositeKeyView, absl::Hash<CompositeKeyView>>;
+    using TestCache = presets::memory::TinyLFUCache<CompositeKey, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<CompositeKey>, Hasher>;
+
+    TestCache cache{100 * sizeof(Point3D)};
+
+    CompositeKey     key{"asdf", "hjkl"};
+    CompositeKeyView key_view{"asdf", "hjkl"};
+
+    Point3D value{1, 1, 1};
+
+    EXPECT_FALSE(cache.contains(key_view));
+
+    cache.find(key);
+    cache.insert(key, value);
+
+    EXPECT_TRUE(cache.contains(key_view));
 }

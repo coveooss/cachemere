@@ -59,7 +59,7 @@ In this example, we often need to allocate temporary strings, because we have no
 This is the problem that heterogeneous lookup solves. By using Cachemere's heterogeneous lookup primitives, one can use lightweight key types to do
 faster lookups in a cache.
 
-## Heterogeneous Lookup (Cachemere >= 0.3)
+## Heterogeneous Lookup Example (Cachemere >= 0.3)
 ```cpp
 #include <string>
 #include <cachemere.h>

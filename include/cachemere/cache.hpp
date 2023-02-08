@@ -62,7 +62,8 @@ template<class K,
          class SK,
          class KH,
          bool TS>
-inline bool Cache<K, V, I, E, C, SV, SK, KH, TS>::contains(const K& key) const
+template<typename KeyView>
+inline bool Cache<K, V, I, E, C, SV, SK, KH, TS>::contains(const KeyView& key) const
 {
     LockGuard guard(lock());
     return m_data.find(key) != m_data.end();
