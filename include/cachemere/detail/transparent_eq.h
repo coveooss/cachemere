@@ -6,6 +6,7 @@
 namespace cachemere::detail {
 
 template<typename Key> struct TransparentEq {
+    // Declare this type as transparent - this is needed for abseil maps to support heterogeneous lookup.
     using is_transparent = void;
 
     bool operator()(const Key& a, const Key& b) const

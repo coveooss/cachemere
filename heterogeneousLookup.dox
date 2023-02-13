@@ -96,7 +96,7 @@ using CacheT = cachemere::presets::memory::LRUCache<CompositeKey,
 
 bool contains(const CacheT& cache, std::string_view a, const std::string_view b, const std::string_view c) {
     // We can use the lightweight key directly, without allocating a single string.
-    const CompositeView key{std::move(a), std::move(b), std::move(c)};
+    const CompositeView key{a, b, c};
     return cache.find(key).has_value();
 }
 

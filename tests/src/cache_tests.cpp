@@ -433,6 +433,8 @@ TEST(CacheTest, FindHeterogeneousLookup)
 
     Point3D value{1, 1, 1};
 
+    // Since the insertion policy is TinyLFU, the cache needs to have seen the key at least once before allowing its insertion.
+    // We'll perform a manual find using the key_view beforehand to simulate that cache miss.
     cache.find(key_view);
     cache.insert(key, value);
 
@@ -456,7 +458,9 @@ TEST(CacheTest, ContainsHeterogeneousLookup)
 
     EXPECT_FALSE(cache.contains(key_view));
 
-    cache.find(key);
+    // Since the insertion policy is TinyLFU, the cache needs to have seen the key at least once before allowing its insertion.
+    // We'll perform a manual find using the key_view beforehand to simulate that cache miss.
+    cache.find(key_view);
     cache.insert(key, value);
 
     EXPECT_TRUE(cache.contains(key_view));
