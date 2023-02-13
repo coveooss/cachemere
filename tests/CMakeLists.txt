@@ -21,6 +21,7 @@ target_sources(cachemere_tests
         src/memory_cache_tests.cpp
         src/cache_tests.cpp
         src/measurement_tests.cpp
+        src/detail/heterogeneous_lookup_tests.cpp
         src/policy/constraint_count_tests.cpp
         src/policy/constraint_memory_tests.cpp
         src/policy/eviction_lru_tests.cpp

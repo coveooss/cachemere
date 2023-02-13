@@ -105,9 +105,9 @@ public:
 private:
     using IteratorMap = absl::btree_map<KeyRef, PrioritySetIt, std::less<const Key>>;
 
-    const static uint32_t            DEFAULT_CACHE_CARDINALITY = 2000;               // The expected cache cardinality, for the counting bloom filter.
-    mutable Cost                     m_measure_cost;                                 // The functor to measure the cost metric of cached items.
-    detail::CountingBloomFilter<Key> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};  // TODO: Replace with a count-min sketch to get rid of cardinality
+    const static uint32_t                DEFAULT_CACHE_CARDINALITY = 2000;               // The expected cache cardinality, for the counting bloom filter.
+    mutable Cost                         m_measure_cost;                                 // The functor to measure the cost metric of cached items.
+    detail::CountingBloomFilter<KeyHash> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};  // TODO: Replace with a count-min sketch to get rid of cardinality
 
     PrioritySet m_priority_set;  // A multiset of keys sorted by H-coefficients in ascending order.
 

@@ -62,7 +62,8 @@ template<class K,
          class SK,
          class KH,
          bool TS>
-inline bool Cache<K, V, I, E, C, SV, SK, KH, TS>::contains(const K& key) const
+template<typename KeyView>
+inline bool Cache<K, V, I, E, C, SV, SK, KH, TS>::contains(const KeyView& key) const
 {
     LockGuard guard(lock());
     return m_data.find(key) != m_data.end();
@@ -80,7 +81,8 @@ template<class K,
          class SK,
          class KH,
          bool TS>
-std::optional<V> Cache<K, V, I, E, C, SV, SK, KH, TS>::find(const K& key) const
+template<typename KeyView>
+std::optional<V> Cache<K, V, I, E, C, SV, SK, KH, TS>::find(const KeyView& key) const
 {
     LockGuard guard(lock());
 
@@ -929,7 +931,8 @@ template<class K,
          class SK,
          class KH,
          bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_miss(const K& key) const
+template<class KeyView>
+void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_miss(const KeyView& key) const
 {
     // Update the cache hit rate accumulators.
     m_hit_rate_acc(0);
