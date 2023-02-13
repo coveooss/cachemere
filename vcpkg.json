@@ -3,6 +3,13 @@
   "version-semver": "0.2.6",
   "dependencies": [
     {
+      "name": "abseil",
+      "version>=": "20220623.1",
+      "features": [
+        "cxx17"
+      ]
+    },
+    {
       "name": "vcpkg-cmake",
       "version>=": "2021-02-28",
       "host": true,

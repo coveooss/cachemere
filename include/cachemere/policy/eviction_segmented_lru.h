@@ -3,6 +3,8 @@
 
 #include <list>
 
+#include <absl/container/flat_hash_map.h>
+
 #include "cachemere/item.h"
 
 namespace cachemere::policy {
@@ -14,12 +16,15 @@ namespace cachemere::policy {
 ///          If the protected segment is full, the item that was least-recently accessed is downgraded to
 ///          the probation segment. This architecture has the effect of reducing cache churn and keeping
 ///          "good" items in cache a bit longer.
-template<typename Key, typename Value> class EvictionSegmentedLRU
+/// @tparam Key The type of the keys used to identify items in the cache.
+/// @tparam KeyHash The type of the hasher used to hash item keys.
+/// @tparam Value The type of the values stored in the cache.
+template<typename Key, typename KeyHash, typename Value> class EvictionSegmentedLRU
 {
 private:
     using KeyRef    = std::reference_wrapper<const Key>;
     using KeyRefIt  = typename std::list<KeyRef>::iterator;
-    using KeyRefMap = std::map<KeyRef, KeyRefIt, std::less<const Key>>;
+    using KeyRefMap = absl::flat_hash_map<KeyRef, KeyRefIt, KeyHash, std::equal_to<Key>>;
 
 public:
     using CacheItem = cachemere::Item<Value>;

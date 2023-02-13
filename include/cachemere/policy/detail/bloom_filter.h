@@ -25,9 +25,8 @@ namespace cachemere::policy::detail {
 /// @details A bloom filter is a constant-sized data structure, which means that insertions will never make
 ///          the filter allocate more memory. However, too many inserts will severly impact the accuracy of
 ///          filter membership tests.
-/// @tparam Item The type of the items that will be inserted into the set.
 /// @tparam ItemHash Functor used for hashing the items inserted in the set.
-template<typename Item, typename ItemHash = std::hash<Item>> class BloomFilter
+template<typename ItemHash> class BloomFilter
 {
 public:
     /// @brief Constructor.
@@ -42,7 +41,7 @@ public:
 
     /// @brief Add an item to the filter.
     /// @param item The item to insert.
-    void add(const Item& item);
+    template<typename ItemKey> void add(const ItemKey& item);
 
     /// @brief Clear the filter while keeping the allocated memory.
     void clear();
@@ -52,7 +51,7 @@ public:
     ///          This method returning `true` only means that the set _might_ contain the specified item,
     ///          while a return value of `false` means that the set _certainly_ does not contain the specified item.
     /// @param item The item to test.
-    [[nodiscard]] bool maybe_contains(const Item& item) const;
+    template<typename ItemKey> [[nodiscard]] bool maybe_contains(const ItemKey& item) const;
 
     /// @brief Get an estimate of the memory consumption of the filter.
     /// @return The memory used by the filter, in bytes.
@@ -66,7 +65,6 @@ public:
     [[nodiscard]] double saturation() const noexcept;
 
 private:
-    using Mixer       = HashMixer<Item, ItemHash>;
     using BitsetBlock = uint8_t;
     using BitSet      = boost::dynamic_bitset<BitsetBlock>;
 

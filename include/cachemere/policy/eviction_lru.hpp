@@ -1,42 +1,43 @@
 namespace cachemere::policy {
 
-template<class Key, class Value> EvictionLRU<Key, Value>::VictimIterator::VictimIterator(const KeyRefReverseIt& iterator) : m_iterator(iterator)
+template<class Key, class KeyHash, class Value>
+EvictionLRU<Key, KeyHash, Value>::VictimIterator::VictimIterator(const KeyRefReverseIt& iterator) : m_iterator(iterator)
 {
 }
 
-template<class Key, class Value> const Key& EvictionLRU<Key, Value>::VictimIterator::operator*() const
+template<class Key, class KeyHash, class Value> const Key& EvictionLRU<Key, KeyHash, Value>::VictimIterator::operator*() const
 {
     return *m_iterator;
 }
 
-template<class Key, class Value> auto EvictionLRU<Key, Value>::VictimIterator::operator++() -> VictimIterator&
+template<class Key, class KeyHash, class Value> auto EvictionLRU<Key, KeyHash, Value>::VictimIterator::operator++() -> VictimIterator&
 {
     ++m_iterator;
     return *this;
 }
 
-template<class Key, class Value> auto EvictionLRU<Key, Value>::VictimIterator::operator++(int) -> VictimIterator
+template<class Key, class KeyHash, class Value> auto EvictionLRU<Key, KeyHash, Value>::VictimIterator::operator++(int) -> VictimIterator
 {
     return (*this)++;
 }
 
-template<class Key, class Value> bool EvictionLRU<Key, Value>::VictimIterator::operator==(const VictimIterator& other) const
+template<class Key, class KeyHash, class Value> bool EvictionLRU<Key, KeyHash, Value>::VictimIterator::operator==(const VictimIterator& other) const
 {
     return m_iterator == other.m_iterator;
 }
 
-template<class Key, class Value> bool EvictionLRU<Key, Value>::VictimIterator::operator!=(const VictimIterator& other) const
+template<class Key, class KeyHash, class Value> bool EvictionLRU<Key, KeyHash, Value>::VictimIterator::operator!=(const VictimIterator& other) const
 {
     return m_iterator != other.m_iterator;
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::clear()
+template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::clear()
 {
     m_keys.clear();
     m_nodes.clear();
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_insert(const Key& key, const CacheItem& /* item */)
+template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::on_insert(const Key& key, const CacheItem& /* item */)
 {
     assert(m_nodes.find(std::ref(key)) == m_nodes.end());  // Validate the item is not already in policy.
 
@@ -44,12 +45,13 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::on_insert(const K
     m_nodes.emplace(std::ref(key), m_keys.begin());
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
+template<class Key, class KeyHash, class Value>
+void EvictionLRU<Key, KeyHash, Value>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
 {
     on_cache_hit(key, new_item);
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
+template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
 {
     auto node_it = m_nodes.find(key);
     if (node_it != m_nodes.end()) {
@@ -63,7 +65,7 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::on_cache_hit(cons
     }
 }
 
-template<class Key, class Value> void EvictionLRU<Key, Value>::on_evict(const Key& key, const CacheItem& /* item */)
+template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::on_evict(const Key& key, const CacheItem& /* item */)
 {
     assert(!m_nodes.empty());
     assert(!m_keys.empty());
@@ -78,12 +80,12 @@ template<class Key, class Value> void EvictionLRU<Key, Value>::on_evict(const Ke
     }
 }
 
-template<class Key, class Value> auto EvictionLRU<Key, Value>::victim_begin() const -> VictimIterator
+template<class Key, class KeyHash, class Value> auto EvictionLRU<Key, KeyHash, Value>::victim_begin() const -> VictimIterator
 {
     return VictimIterator{m_keys.rbegin()};
 }
 
-template<class Key, class Value> auto EvictionLRU<Key, Value>::victim_end() const -> VictimIterator
+template<class Key, class KeyHash, class Value> auto EvictionLRU<Key, KeyHash, Value>::victim_end() const -> VictimIterator
 {
     return VictimIterator{m_keys.rend()};
 }

@@ -1,0 +1,113 @@
+Using Heterogeneous Lookup {#heterogeneousLookup}
+============================
+
+This page is meant to guide you through the usage of heterogeneous lookup.
+
+## What is Heterogeneous Lookup and Why Should I Care?
+Heterogeneous lookup is the process of using a different key type for performing lookups in a set or in an associative container.
+It is mainly useful to help with performance in cases where it would be possible to construct a "cheaper" version of a key when performing lookups.
+
+Let's take a look at a small cache example _not_ using heterogeneous lookup to get a better grasp of the problem it addresses.
+
+## Typical Example (Cachemere < 0.3)
+```cpp
+#include <string>
+#include <cachemere.h>
+
+struct CompositeKey {
+    std::string first;
+    std::string second;
+    std::string third;
+
+    template<typename H> friend H AbslHashValue(H h, const CompositeKey& s);
+    bool operator==(const CompositeKey& other) const;
+    size_t capacity() const;
+};
+
+using Value = std::string;
+
+using CacheT = cachemere::presets::memory::LRUCache<CompositeKey,
+                                                    Value,
+                                                    cachemere::measurement::CapacityDynamicallyAllocated<Value>,
+                                                    cachemere::measurement::CapacityDynamicallyAllocated<CompositeKey>>;
+
+
+bool contains(const CacheT& cache, std::string_view a, const std::string_view b, const std::string_view c) {
+    // We need allocate three strings to construct the key.
+    const std::string a_str{a};
+    const std::string b_str{b};
+    const std::string c_str{c};
+    const CompositeKey key{std::move(a_str), std::move(b_str), std::move(c_str)};
+
+    // Only to use a reference to it.
+    return cache.find(key).has_value();
+}
+
+int main() {
+    CacheT cache{1024 * 1024 * 1024};
+    cache.insert({"a", "b", "c"}, "some_value");
+
+    if (contains(cache, "a", "b", "c")) {
+        // [...]
+    }
+
+    return 0;
+}
+```
+
+In this example, we often need to allocate temporary strings, because we have no way of using a structure of `std::string_view` as a key.
+This is the problem that heterogeneous lookup solves. By using Cachemere's heterogeneous lookup primitives, one can use lightweight key types to do
+faster lookups in a cache.
+
+## Heterogeneous Lookup Example (Cachemere >= 0.3)
+```cpp
+#include <string>
+#include <cachemere.h>
+
+struct CompositeKey {
+    std::string first;
+    std::string second;
+    std::string third;
+
+    template<typename H> friend H AbslHashValue(H h, const CompositeKey& s);
+    bool operator==(const CompositeKey& other) const;
+    size_t capacity() const;
+};
+
+struct CompositeView {
+    std::string_view a;
+    std::string_view b;
+    std::string_view c;
+
+    template<typename H> friend H AbslHashValue(H h, const CompositeView& s);
+    bool operator==(const CompositeView& other) const;
+    bool operator==(const CompositeKey& other) const; // Key view must be comparable to the regular key.
+};
+
+// This hasher is able to hash both `CompositeKey` and `CompositeView`.
+using MultiHasher = cachemere::MultiHash<CompositeKey, absl::Hash<CompositeKey>, CompositeView, absl::Hash<CompositeView>>;
+using Value = std::string;
+
+using CacheT = cachemere::presets::memory::LRUCache<CompositeKey,
+                                                    Value,
+                                                    cachemere::measurement::CapacityDynamicallyAllocated<Value>,
+                                                    cachemere::measurement::CapacityDynamicallyAllocated<CompositeKey>,
+                                                    MultiHasher>;
+
+bool contains(const CacheT& cache, std::string_view a, const std::string_view b, const std::string_view c) {
+    // We can use the lightweight key directly, without allocating a single string.
+    const CompositeView key{a, b, c};
+    return cache.find(key).has_value();
+}
+
+int main() {
+    CacheT cache{1024 * 1024 * 1024};
+    cache.insert({"a", "b", "c"}, "some_value");
+
+    if (contains(cache, "a", "b", "c")) {
+        // [...]
+    }
+
+    return 0;
+}
+```

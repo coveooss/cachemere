@@ -3,12 +3,14 @@
 #include <string>
 #include <map>
 
+#include <absl/hash/hash.h>
+
 #include "cachemere/item.h"
 #include "cachemere/policy/eviction_segmented_lru.h"
 
 using namespace cachemere;
 
-using TestSLRU = policy::EvictionSegmentedLRU<std::string, int32_t>;
+using TestSLRU = policy::EvictionSegmentedLRU<std::string, absl::Hash<std::string>, int32_t>;
 using TestItem = Item<int32_t>;
 using ItemMap  = std::map<std::string, TestItem>;
 
