@@ -27,7 +27,7 @@ using KeyMeasure = cachemere::measurement::SizeOf<Key>;
 using ValueMeasure = cachemere::measurement::CapacityDynamicallyAllocated<Value>;
 
 // TinyLFUCache is an alias for Cache<policy::InsertionTinyLFU, policy::EvictionSegmentedLRU>.
-using MyCache = cachemere::presets::TinyLFUCache<Key, Value, ValueMeasure, KeyMeasure>;
+using MyCache = cachemere::presets::memory::TinyLFUCache<Key, Value, ValueMeasure, KeyMeasure>;
 
 int main()
 {
@@ -45,7 +45,9 @@ int main()
 }
 ```
 
-For more information, take a look at the [documentation](https://coveooss.github.io/cachemere/).
+### Documentation Highlights
+
+For more information, take a look at the [full documentation](https://coveooss.github.io/cachemere/).
 
 ## Design Overview
 
