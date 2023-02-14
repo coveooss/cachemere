@@ -10,7 +10,20 @@ as well as a comprehensive set of primitives for building custom caching solutio
 
 ## Getting Started
 
-### TinyLFU Cache
+### Documentation Highlights
+
+#### Custom Keys
+
+Cachemere supports using arbitrary types as keys. The page
+on [Using Custom Keys](https://coveooss.github.io/cachemere/usingCustomKeys.html) covers this in greater detail.
+
+#### Heterogeneous Lookup
+
+Like `std::map`, `cachemere::Cache` supports heterogeneous lookup. Take a look
+at [the documentation on heterogeneous lookup](https://coveooss.github.io/cachemere/heterogeneousLookup.html) for more
+details and usage instructions.
+
+### TinyLFU Cache Example
 
 ```cpp
 #include <cstdint>
@@ -44,8 +57,6 @@ int main()
     return 0;
 }
 ```
-
-### Documentation Highlights
 
 For more information, take a look at the [full documentation](https://coveooss.github.io/cachemere/).
 
@@ -98,9 +109,3 @@ For instance, instead of using more common policies like Least-Recently Used (LR
 a product might need to use a custom cache that takes the frequency of access as well as the size of the item into
 consideration when establishing which item to evict. To do this, one could implement a `SizeBasedEvictionPolicy` and use
 it with the existing `cachemere::Cache`.
-
-### Heterogeneous Lookup
-
-Like `std::map`, `cachemere::Cache` supports heterogeneous lookup. Take a look
-at [the documentation on heterogeneous lookup](https://coveooss.github.io/cachemere/heterogeneousLookup.html) for more
-details and usage instructions.

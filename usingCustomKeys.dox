@@ -1,0 +1,92 @@
+Using Custom Keys {#customKeys}
+============================
+
+This page is meant to guide you through the usage of a custom key with a cache.
+
+## Key Requirements
+
+* Must have both a move constructor and a move assignment operator.
+* Must implement equality operator (`bool operator==(const Self&) const;`).
+* Must be hashable by the hasher passed as template parameter to the cache (by default, `absl::Hash<Key>`).
+
+The key does _not_ need to be copyable.
+
+## Usage Example
+
+### With `absl::Hash` (default hasher)
+
+```cpp
+#include <string>
+
+#include <cachemere.h>
+
+struct ComplexKey {
+    std::string first;
+    std::string second;
+    
+    bool operator==(const ComplexKey& other) const {
+        return 
+    }
+    
+    /// Override for the type to be hashable by `absl::Hash`.
+    template<typename H> friend H AbslHashValue(H h, const ComplexKey& s)
+    {
+        return H::combine(std::move(h), s.first, s.second);
+    }
+    
+    /// For use with cachemere::measurement::CapacityDynamicallyAllocated.
+    size_t capacity() const {
+        return first.capacity() + second.capacity();
+    }
+};
+
+usig ValueT = int;
+
+using Cache = cachemere::presets::memory::LRUCache<ComplexKey, 
+                                                   ValueT, 
+                                                   cachemere::measurement::SizeOf, 
+                                                   cachemere::measurement::CapacityDynamicallyAllocated>;
+```
+
+### With a custom hasher
+
+```cpp
+#include <string>
+
+#include <cachemere.h>
+
+struct ComplexKey {
+    std::string first;
+    std::string second;
+    
+    bool operator==(const ComplexKey& other) const {
+        return 
+    }
+    
+    /// Override for the type to be hashable by `absl::Hash`.
+    template<typename H> friend H AbslHashValue(H h, const ComplexKey& s)
+    {
+        return H::combine(std::move(h), s.first, s.second);
+    }
+    
+    /// For use with cachemere::measurement::CapacityDynamicallyAllocated.
+    size_t capacity() const {
+        return first.capacity() + second.capacity();
+    }
+};
+
+
+struct VeryBadHash {
+    size_t operator(const ComplexKey&) {
+        return 0;
+    }
+};
+
+usig ValueT = int;
+
+using Cache = cachemere::presets::memory::LRUCache<ComplexKey, 
+                                                   ValueT, 
+                                                   cachemere::measurement::SizeOf, 
+                                                   cachemere::measurement::CapacityDynamicallyAllocated,
+                                                   VeryBadHash>;
+```
