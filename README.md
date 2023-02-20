@@ -15,7 +15,7 @@ as well as a comprehensive set of primitives for building custom caching solutio
 #### Custom Keys
 
 Cachemere supports using arbitrary types as keys. The page
-on [Using Custom Keys](https://coveooss.github.io/cachemere/usingCustomKeys.html) covers this in greater detail.
+on [Using Custom Keys](https://coveooss.github.io/cachemere/customKeys.html) covers this in greater detail.
 
 #### Heterogeneous Lookup
 
