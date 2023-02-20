@@ -303,7 +303,7 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::swap(CacheType& other) noexcept
 
         swap(m_hit_rate_acc, other.m_hit_rate_acc);
         swap(m_byte_hit_rate_acc, other.m_byte_hit_rate_acc);
-    } catch (std::system_error e) {
+    } catch (const std::system_error& e) {
         // The only exception that can sensibly be thrown in the above block is a `system_error` when acquiring the mutexes of both caches (if the caches are
         // running in thread-safe mode).
         //
