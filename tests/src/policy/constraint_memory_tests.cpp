@@ -1,12 +1,14 @@
 #include <gtest/gtest.h>
 
+#include <absl/hash/hash.h>
+
 #include "cachemere/item.h"
 #include "cachemere/policy/constraint_memory.h"
 
 using namespace cachemere;
 
 using TestItem       = Item<uint32_t>;
-using TestConstraint = policy::ConstraintMemory<std::string, uint32_t>;
+using TestConstraint = policy::ConstraintMemory<std::string, absl::Hash<std::string>, uint32_t>;
 
 TEST(ConstraintMemory, InitializesMaxMemoryAndMemory)
 {

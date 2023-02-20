@@ -1,11 +1,13 @@
+#include <absl/hash/hash.h>
 #include <gtest/gtest.h>
 
 #include "cachemere/policy/detail/counting_bloom_filter.h"
 
 using namespace cachemere::policy::detail;
 
-TEST(CountingBloomFilter, BasicCount) {
-    CountingBloomFilter<std::string> filter{5};
+TEST(CountingBloomFilter, BasicCount)
+{
+    CountingBloomFilter<absl::Hash<std::string>> filter{5};
     EXPECT_EQ(0, filter.estimate("hello world"));
 
     filter.add("hello world");
@@ -15,8 +17,9 @@ TEST(CountingBloomFilter, BasicCount) {
     EXPECT_EQ(2, filter.estimate("hello world"));
 }
 
-TEST(CountingBloomFilter, FilterSaturation) {
-    CountingBloomFilter<uint32_t> filter{5};
+TEST(CountingBloomFilter, FilterSaturation)
+{
+    CountingBloomFilter<absl::Hash<uint32_t>> filter{5};
 
     for (auto i = 0; i < 1000; ++i) {
         filter.add(i);
@@ -29,8 +32,9 @@ TEST(CountingBloomFilter, FilterSaturation) {
     }
 }
 
-TEST(CountingBloomFilter, Clear) {
-    CountingBloomFilter<uint32_t> filter{5};
+TEST(CountingBloomFilter, Clear)
+{
+    CountingBloomFilter<absl::Hash<uint32_t>> filter{5};
     filter.add(42);
 
     auto sizePreClear = filter.memory_used();

@@ -1,10 +1,12 @@
 #include <gtest/gtest.h>
 
+#include <absl/hash/hash.h>
+
 #include "cachemere/policy/insertion_tinylfu.h"
 
 using namespace cachemere;
 
-using TestPolicy = policy::InsertionTinyLFU<uint32_t, uint32_t>;
+using TestPolicy = policy::InsertionTinyLFU<uint32_t, absl::Hash<uint32_t>, uint32_t>;
 
 TEST(InsertionTinyLFU, ShouldAddAlwaysTrue)
 {

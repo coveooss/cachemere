@@ -4,16 +4,18 @@
 #include <functional>
 #include <vector>
 
+#include <absl/hash/hash.h>
+
 #include "hash_mixer.h"
 
 namespace cachemere::policy::detail {
 
-/// @brief Space-efficient probalistic data structure to estimate the number of times
+/// @brief Space-efficient probabilistic data structure to estimate the number of times
 ///        an item was inserted in a set.
 /// @details A counting bloom filter is a constant-sized data structure, which means that insertions will never
-///          make the filter allocate more memory. However, too many inserts will severly impact the accuracy
+///          make the filter allocate more memory. However, too many inserts will severely impact the accuracy
 ///          of counter estimates.
-template<typename Item, typename ItemHash = std::hash<Item>> class CountingBloomFilter
+template<typename ItemHash> class CountingBloomFilter
 {
 public:
     /// @brief Constructor.
@@ -28,7 +30,7 @@ public:
 
     /// @brief Increment the count for a given item by one.
     /// @param item The item of the counter to increment.
-    void add(const Item& item);
+    template<typename ItemKey> void add(const ItemKey& item);
 
     /// @brief Clear the filter while keeping the allocated memory.
     void clear();
@@ -46,7 +48,7 @@ public:
     ///          the real counter value - the real count is guaranteed to be less or equal to the estimate
     ///          returned.
     /// @return The counter estimate for the item.
-    [[nodiscard]] uint32_t estimate(const Item& item) const;
+    template<typename ItemKey> [[nodiscard]] uint32_t estimate(const ItemKey& item) const;
 
     /// @brief Get the cardinality of the filter.
     /// @return The cardinality of the filter, as configured.
@@ -65,8 +67,6 @@ public:
     [[nodiscard]] double saturation() const noexcept;
 
 private:
-    using Mixer = HashMixer<Item, ItemHash>;
-
     uint32_t              m_cardinality;
     std::vector<uint32_t> m_filter;
     uint32_t              m_nb_hashes;

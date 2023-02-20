@@ -3,11 +3,13 @@
 #include <cstring>
 #include <functional>
 
+#include <absl/hash/hash.h>
+
 #include "cachemere/policy/detail/hash_mixer.h"
 
 using namespace cachemere::policy::detail;
 
-using TestMixer = HashMixer<std::string, std::hash<std::string>>;
+using TestMixer = HashMixer<std::string, absl::Hash<std::string>>;
 
 TEST(HashMixer, StaysWithinRange)
 {

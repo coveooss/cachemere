@@ -11,6 +11,7 @@
 #include "cachemere/policy/insertion_tinylfu.h"
 
 #include "cachemere/cache.h"
+#include "cachemere/hash.h"
 #include "cachemere/item.h"
 #include "cachemere/measurement.h"
 #include "cachemere/presets.h"

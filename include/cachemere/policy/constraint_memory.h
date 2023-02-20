@@ -8,8 +8,9 @@ namespace cachemere::policy {
 /// @brief Memory constraint.
 /// @details Use this when the constraint of the cache should be how many bytes of memory it uses.
 /// @tparam Key The type of the keys used to identify items in the cache.
+/// @tparam KeyHash The type of the hasher used to hash item keys.
 /// @tparam Value The type of the values stored in the cache.
-template<typename Key, typename Value> class ConstraintMemory
+template<typename Key, typename KeyHash, typename Value> class ConstraintMemory
 {
     using CacheItem = Item<Value>;
 
