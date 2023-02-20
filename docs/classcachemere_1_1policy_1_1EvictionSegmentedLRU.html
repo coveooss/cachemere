@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cachemere: cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt; Class Template Reference</title>
+<title>Cachemere: cachemere::policy::EvictionSegmentedLRU&lt; Key, KeyHash, Value &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -72,7 +72,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt; Class Template Reference</div>  </div>
+<div class="title">cachemere::policy::EvictionSegmentedLRU&lt; Key, KeyHash, Value &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -89,55 +89,62 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ab0ac9b5fb61cfa6cfe01a79f4eacc599"><td class="memItemLeft" align="right" valign="top"><a id="ab0ac9b5fb61cfa6cfe01a79f4eacc599"></a>
+<tr class="memitem:a31112d3bf7d6273627b1fe1c487ee683"><td class="memItemLeft" align="right" valign="top"><a id="a31112d3bf7d6273627b1fe1c487ee683"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheItem</b> = <a class="el" href="structcachemere_1_1Item.html">cachemere::Item</a>&lt; Value &gt;</td></tr>
-<tr class="separator:ab0ac9b5fb61cfa6cfe01a79f4eacc599"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a31112d3bf7d6273627b1fe1c487ee683"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abeff7b33fe4d1f75ed992b8c851b5cec"><td class="memItemLeft" align="right" valign="top"><a id="abeff7b33fe4d1f75ed992b8c851b5cec"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#abeff7b33fe4d1f75ed992b8c851b5cec">clear</a> ()</td></tr>
-<tr class="memdesc:abeff7b33fe4d1f75ed992b8c851b5cec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the policy. <br /></td></tr>
-<tr class="separator:abeff7b33fe4d1f75ed992b8c851b5cec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae27e735292643a89a0f2257750ab30ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ae27e735292643a89a0f2257750ab30ae">set_protected_segment_size</a> (size_t size)</td></tr>
-<tr class="memdesc:ae27e735292643a89a0f2257750ab30ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum number of items in the protected LRU segment.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ae27e735292643a89a0f2257750ab30ae">More...</a><br /></td></tr>
-<tr class="separator:ae27e735292643a89a0f2257750ab30ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28ce12c7a654ecd7502185f8325d2f3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a28ce12c7a654ecd7502185f8325d2f3a">on_insert</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
-<tr class="memdesc:a28ce12c7a654ecd7502185f8325d2f3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion event handler.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a28ce12c7a654ecd7502185f8325d2f3a">More...</a><br /></td></tr>
-<tr class="separator:a28ce12c7a654ecd7502185f8325d2f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f687cc3ae4fb59ab070e27545573a3c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a3f687cc3ae4fb59ab070e27545573a3c">on_update</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;old_item, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;new_item)</td></tr>
-<tr class="memdesc:a3f687cc3ae4fb59ab070e27545573a3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update event handler.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a3f687cc3ae4fb59ab070e27545573a3c">More...</a><br /></td></tr>
-<tr class="separator:a3f687cc3ae4fb59ab070e27545573a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf57b27da1c33805867fde862a5e56d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#abf57b27da1c33805867fde862a5e56d3">on_cache_hit</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
-<tr class="memdesc:abf57b27da1c33805867fde862a5e56d3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#abf57b27da1c33805867fde862a5e56d3">More...</a><br /></td></tr>
-<tr class="separator:abf57b27da1c33805867fde862a5e56d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9b1c772b58228729ac5888227c12d11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ab9b1c772b58228729ac5888227c12d11">on_evict</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
-<tr class="memdesc:ab9b1c772b58228729ac5888227c12d11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Eviction event handler.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ab9b1c772b58228729ac5888227c12d11">More...</a><br /></td></tr>
-<tr class="separator:ab9b1c772b58228729ac5888227c12d11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef43c4049dca7d3168dc3bf0b9508f25"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html">VictimIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#aef43c4049dca7d3168dc3bf0b9508f25">victim_begin</a> () const</td></tr>
-<tr class="memdesc:aef43c4049dca7d3168dc3bf0b9508f25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an iterator to the first item that should be evicted.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#aef43c4049dca7d3168dc3bf0b9508f25">More...</a><br /></td></tr>
-<tr class="separator:aef43c4049dca7d3168dc3bf0b9508f25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9067d9e691137fa793525470db7c4c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html">VictimIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ac9067d9e691137fa793525470db7c4c5">victim_end</a> () const</td></tr>
-<tr class="memdesc:ac9067d9e691137fa793525470db7c4c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an end iterator.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ac9067d9e691137fa793525470db7c4c5">More...</a><br /></td></tr>
-<tr class="separator:ac9067d9e691137fa793525470db7c4c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d201a7fc3efbcaa64d602898ff0c844"><td class="memItemLeft" align="right" valign="top"><a id="a3d201a7fc3efbcaa64d602898ff0c844"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a3d201a7fc3efbcaa64d602898ff0c844">clear</a> ()</td></tr>
+<tr class="memdesc:a3d201a7fc3efbcaa64d602898ff0c844"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the policy. <br /></td></tr>
+<tr class="separator:a3d201a7fc3efbcaa64d602898ff0c844"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab55f44d4f823740440ced39b68b8406"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#aab55f44d4f823740440ced39b68b8406">set_protected_segment_size</a> (size_t size)</td></tr>
+<tr class="memdesc:aab55f44d4f823740440ced39b68b8406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum number of items in the protected LRU segment.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#aab55f44d4f823740440ced39b68b8406">More...</a><br /></td></tr>
+<tr class="separator:aab55f44d4f823740440ced39b68b8406"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12fa5bfcb0a6c8331a37fba1ba5c9973"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a12fa5bfcb0a6c8331a37fba1ba5c9973">on_insert</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
+<tr class="memdesc:a12fa5bfcb0a6c8331a37fba1ba5c9973"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insertion event handler.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a12fa5bfcb0a6c8331a37fba1ba5c9973">More...</a><br /></td></tr>
+<tr class="separator:a12fa5bfcb0a6c8331a37fba1ba5c9973"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a914a9b8138a5a7edf098a486c3ac9a12"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a914a9b8138a5a7edf098a486c3ac9a12">on_update</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;old_item, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;new_item)</td></tr>
+<tr class="memdesc:a914a9b8138a5a7edf098a486c3ac9a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update event handler.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a914a9b8138a5a7edf098a486c3ac9a12">More...</a><br /></td></tr>
+<tr class="separator:a914a9b8138a5a7edf098a486c3ac9a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76cff986e7137f2a676e13b89a123693"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a76cff986e7137f2a676e13b89a123693">on_cache_hit</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
+<tr class="memdesc:a76cff986e7137f2a676e13b89a123693"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a76cff986e7137f2a676e13b89a123693">More...</a><br /></td></tr>
+<tr class="separator:a76cff986e7137f2a676e13b89a123693"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac383c820bbf310bdcf6bcad141da9e5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ac383c820bbf310bdcf6bcad141da9e5d">on_evict</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
+<tr class="memdesc:ac383c820bbf310bdcf6bcad141da9e5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Eviction event handler.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ac383c820bbf310bdcf6bcad141da9e5d">More...</a><br /></td></tr>
+<tr class="separator:ac383c820bbf310bdcf6bcad141da9e5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad64a5a5d20d4fb8799fb800e68be2bcb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html">VictimIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ad64a5a5d20d4fb8799fb800e68be2bcb">victim_begin</a> () const</td></tr>
+<tr class="memdesc:ad64a5a5d20d4fb8799fb800e68be2bcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an iterator to the first item that should be evicted.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#ad64a5a5d20d4fb8799fb800e68be2bcb">More...</a><br /></td></tr>
+<tr class="separator:ad64a5a5d20d4fb8799fb800e68be2bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a044b6d9deb3439afea2896f619c21782"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html">VictimIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a044b6d9deb3439afea2896f619c21782">victim_end</a> () const</td></tr>
+<tr class="memdesc:a044b6d9deb3439afea2896f619c21782"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an end iterator.  <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html#a044b6d9deb3439afea2896f619c21782">More...</a><br /></td></tr>
+<tr class="separator:a044b6d9deb3439afea2896f619c21782"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Key, typename Value&gt;<br />
-class cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;</h3>
+<div class="textblock"><h3>template&lt;typename Key, typename KeyHash, typename Value&gt;<br />
+class cachemere::policy::EvictionSegmentedLRU&lt; Key, KeyHash, Value &gt;</h3>
 
 <p>Segmented Least Recently Used (S-LRU) Eviction Policy. </p>
-<p>Segmented LRU is really similar to LRU. The main difference is that a segmented LRU policy has <em>two</em> separate LRU segments. Items are initially inserted in a probation segment. When items that are on probation are accessed, they are promoted from the protected segment. If the protected segment is full, the item that was least-recently accessed is downgraded to the probation segment. This architecture has the effect of reducing cache churn and keeping "good" items in cache a bit longer. </p>
+<p>Segmented LRU is really similar to LRU. The main difference is that a segmented LRU policy has <em>two</em> separate LRU segments. Items are initially inserted in a probation segment. When items that are on probation are accessed, they are promoted from the protected segment. If the protected segment is full, the item that was least-recently accessed is downgraded to the probation segment. This architecture has the effect of reducing cache churn and keeping "good" items in cache a bit longer. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Key</td><td>The type of the keys used to identify items in the cache. </td></tr>
+    <tr><td class="paramname">KeyHash</td><td>The type of the hasher used to hash item keys. </td></tr>
+    <tr><td class="paramname">Value</td><td>The type of the values stored in the cache. </td></tr>
+  </table>
+  </dd>
+</dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="abf57b27da1c33805867fde862a5e56d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf57b27da1c33805867fde862a5e56d3">&#9670;&nbsp;</a></span>on_cache_hit()</h2>
+<a id="a76cff986e7137f2a676e13b89a123693"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76cff986e7137f2a676e13b89a123693">&#9670;&nbsp;</a></span>on_cache_hit()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Key , class Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, Value &gt;::on_cache_hit </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, KeyHash, Value &gt;::on_cache_hit </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em>, </td>
@@ -167,16 +174,16 @@ template&lt;class Key , class Value &gt; </div>
 
 </div>
 </div>
-<a id="ab9b1c772b58228729ac5888227c12d11"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab9b1c772b58228729ac5888227c12d11">&#9670;&nbsp;</a></span>on_evict()</h2>
+<a id="ac383c820bbf310bdcf6bcad141da9e5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac383c820bbf310bdcf6bcad141da9e5d">&#9670;&nbsp;</a></span>on_evict()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Key , class Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, Value &gt;::on_evict </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, KeyHash, Value &gt;::on_evict </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em>, </td>
@@ -206,16 +213,16 @@ template&lt;class Key , class Value &gt; </div>
 
 </div>
 </div>
-<a id="a28ce12c7a654ecd7502185f8325d2f3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a28ce12c7a654ecd7502185f8325d2f3a">&#9670;&nbsp;</a></span>on_insert()</h2>
+<a id="a12fa5bfcb0a6c8331a37fba1ba5c9973"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12fa5bfcb0a6c8331a37fba1ba5c9973">&#9670;&nbsp;</a></span>on_insert()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Key , class Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, Value &gt;::on_insert </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, KeyHash, Value &gt;::on_insert </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em>, </td>
@@ -245,16 +252,16 @@ template&lt;class Key , class Value &gt; </div>
 
 </div>
 </div>
-<a id="a3f687cc3ae4fb59ab070e27545573a3c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f687cc3ae4fb59ab070e27545573a3c">&#9670;&nbsp;</a></span>on_update()</h2>
+<a id="a914a9b8138a5a7edf098a486c3ac9a12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a914a9b8138a5a7edf098a486c3ac9a12">&#9670;&nbsp;</a></span>on_update()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Key , class Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, Value &gt;::on_update </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, KeyHash, Value &gt;::on_update </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em>, </td>
@@ -291,16 +298,16 @@ template&lt;class Key , class Value &gt; </div>
 
 </div>
 </div>
-<a id="ae27e735292643a89a0f2257750ab30ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae27e735292643a89a0f2257750ab30ae">&#9670;&nbsp;</a></span>set_protected_segment_size()</h2>
+<a id="aab55f44d4f823740440ced39b68b8406"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab55f44d4f823740440ced39b68b8406">&#9670;&nbsp;</a></span>set_protected_segment_size()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Key , class Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, Value &gt;::set_protected_segment_size </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, KeyHash, Value &gt;::set_protected_segment_size </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>size</em></td><td>)</td>
@@ -319,16 +326,16 @@ template&lt;class Key , class Value &gt; </div>
 
 </div>
 </div>
-<a id="aef43c4049dca7d3168dc3bf0b9508f25"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef43c4049dca7d3168dc3bf0b9508f25">&#9670;&nbsp;</a></span>victim_begin()</h2>
+<a id="ad64a5a5d20d4fb8799fb800e68be2bcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad64a5a5d20d4fb8799fb800e68be2bcb">&#9670;&nbsp;</a></span>victim_begin()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Key , class Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, Value &gt;::victim_begin</td>
+          <td class="memname">auto <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, KeyHash, Value &gt;::victim_begin</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -338,16 +345,16 @@ template&lt;class Key , class Value &gt; </div>
 
 </div>
 </div>
-<a id="ac9067d9e691137fa793525470db7c4c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9067d9e691137fa793525470db7c4c5">&#9670;&nbsp;</a></span>victim_end()</h2>
+<a id="a044b6d9deb3439afea2896f619c21782"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a044b6d9deb3439afea2896f619c21782">&#9670;&nbsp;</a></span>victim_end()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Key , class Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, Value &gt;::victim_end</td>
+          <td class="memname">auto <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">cachemere::policy::EvictionSegmentedLRU</a>&lt; Key, KeyHash, Value &gt;::victim_end</td>
         </tr>
       </table>
 </div><div class="memdoc">

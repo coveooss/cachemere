@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cachemere: cachemere::policy::InsertionAlways&lt; Key, Value &gt; Class Template Reference</title>
+<title>Cachemere: cachemere::policy::InsertionAlways&lt; Key, KeyHash, Value &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,7 +70,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcachemere_1_1policy_1_1InsertionAlways-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cachemere::policy::InsertionAlways&lt; Key, Value &gt; Class Template Reference</div>  </div>
+<div class="title">cachemere::policy::InsertionAlways&lt; Key, KeyHash, Value &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -81,33 +81,41 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac440c24c7514a9827fff425752bb9943"><td class="memItemLeft" align="right" valign="top"><a id="ac440c24c7514a9827fff425752bb9943"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html#ac440c24c7514a9827fff425752bb9943">clear</a> ()</td></tr>
-<tr class="memdesc:ac440c24c7514a9827fff425752bb9943"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the policy. <br /></td></tr>
-<tr class="separator:ac440c24c7514a9827fff425752bb9943"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a4e421ec8735d1b575bf68ebdc6d2c9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html#a5a4e421ec8735d1b575bf68ebdc6d2c9">should_add</a> (const Key &amp;key)</td></tr>
-<tr class="memdesc:a5a4e421ec8735d1b575bf68ebdc6d2c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given key should be inserted into the cache.  <a href="classcachemere_1_1policy_1_1InsertionAlways.html#a5a4e421ec8735d1b575bf68ebdc6d2c9">More...</a><br /></td></tr>
-<tr class="separator:a5a4e421ec8735d1b575bf68ebdc6d2c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab44013d143565cc341cd045ecb73108"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html#aab44013d143565cc341cd045ecb73108">should_replace</a> (const Key &amp;victim, const Key &amp;candidate)</td></tr>
-<tr class="memdesc:aab44013d143565cc341cd045ecb73108"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given victim should be replaced by a given candidate.  <a href="classcachemere_1_1policy_1_1InsertionAlways.html#aab44013d143565cc341cd045ecb73108">More...</a><br /></td></tr>
-<tr class="separator:aab44013d143565cc341cd045ecb73108"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0dfc5a301808088689a4bc4be8db0e6"><td class="memItemLeft" align="right" valign="top"><a id="af0dfc5a301808088689a4bc4be8db0e6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html#af0dfc5a301808088689a4bc4be8db0e6">clear</a> ()</td></tr>
+<tr class="memdesc:af0dfc5a301808088689a4bc4be8db0e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the policy. <br /></td></tr>
+<tr class="separator:af0dfc5a301808088689a4bc4be8db0e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3d7ff15dcb48e9cba450d374c5a9797"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html#aa3d7ff15dcb48e9cba450d374c5a9797">should_add</a> (const Key &amp;key)</td></tr>
+<tr class="memdesc:aa3d7ff15dcb48e9cba450d374c5a9797"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given key should be inserted into the cache.  <a href="classcachemere_1_1policy_1_1InsertionAlways.html#aa3d7ff15dcb48e9cba450d374c5a9797">More...</a><br /></td></tr>
+<tr class="separator:aa3d7ff15dcb48e9cba450d374c5a9797"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49c1034190411144a6af783114a28f64"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html#a49c1034190411144a6af783114a28f64">should_replace</a> (const Key &amp;victim, const Key &amp;candidate)</td></tr>
+<tr class="memdesc:a49c1034190411144a6af783114a28f64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given victim should be replaced by a given candidate.  <a href="classcachemere_1_1policy_1_1InsertionAlways.html#a49c1034190411144a6af783114a28f64">More...</a><br /></td></tr>
+<tr class="separator:a49c1034190411144a6af783114a28f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Key, typename Value&gt;<br />
-class cachemere::policy::InsertionAlways&lt; Key, Value &gt;</h3>
+<div class="textblock"><h3>template&lt;typename Key, typename KeyHash, typename Value&gt;<br />
+class cachemere::policy::InsertionAlways&lt; Key, KeyHash, Value &gt;</h3>
 
 <p>Simplest insertion policy. Always accepts insertions. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Key</td><td>The type of the keys used to identify items in the cache. </td></tr>
+    <tr><td class="paramname">KeyHash</td><td>The type of the hasher used to hash item keys. </td></tr>
+    <tr><td class="paramname">Value</td><td>The type of the values stored in the cache. </td></tr>
+  </table>
+  </dd>
+</dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5a4e421ec8735d1b575bf68ebdc6d2c9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a4e421ec8735d1b575bf68ebdc6d2c9">&#9670;&nbsp;</a></span>should_add()</h2>
+<a id="aa3d7ff15dcb48e9cba450d374c5a9797"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3d7ff15dcb48e9cba450d374c5a9797">&#9670;&nbsp;</a></span>should_add()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value &gt; </div>
+template&lt;typename Key , typename KeyHash , typename Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">cachemere::policy::InsertionAlways</a>&lt; Key, Value &gt;::should_add </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">cachemere::policy::InsertionAlways</a>&lt; Key, KeyHash, Value &gt;::should_add </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
@@ -127,16 +135,16 @@ template&lt;typename Key , typename Value &gt; </div>
 
 </div>
 </div>
-<a id="aab44013d143565cc341cd045ecb73108"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab44013d143565cc341cd045ecb73108">&#9670;&nbsp;</a></span>should_replace()</h2>
+<a id="a49c1034190411144a6af783114a28f64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49c1034190411144a6af783114a28f64">&#9670;&nbsp;</a></span>should_replace()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value &gt; </div>
+template&lt;typename Key , typename KeyHash , typename Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">cachemere::policy::InsertionAlways</a>&lt; Key, Value &gt;::should_replace </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">cachemere::policy::InsertionAlways</a>&lt; Key, KeyHash, Value &gt;::should_replace </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>victim</em>, </td>

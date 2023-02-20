@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cachemere: cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt; Class Template Reference</title>
+<title>Cachemere: cachemere::policy::detail::BloomFilter&lt; ItemHash &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,7 +70,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt; Class Template Reference</div>  </div>
+<div class="title">cachemere::policy::detail::BloomFilter&lt; ItemHash &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -81,49 +81,50 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2067fabe0cc24c1ef4e40f3282b7fa2e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a2067fabe0cc24c1ef4e40f3282b7fa2e">BloomFilter</a> (uint32_t cardinality)</td></tr>
-<tr class="memdesc:a2067fabe0cc24c1ef4e40f3282b7fa2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a2067fabe0cc24c1ef4e40f3282b7fa2e">More...</a><br /></td></tr>
-<tr class="separator:a2067fabe0cc24c1ef4e40f3282b7fa2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1a20bb215b20bcb22d6368d4829cbc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#aa1a20bb215b20bcb22d6368d4829cbc4">add</a> (const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;item)</td></tr>
-<tr class="memdesc:aa1a20bb215b20bcb22d6368d4829cbc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an item to the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#aa1a20bb215b20bcb22d6368d4829cbc4">More...</a><br /></td></tr>
-<tr class="separator:aa1a20bb215b20bcb22d6368d4829cbc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14e84da980d8c328176bfa985741b913"><td class="memItemLeft" align="right" valign="top"><a id="a14e84da980d8c328176bfa985741b913"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a14e84da980d8c328176bfa985741b913">clear</a> ()</td></tr>
-<tr class="memdesc:a14e84da980d8c328176bfa985741b913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the filter while keeping the allocated memory. <br /></td></tr>
-<tr class="separator:a14e84da980d8c328176bfa985741b913"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e18f5918524813b94a81b039e84feaf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a6e18f5918524813b94a81b039e84feaf">maybe_contains</a> (const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;item) const</td></tr>
-<tr class="memdesc:a6e18f5918524813b94a81b039e84feaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test membership of the specified item.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a6e18f5918524813b94a81b039e84feaf">More...</a><br /></td></tr>
-<tr class="separator:a6e18f5918524813b94a81b039e84feaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9b04b1a85ae1aed9061337fd9f1afdf"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#ac9b04b1a85ae1aed9061337fd9f1afdf">memory_used</a> () const noexcept</td></tr>
-<tr class="memdesc:ac9b04b1a85ae1aed9061337fd9f1afdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an estimate of the memory consumption of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#ac9b04b1a85ae1aed9061337fd9f1afdf">More...</a><br /></td></tr>
-<tr class="separator:ac9b04b1a85ae1aed9061337fd9f1afdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a293de916fbfef6a7f2d1de03cf364a18"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a293de916fbfef6a7f2d1de03cf364a18">saturation</a> () const noexcept</td></tr>
-<tr class="memdesc:a293de916fbfef6a7f2d1de03cf364a18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the saturation of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a293de916fbfef6a7f2d1de03cf364a18">More...</a><br /></td></tr>
-<tr class="separator:a293de916fbfef6a7f2d1de03cf364a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1903e8ab908a105cce61ed9d8cb522e8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a1903e8ab908a105cce61ed9d8cb522e8">BloomFilter</a> (uint32_t cardinality)</td></tr>
+<tr class="memdesc:a1903e8ab908a105cce61ed9d8cb522e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a1903e8ab908a105cce61ed9d8cb522e8">More...</a><br /></td></tr>
+<tr class="separator:a1903e8ab908a105cce61ed9d8cb522e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86d9b434ded13088dce99cd21516350d"><td class="memTemplParams" colspan="2">template&lt;typename ItemKey &gt; </td></tr>
+<tr class="memitem:a86d9b434ded13088dce99cd21516350d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a86d9b434ded13088dce99cd21516350d">add</a> (const ItemKey &amp;item)</td></tr>
+<tr class="memdesc:a86d9b434ded13088dce99cd21516350d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an item to the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a86d9b434ded13088dce99cd21516350d">More...</a><br /></td></tr>
+<tr class="separator:a86d9b434ded13088dce99cd21516350d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95e8e57692d5eb88316098c1bf496661"><td class="memItemLeft" align="right" valign="top"><a id="a95e8e57692d5eb88316098c1bf496661"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a95e8e57692d5eb88316098c1bf496661">clear</a> ()</td></tr>
+<tr class="memdesc:a95e8e57692d5eb88316098c1bf496661"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the filter while keeping the allocated memory. <br /></td></tr>
+<tr class="separator:a95e8e57692d5eb88316098c1bf496661"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64713e8dddd782bef09260b18c0c172f"><td class="memTemplParams" colspan="2">template&lt;typename ItemKey &gt; </td></tr>
+<tr class="memitem:a64713e8dddd782bef09260b18c0c172f"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a64713e8dddd782bef09260b18c0c172f">maybe_contains</a> (const ItemKey &amp;item) const</td></tr>
+<tr class="memdesc:a64713e8dddd782bef09260b18c0c172f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test membership of the specified item.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a64713e8dddd782bef09260b18c0c172f">More...</a><br /></td></tr>
+<tr class="separator:a64713e8dddd782bef09260b18c0c172f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81aaa3bae28474de1b51324348bbc6ba"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a81aaa3bae28474de1b51324348bbc6ba">memory_used</a> () const noexcept</td></tr>
+<tr class="memdesc:a81aaa3bae28474de1b51324348bbc6ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an estimate of the memory consumption of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a81aaa3bae28474de1b51324348bbc6ba">More...</a><br /></td></tr>
+<tr class="separator:a81aaa3bae28474de1b51324348bbc6ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a614f0fe60e85b865a77e8a07a37830e1"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a614f0fe60e85b865a77e8a07a37830e1">saturation</a> () const noexcept</td></tr>
+<tr class="memdesc:a614f0fe60e85b865a77e8a07a37830e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the saturation of the filter.  <a href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html#a614f0fe60e85b865a77e8a07a37830e1">More...</a><br /></td></tr>
+<tr class="separator:a614f0fe60e85b865a77e8a07a37830e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Item, typename ItemHash = std::hash&lt;Item&gt;&gt;<br />
-class cachemere::policy::detail::BloomFilter&lt; Item, ItemHash &gt;</h3>
+<div class="textblock"><h3>template&lt;typename ItemHash&gt;<br />
+class cachemere::policy::detail::BloomFilter&lt; ItemHash &gt;</h3>
 
 <p>Probabilistic data structure for representing sets in a space-efficient format. </p>
 <p>A bloom filter is a constant-sized data structure, which means that insertions will never make the filter allocate more memory. However, too many inserts will severly impact the accuracy of filter membership tests. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname"><a class="el" href="structcachemere_1_1Item.html" title="A wrapper for items stored in the cache.">Item</a></td><td>The type of the items that will be inserted into the set. </td></tr>
     <tr><td class="paramname">ItemHash</td><td>Functor used for hashing the items inserted in the set. </td></tr>
   </table>
   </dd>
 </dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a2067fabe0cc24c1ef4e40f3282b7fa2e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2067fabe0cc24c1ef4e40f3282b7fa2e">&#9670;&nbsp;</a></span>BloomFilter()</h2>
+<a id="a1903e8ab908a105cce61ed9d8cb522e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1903e8ab908a105cce61ed9d8cb522e8">&#9670;&nbsp;</a></span>BloomFilter()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Item , typename ItemHash &gt; </div>
+template&lt;typename ItemHash &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::<a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">BloomFilter</a> </td>
+          <td class="memname"><a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; ItemHash &gt;::<a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">BloomFilter</a> </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>cardinality</em></td><td>)</td>
@@ -145,18 +146,20 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa1a20bb215b20bcb22d6368d4829cbc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa1a20bb215b20bcb22d6368d4829cbc4">&#9670;&nbsp;</a></span>add()</h2>
+<a id="a86d9b434ded13088dce99cd21516350d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86d9b434ded13088dce99cd21516350d">&#9670;&nbsp;</a></span>add()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Item , typename ItemHash &gt; </div>
+template&lt;typename ItemHash &gt; </div>
+<div class="memtemplate">
+template&lt;typename ItemKey &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::add </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; ItemHash &gt;::add </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;&#160;</td>
+          <td class="paramtype">const ItemKey &amp;&#160;</td>
           <td class="paramname"><em>item</em></td><td>)</td>
           <td></td>
         </tr>
@@ -173,18 +176,20 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 
 </div>
 </div>
-<a id="a6e18f5918524813b94a81b039e84feaf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e18f5918524813b94a81b039e84feaf">&#9670;&nbsp;</a></span>maybe_contains()</h2>
+<a id="a64713e8dddd782bef09260b18c0c172f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64713e8dddd782bef09260b18c0c172f">&#9670;&nbsp;</a></span>maybe_contains()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Item , typename ItemHash &gt; </div>
+template&lt;typename ItemHash &gt; </div>
+<div class="memtemplate">
+template&lt;typename ItemKey &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::maybe_contains </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; ItemHash &gt;::maybe_contains </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcachemere_1_1Item.html">Item</a> &amp;&#160;</td>
+          <td class="paramtype">const ItemKey &amp;&#160;</td>
           <td class="paramname"><em>item</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -201,19 +206,19 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 
 </div>
 </div>
-<a id="ac9b04b1a85ae1aed9061337fd9f1afdf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9b04b1a85ae1aed9061337fd9f1afdf">&#9670;&nbsp;</a></span>memory_used()</h2>
+<a id="a81aaa3bae28474de1b51324348bbc6ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81aaa3bae28474de1b51324348bbc6ba">&#9670;&nbsp;</a></span>memory_used()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Item , typename ItemHash &gt; </div>
+template&lt;typename ItemHash &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::memory_used</td>
+          <td class="memname">size_t <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; ItemHash &gt;::memory_used</td>
         </tr>
       </table>
   </td>
@@ -228,19 +233,19 @@ template&lt;typename Item , typename ItemHash &gt; </div>
 
 </div>
 </div>
-<a id="a293de916fbfef6a7f2d1de03cf364a18"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a293de916fbfef6a7f2d1de03cf364a18">&#9670;&nbsp;</a></span>saturation()</h2>
+<a id="a614f0fe60e85b865a77e8a07a37830e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a614f0fe60e85b865a77e8a07a37830e1">&#9670;&nbsp;</a></span>saturation()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Item , typename ItemHash &gt; </div>
+template&lt;typename ItemHash &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; <a class="el" href="structcachemere_1_1Item.html">Item</a>, ItemHash &gt;::saturation</td>
+          <td class="memname">double <a class="el" href="classcachemere_1_1policy_1_1detail_1_1BloomFilter.html">cachemere::policy::detail::BloomFilter</a>&lt; ItemHash &gt;::saturation</td>
         </tr>
       </table>
   </td>

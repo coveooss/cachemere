@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['update_73',['update',['../classcachemere_1_1policy_1_1ConstraintCount.html#a06e0e1ff9a8386a90a24fda6b0a879d3',1,'cachemere::policy::ConstraintCount::update()'],['../classcachemere_1_1policy_1_1ConstraintMemory.html#aff3d078f56407c71c053115368165f88',1,'cachemere::policy::ConstraintMemory::update()']]],
-  ['update_5fconstraint_74',['update_constraint',['../classcachemere_1_1Cache.html#ae08f40df4f0a448c6659a156195fb5ed',1,'cachemere::Cache']]]
+  ['using_20heterogeneous_20lookup_76',['Using Heterogeneous Lookup',['../heterogeneousLookup.html',1,'']]],
+  ['update_77',['update',['../classcachemere_1_1policy_1_1ConstraintCount.html#ae1b66f3ca0c69e5b024b4d1cb57c7858',1,'cachemere::policy::ConstraintCount::update()'],['../classcachemere_1_1policy_1_1ConstraintMemory.html#abbbf30528e21e31c5f294a803d4fbe4c',1,'cachemere::policy::ConstraintMemory::update()']]],
+  ['update_5fconstraint_78',['update_constraint',['../classcachemere_1_1Cache.html#a9d90e5c1c3dec9f1bfd6a002947bb0bd',1,'cachemere::Cache']]]
 ];

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cachemere: cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt; Class Template Reference</title>
+<title>Cachemere: cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -72,7 +72,7 @@ $(function() {
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classcachemere_1_1Cache-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt; Class Template Reference</div>  </div>
+<div class="title">cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -83,138 +83,144 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ac341cdb09fcef6a1ff8d0356bd548e46"><td class="memItemLeft" align="right" valign="top"><a id="ac341cdb09fcef6a1ff8d0356bd548e46"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>MyInsertionPolicy</b> = InsertionPolicy&lt; Key, Value &gt;</td></tr>
-<tr class="separator:ac341cdb09fcef6a1ff8d0356bd548e46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae14988e00b1d8efa431816f8031f0989"><td class="memItemLeft" align="right" valign="top"><a id="ae14988e00b1d8efa431816f8031f0989"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>MyEvictionPolicy</b> = EvictionPolicy&lt; Key, Value &gt;</td></tr>
-<tr class="separator:ae14988e00b1d8efa431816f8031f0989"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a242dfc91d0243a7a36ac9fe8e430a702"><td class="memItemLeft" align="right" valign="top"><a id="a242dfc91d0243a7a36ac9fe8e430a702"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>MyConstraintPolicy</b> = ConstraintPolicy&lt; Key, Value &gt;</td></tr>
-<tr class="separator:a242dfc91d0243a7a36ac9fe8e430a702"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20e866c6a9be1020390c01c2dda1eaf5"><td class="memItemLeft" align="right" valign="top"><a id="a20e866c6a9be1020390c01c2dda1eaf5"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheType</b> = <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</td></tr>
-<tr class="separator:a20e866c6a9be1020390c01c2dda1eaf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38a0840a55c5c027fdcfe56c4433c7e9"><td class="memItemLeft" align="right" valign="top"><a id="a38a0840a55c5c027fdcfe56c4433c7e9"></a>
+<tr class="memitem:a2d1e3d485ade1baf341fdedbc45b238b"><td class="memItemLeft" align="right" valign="top"><a id="a2d1e3d485ade1baf341fdedbc45b238b"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>MyInsertionPolicy</b> = InsertionPolicy&lt; Key, KeyHash, Value &gt;</td></tr>
+<tr class="separator:a2d1e3d485ade1baf341fdedbc45b238b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a2d84d47233392802bdc9eb4d191c2a"><td class="memItemLeft" align="right" valign="top"><a id="a6a2d84d47233392802bdc9eb4d191c2a"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>MyEvictionPolicy</b> = EvictionPolicy&lt; Key, KeyHash, Value &gt;</td></tr>
+<tr class="separator:a6a2d84d47233392802bdc9eb4d191c2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a811aa0fa69a0f92b34ae7b71956ce20b"><td class="memItemLeft" align="right" valign="top"><a id="a811aa0fa69a0f92b34ae7b71956ce20b"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>MyConstraintPolicy</b> = ConstraintPolicy&lt; Key, KeyHash, Value &gt;</td></tr>
+<tr class="separator:a811aa0fa69a0f92b34ae7b71956ce20b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaebdce19f69bdfa1c51d459fc850b3b"><td class="memItemLeft" align="right" valign="top"><a id="aeaebdce19f69bdfa1c51d459fc850b3b"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheType</b> = <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;</td></tr>
+<tr class="separator:aeaebdce19f69bdfa1c51d459fc850b3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a059b47bfd8bc705b977384cb4345d02c"><td class="memItemLeft" align="right" valign="top"><a id="a059b47bfd8bc705b977384cb4345d02c"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>LockGuard</b> = std::unique_lock&lt; std::recursive_mutex &gt;</td></tr>
-<tr class="separator:a38a0840a55c5c027fdcfe56c4433c7e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a059b47bfd8bc705b977384cb4345d02c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7e58cf1f7e976717e494c2a82930d1a1"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a7e58cf1f7e976717e494c2a82930d1a1"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a7e58cf1f7e976717e494c2a82930d1a1">Cache</a> (Args... args)</td></tr>
-<tr class="memdesc:a7e58cf1f7e976717e494c2a82930d1a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple constructor.  <a href="classcachemere_1_1Cache.html#a7e58cf1f7e976717e494c2a82930d1a1">More...</a><br /></td></tr>
-<tr class="separator:a7e58cf1f7e976717e494c2a82930d1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a786af0872ad252415e1e8aed77aa116d"><td class="memTemplParams" colspan="2">template&lt;typename C , typename... Args&gt; </td></tr>
-<tr class="memitem:a786af0872ad252415e1e8aed77aa116d"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a786af0872ad252415e1e8aed77aa116d">Cache</a> (C &amp;collection, std::tuple&lt; Args... &gt; args)</td></tr>
-<tr class="memdesc:a786af0872ad252415e1e8aed77aa116d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor to initialize the cache with a set of items.  <a href="classcachemere_1_1Cache.html#a786af0872ad252415e1e8aed77aa116d">More...</a><br /></td></tr>
-<tr class="separator:a786af0872ad252415e1e8aed77aa116d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42cc91e6cc65f9fc7bea93572e4ba4a5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a42cc91e6cc65f9fc7bea93572e4ba4a5">contains</a> (const Key &amp;key) const</td></tr>
-<tr class="memdesc:a42cc91e6cc65f9fc7bea93572e4ba4a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a given key is stored in the cache.  <a href="classcachemere_1_1Cache.html#a42cc91e6cc65f9fc7bea93572e4ba4a5">More...</a><br /></td></tr>
-<tr class="separator:a42cc91e6cc65f9fc7bea93572e4ba4a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a563b737e0c1e791cf7e0343d545d8437"><td class="memItemLeft" align="right" valign="top">std::optional&lt; Value &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a563b737e0c1e791cf7e0343d545d8437">find</a> (const Key &amp;key) const</td></tr>
-<tr class="memdesc:a563b737e0c1e791cf7e0343d545d8437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a given key in cache returning the associated value when it exists.  <a href="classcachemere_1_1Cache.html#a563b737e0c1e791cf7e0343d545d8437">More...</a><br /></td></tr>
-<tr class="separator:a563b737e0c1e791cf7e0343d545d8437"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6973ebec90fb7f75b8935e4a2c1d76ca"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a6973ebec90fb7f75b8935e4a2c1d76ca"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a6973ebec90fb7f75b8935e4a2c1d76ca">collect_into</a> (C &amp;container) const</td></tr>
-<tr class="memdesc:a6973ebec90fb7f75b8935e4a2c1d76ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the cache contents in the provided container.  <a href="classcachemere_1_1Cache.html#a6973ebec90fb7f75b8935e4a2c1d76ca">More...</a><br /></td></tr>
-<tr class="separator:a6973ebec90fb7f75b8935e4a2c1d76ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b2cb36c96d61e71dc72352c62114323"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a2b2cb36c96d61e71dc72352c62114323">insert</a> (Key key, Value value)</td></tr>
-<tr class="memdesc:a2b2cb36c96d61e71dc72352c62114323"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a key/value pair in the cache.  <a href="classcachemere_1_1Cache.html#a2b2cb36c96d61e71dc72352c62114323">More...</a><br /></td></tr>
-<tr class="separator:a2b2cb36c96d61e71dc72352c62114323"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9b1d3e571f1489d1a01dd3ae42122e8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8">remove</a> (const Key &amp;key)</td></tr>
-<tr class="memdesc:aa9b1d3e571f1489d1a01dd3ae42122e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a key and its value from the cache.  <a href="classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8">More...</a><br /></td></tr>
-<tr class="separator:aa9b1d3e571f1489d1a01dd3ae42122e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95b972ae64515d9073ada458ab439ae6"><td class="memItemLeft" align="right" valign="top"><a id="a95b972ae64515d9073ada458ab439ae6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a95b972ae64515d9073ada458ab439ae6">clear</a> ()</td></tr>
-<tr class="memdesc:a95b972ae64515d9073ada458ab439ae6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the cache contents. <br /></td></tr>
-<tr class="separator:a95b972ae64515d9073ada458ab439ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a288411b8f38e4c7b507805e9d04edf24"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
-<tr class="memitem:a288411b8f38e4c7b507805e9d04edf24"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a288411b8f38e4c7b507805e9d04edf24">retain</a> (P predicate_fn)</td></tr>
-<tr class="memdesc:a288411b8f38e4c7b507805e9d04edf24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retain all objects matching a predicate.  <a href="classcachemere_1_1Cache.html#a288411b8f38e4c7b507805e9d04edf24">More...</a><br /></td></tr>
-<tr class="separator:a288411b8f38e4c7b507805e9d04edf24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3870b6e0cc0712a857e3c7430de54bd"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
-<tr class="memitem:ae3870b6e0cc0712a857e3c7430de54bd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ae3870b6e0cc0712a857e3c7430de54bd">for_each</a> (F unary_function)</td></tr>
-<tr class="memdesc:ae3870b6e0cc0712a857e3c7430de54bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a function to all objects in cache.  <a href="classcachemere_1_1Cache.html#ae3870b6e0cc0712a857e3c7430de54bd">More...</a><br /></td></tr>
-<tr class="separator:ae3870b6e0cc0712a857e3c7430de54bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfb6bcabd0e48485fa4bf79f2b36725b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#acfb6bcabd0e48485fa4bf79f2b36725b">swap</a> (<a class="el" href="classcachemere_1_1Cache.html">CacheType</a> &amp;other) noexcept</td></tr>
-<tr class="memdesc:acfb6bcabd0e48485fa4bf79f2b36725b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swaps the current cache with another cache of the same type.  <a href="classcachemere_1_1Cache.html#acfb6bcabd0e48485fa4bf79f2b36725b">More...</a><br /></td></tr>
-<tr class="separator:acfb6bcabd0e48485fa4bf79f2b36725b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e56ba870329889bb7a1e30415be2f48"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a2e56ba870329889bb7a1e30415be2f48">number_of_items</a> () const</td></tr>
-<tr class="memdesc:a2e56ba870329889bb7a1e30415be2f48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of items currently stored in the cache.  <a href="classcachemere_1_1Cache.html#a2e56ba870329889bb7a1e30415be2f48">More...</a><br /></td></tr>
-<tr class="separator:a2e56ba870329889bb7a1e30415be2f48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae08f40df4f0a448c6659a156195fb5ed"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:ae08f40df4f0a448c6659a156195fb5ed"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ae08f40df4f0a448c6659a156195fb5ed">update_constraint</a> (Args... args)</td></tr>
-<tr class="memdesc:ae08f40df4f0a448c6659a156195fb5ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the cache constraint.  <a href="classcachemere_1_1Cache.html#ae08f40df4f0a448c6659a156195fb5ed">More...</a><br /></td></tr>
-<tr class="separator:ae08f40df4f0a448c6659a156195fb5ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a540e40f335e2f83e91495ae6d10ef7d9"><td class="memItemLeft" align="right" valign="top"><a id="a540e40f335e2f83e91495ae6d10ef7d9"></a>
-MyInsertionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a540e40f335e2f83e91495ae6d10ef7d9">insertion_policy</a> ()</td></tr>
-<tr class="memdesc:a540e40f335e2f83e91495ae6d10ef7d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the insertion policy used by the cache. <br /></td></tr>
-<tr class="separator:a540e40f335e2f83e91495ae6d10ef7d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76d834c7d7178ef9f57f500f658cb9a8"><td class="memItemLeft" align="right" valign="top"><a id="a76d834c7d7178ef9f57f500f658cb9a8"></a>
-const MyInsertionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a76d834c7d7178ef9f57f500f658cb9a8">insertion_policy</a> () const</td></tr>
-<tr class="memdesc:a76d834c7d7178ef9f57f500f658cb9a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to the insertion policy used by the cache. <br /></td></tr>
-<tr class="separator:a76d834c7d7178ef9f57f500f658cb9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9367163f148353f47e68aabc320e17c"><td class="memItemLeft" align="right" valign="top"><a id="ae9367163f148353f47e68aabc320e17c"></a>
-MyEvictionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ae9367163f148353f47e68aabc320e17c">eviction_policy</a> ()</td></tr>
-<tr class="memdesc:ae9367163f148353f47e68aabc320e17c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the eviction policy used by the cache. <br /></td></tr>
-<tr class="separator:ae9367163f148353f47e68aabc320e17c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bfcd871ae6600bea0fdd8bafd7ea87a"><td class="memItemLeft" align="right" valign="top"><a id="a8bfcd871ae6600bea0fdd8bafd7ea87a"></a>
-const MyEvictionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a8bfcd871ae6600bea0fdd8bafd7ea87a">eviction_policy</a> () const</td></tr>
-<tr class="memdesc:a8bfcd871ae6600bea0fdd8bafd7ea87a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to the eviction policy used by the cache. <br /></td></tr>
-<tr class="separator:a8bfcd871ae6600bea0fdd8bafd7ea87a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab22c30daecfa8dc9e011de59891c87d8"><td class="memItemLeft" align="right" valign="top"><a id="ab22c30daecfa8dc9e011de59891c87d8"></a>
-MyConstraintPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ab22c30daecfa8dc9e011de59891c87d8">constraint_policy</a> ()</td></tr>
-<tr class="memdesc:ab22c30daecfa8dc9e011de59891c87d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the constraint policy used by the cache. <br /></td></tr>
-<tr class="separator:ab22c30daecfa8dc9e011de59891c87d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb9e3dd71e1d14a876c6b4118d5d9398"><td class="memItemLeft" align="right" valign="top"><a id="afb9e3dd71e1d14a876c6b4118d5d9398"></a>
-const MyConstraintPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#afb9e3dd71e1d14a876c6b4118d5d9398">constraint_policy</a> () const</td></tr>
-<tr class="memdesc:afb9e3dd71e1d14a876c6b4118d5d9398"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to the constraint policy used by the cache. <br /></td></tr>
-<tr class="separator:afb9e3dd71e1d14a876c6b4118d5d9398"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80fef5d0a61973e6c21b9c720a72f0e0"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a80fef5d0a61973e6c21b9c720a72f0e0">hit_rate</a> () const</td></tr>
-<tr class="memdesc:a80fef5d0a61973e6c21b9c720a72f0e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running hit rate of the cache.  <a href="classcachemere_1_1Cache.html#a80fef5d0a61973e6c21b9c720a72f0e0">More...</a><br /></td></tr>
-<tr class="separator:a80fef5d0a61973e6c21b9c720a72f0e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0da0df2c6bfc1cb05dbc622414d42318"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a0da0df2c6bfc1cb05dbc622414d42318">byte_hit_rate</a> () const</td></tr>
-<tr class="memdesc:a0da0df2c6bfc1cb05dbc622414d42318"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running byte hit rate of the cache, in bytes.  <a href="classcachemere_1_1Cache.html#a0da0df2c6bfc1cb05dbc622414d42318">More...</a><br /></td></tr>
-<tr class="separator:a0da0df2c6bfc1cb05dbc622414d42318"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58a825ab53518ac0a3956b1552f8a8f1"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1">statistics_window_size</a> () const</td></tr>
-<tr class="memdesc:a58a825ab53518ac0a3956b1552f8a8f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the size of the sliding window used for computing statistics.  <a href="classcachemere_1_1Cache.html#a58a825ab53518ac0a3956b1552f8a8f1">More...</a><br /></td></tr>
-<tr class="separator:a58a825ab53518ac0a3956b1552f8a8f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70f19566b05307dd2e5f2f7ff9c200aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a70f19566b05307dd2e5f2f7ff9c200aa">statistics_window_size</a> (uint32_t window_size)</td></tr>
-<tr class="memdesc:a70f19566b05307dd2e5f2f7ff9c200aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the size of the sliding window used for computing statistics.  <a href="classcachemere_1_1Cache.html#a70f19566b05307dd2e5f2f7ff9c200aa">More...</a><br /></td></tr>
-<tr class="separator:a70f19566b05307dd2e5f2f7ff9c200aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01c80f32d5f85194e96d661726139814"><td class="memTemplParams" colspan="2"><a id="a01c80f32d5f85194e96d661726139814"></a>
+<tr class="memitem:ab9792ddeece90042373786ed8d59ec1c"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:ab9792ddeece90042373786ed8d59ec1c"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ab9792ddeece90042373786ed8d59ec1c">Cache</a> (Args... args)</td></tr>
+<tr class="memdesc:ab9792ddeece90042373786ed8d59ec1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple constructor.  <a href="classcachemere_1_1Cache.html#ab9792ddeece90042373786ed8d59ec1c">More...</a><br /></td></tr>
+<tr class="separator:ab9792ddeece90042373786ed8d59ec1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a42edf1ccf08d3ff0b3266ec2567bbf"><td class="memTemplParams" colspan="2">template&lt;typename C , typename... Args&gt; </td></tr>
+<tr class="memitem:a5a42edf1ccf08d3ff0b3266ec2567bbf"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a5a42edf1ccf08d3ff0b3266ec2567bbf">Cache</a> (C &amp;collection, std::tuple&lt; Args... &gt; args)</td></tr>
+<tr class="memdesc:a5a42edf1ccf08d3ff0b3266ec2567bbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor to initialize the cache with a set of items.  <a href="classcachemere_1_1Cache.html#a5a42edf1ccf08d3ff0b3266ec2567bbf">More...</a><br /></td></tr>
+<tr class="separator:a5a42edf1ccf08d3ff0b3266ec2567bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a377cfe394ef216b4f7b019e273f51592"><td class="memTemplParams" colspan="2">template&lt;typename KeyView &gt; </td></tr>
+<tr class="memitem:a377cfe394ef216b4f7b019e273f51592"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a377cfe394ef216b4f7b019e273f51592">contains</a> (const KeyView &amp;key) const</td></tr>
+<tr class="memdesc:a377cfe394ef216b4f7b019e273f51592"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a given key is stored in the cache.  <a href="classcachemere_1_1Cache.html#a377cfe394ef216b4f7b019e273f51592">More...</a><br /></td></tr>
+<tr class="separator:a377cfe394ef216b4f7b019e273f51592"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4ea31ad36af4973ecbe0a610612cee1"><td class="memTemplParams" colspan="2">template&lt;typename KeyView &gt; </td></tr>
+<tr class="memitem:af4ea31ad36af4973ecbe0a610612cee1"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; Value &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#af4ea31ad36af4973ecbe0a610612cee1">find</a> (const KeyView &amp;key) const</td></tr>
+<tr class="memdesc:af4ea31ad36af4973ecbe0a610612cee1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a given key in cache returning the associated value when it exists.  <a href="classcachemere_1_1Cache.html#af4ea31ad36af4973ecbe0a610612cee1">More...</a><br /></td></tr>
+<tr class="separator:af4ea31ad36af4973ecbe0a610612cee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77e1809c2bb23433c2551af93b3d00c6"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a77e1809c2bb23433c2551af93b3d00c6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a77e1809c2bb23433c2551af93b3d00c6">collect_into</a> (C &amp;container) const</td></tr>
+<tr class="memdesc:a77e1809c2bb23433c2551af93b3d00c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the cache contents in the provided container.  <a href="classcachemere_1_1Cache.html#a77e1809c2bb23433c2551af93b3d00c6">More...</a><br /></td></tr>
+<tr class="separator:a77e1809c2bb23433c2551af93b3d00c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4e99360ef97b1dd4d117940a2561c28"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ae4e99360ef97b1dd4d117940a2561c28">insert</a> (Key key, Value value)</td></tr>
+<tr class="memdesc:ae4e99360ef97b1dd4d117940a2561c28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a key/value pair in the cache.  <a href="classcachemere_1_1Cache.html#ae4e99360ef97b1dd4d117940a2561c28">More...</a><br /></td></tr>
+<tr class="separator:ae4e99360ef97b1dd4d117940a2561c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad399dd7b0ca51df9b12fcbf1718b8722"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ad399dd7b0ca51df9b12fcbf1718b8722">remove</a> (const Key &amp;key)</td></tr>
+<tr class="memdesc:ad399dd7b0ca51df9b12fcbf1718b8722"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a key and its value from the cache.  <a href="classcachemere_1_1Cache.html#ad399dd7b0ca51df9b12fcbf1718b8722">More...</a><br /></td></tr>
+<tr class="separator:ad399dd7b0ca51df9b12fcbf1718b8722"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac41370432fccda91666121927b36675c"><td class="memItemLeft" align="right" valign="top"><a id="ac41370432fccda91666121927b36675c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ac41370432fccda91666121927b36675c">clear</a> ()</td></tr>
+<tr class="memdesc:ac41370432fccda91666121927b36675c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the cache contents. <br /></td></tr>
+<tr class="separator:ac41370432fccda91666121927b36675c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5f4bcc543b713c5c3ec829eb16ff291"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
+<tr class="memitem:ad5f4bcc543b713c5c3ec829eb16ff291"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ad5f4bcc543b713c5c3ec829eb16ff291">retain</a> (P predicate_fn)</td></tr>
+<tr class="memdesc:ad5f4bcc543b713c5c3ec829eb16ff291"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retain all objects matching a predicate.  <a href="classcachemere_1_1Cache.html#ad5f4bcc543b713c5c3ec829eb16ff291">More...</a><br /></td></tr>
+<tr class="separator:ad5f4bcc543b713c5c3ec829eb16ff291"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87ef925a7e1d2cc2f079d20f4109bd54"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
+<tr class="memitem:a87ef925a7e1d2cc2f079d20f4109bd54"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a87ef925a7e1d2cc2f079d20f4109bd54">for_each</a> (F unary_function)</td></tr>
+<tr class="memdesc:a87ef925a7e1d2cc2f079d20f4109bd54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a function to all objects in cache.  <a href="classcachemere_1_1Cache.html#a87ef925a7e1d2cc2f079d20f4109bd54">More...</a><br /></td></tr>
+<tr class="separator:a87ef925a7e1d2cc2f079d20f4109bd54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8764c0d27fc80326247b2ae819298032"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a8764c0d27fc80326247b2ae819298032">swap</a> (<a class="el" href="classcachemere_1_1Cache.html">CacheType</a> &amp;other) noexcept</td></tr>
+<tr class="memdesc:a8764c0d27fc80326247b2ae819298032"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swaps the current cache with another cache of the same type.  <a href="classcachemere_1_1Cache.html#a8764c0d27fc80326247b2ae819298032">More...</a><br /></td></tr>
+<tr class="separator:a8764c0d27fc80326247b2ae819298032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a514dc13c11a91a6d106d369291b7ef6e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a514dc13c11a91a6d106d369291b7ef6e">number_of_items</a> () const</td></tr>
+<tr class="memdesc:a514dc13c11a91a6d106d369291b7ef6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of items currently stored in the cache.  <a href="classcachemere_1_1Cache.html#a514dc13c11a91a6d106d369291b7ef6e">More...</a><br /></td></tr>
+<tr class="separator:a514dc13c11a91a6d106d369291b7ef6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d90e5c1c3dec9f1bfd6a002947bb0bd"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a9d90e5c1c3dec9f1bfd6a002947bb0bd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a9d90e5c1c3dec9f1bfd6a002947bb0bd">update_constraint</a> (Args... args)</td></tr>
+<tr class="memdesc:a9d90e5c1c3dec9f1bfd6a002947bb0bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the cache constraint.  <a href="classcachemere_1_1Cache.html#a9d90e5c1c3dec9f1bfd6a002947bb0bd">More...</a><br /></td></tr>
+<tr class="separator:a9d90e5c1c3dec9f1bfd6a002947bb0bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affaaa12058e4f3030906c7efe249eea5"><td class="memItemLeft" align="right" valign="top"><a id="affaaa12058e4f3030906c7efe249eea5"></a>
+MyInsertionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#affaaa12058e4f3030906c7efe249eea5">insertion_policy</a> ()</td></tr>
+<tr class="memdesc:affaaa12058e4f3030906c7efe249eea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the insertion policy used by the cache. <br /></td></tr>
+<tr class="separator:affaaa12058e4f3030906c7efe249eea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53d723b629f552d908c05651ccc5dc49"><td class="memItemLeft" align="right" valign="top"><a id="a53d723b629f552d908c05651ccc5dc49"></a>
+const MyInsertionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a53d723b629f552d908c05651ccc5dc49">insertion_policy</a> () const</td></tr>
+<tr class="memdesc:a53d723b629f552d908c05651ccc5dc49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to the insertion policy used by the cache. <br /></td></tr>
+<tr class="separator:a53d723b629f552d908c05651ccc5dc49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5db9ac3d0a6c53fe313d3aab22ab676e"><td class="memItemLeft" align="right" valign="top"><a id="a5db9ac3d0a6c53fe313d3aab22ab676e"></a>
+MyEvictionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a5db9ac3d0a6c53fe313d3aab22ab676e">eviction_policy</a> ()</td></tr>
+<tr class="memdesc:a5db9ac3d0a6c53fe313d3aab22ab676e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the eviction policy used by the cache. <br /></td></tr>
+<tr class="separator:a5db9ac3d0a6c53fe313d3aab22ab676e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26b12e6db45ffca59ede7475a4962da9"><td class="memItemLeft" align="right" valign="top"><a id="a26b12e6db45ffca59ede7475a4962da9"></a>
+const MyEvictionPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a26b12e6db45ffca59ede7475a4962da9">eviction_policy</a> () const</td></tr>
+<tr class="memdesc:a26b12e6db45ffca59ede7475a4962da9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to the eviction policy used by the cache. <br /></td></tr>
+<tr class="separator:a26b12e6db45ffca59ede7475a4962da9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2469bba70d910e35e5ca86e4e7fab31d"><td class="memItemLeft" align="right" valign="top"><a id="a2469bba70d910e35e5ca86e4e7fab31d"></a>
+MyConstraintPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a2469bba70d910e35e5ca86e4e7fab31d">constraint_policy</a> ()</td></tr>
+<tr class="memdesc:a2469bba70d910e35e5ca86e4e7fab31d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the constraint policy used by the cache. <br /></td></tr>
+<tr class="separator:a2469bba70d910e35e5ca86e4e7fab31d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac00713c43714c2d295c7c2d8eb8ac9df"><td class="memItemLeft" align="right" valign="top"><a id="ac00713c43714c2d295c7c2d8eb8ac9df"></a>
+const MyConstraintPolicy &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#ac00713c43714c2d295c7c2d8eb8ac9df">constraint_policy</a> () const</td></tr>
+<tr class="memdesc:ac00713c43714c2d295c7c2d8eb8ac9df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to the constraint policy used by the cache. <br /></td></tr>
+<tr class="separator:ac00713c43714c2d295c7c2d8eb8ac9df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e07018b6325ee1c4967184b7e33d61a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a2e07018b6325ee1c4967184b7e33d61a">hit_rate</a> () const</td></tr>
+<tr class="memdesc:a2e07018b6325ee1c4967184b7e33d61a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running hit rate of the cache.  <a href="classcachemere_1_1Cache.html#a2e07018b6325ee1c4967184b7e33d61a">More...</a><br /></td></tr>
+<tr class="separator:a2e07018b6325ee1c4967184b7e33d61a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcb03f316f40980e9d2164cd30012bc5"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#abcb03f316f40980e9d2164cd30012bc5">byte_hit_rate</a> () const</td></tr>
+<tr class="memdesc:abcb03f316f40980e9d2164cd30012bc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and return the running byte hit rate of the cache, in bytes.  <a href="classcachemere_1_1Cache.html#abcb03f316f40980e9d2164cd30012bc5">More...</a><br /></td></tr>
+<tr class="separator:abcb03f316f40980e9d2164cd30012bc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6407fd0859e1145ed21e41781fe921ed"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#a6407fd0859e1145ed21e41781fe921ed">statistics_window_size</a> () const</td></tr>
+<tr class="memdesc:a6407fd0859e1145ed21e41781fe921ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the size of the sliding window used for computing statistics.  <a href="classcachemere_1_1Cache.html#a6407fd0859e1145ed21e41781fe921ed">More...</a><br /></td></tr>
+<tr class="separator:a6407fd0859e1145ed21e41781fe921ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7ac1aceab46efcc8937b0a3e005a0bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1Cache.html#aa7ac1aceab46efcc8937b0a3e005a0bc">statistics_window_size</a> (uint32_t window_size)</td></tr>
+<tr class="memdesc:aa7ac1aceab46efcc8937b0a3e005a0bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the size of the sliding window used for computing statistics.  <a href="classcachemere_1_1Cache.html#aa7ac1aceab46efcc8937b0a3e005a0bc">More...</a><br /></td></tr>
+<tr class="separator:aa7ac1aceab46efcc8937b0a3e005a0bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab782db6a206da776dc32e6630f7590d5"><td class="memTemplParams" colspan="2"><a id="ab782db6a206da776dc32e6630f7590d5"></a>
 template&lt;typename Coll , typename... Args&gt; </td></tr>
-<tr class="memitem:a01c80f32d5f85194e96d661726139814"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Cache</b> (Coll &amp;collection, std::tuple&lt; Args... &gt; args)</td></tr>
-<tr class="separator:a01c80f32d5f85194e96d661726139814"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9232b3b8b7725412c6f591f3425a0665"><td class="memTemplParams" colspan="2"><a id="a9232b3b8b7725412c6f591f3425a0665"></a>
+<tr class="memitem:ab782db6a206da776dc32e6630f7590d5"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Cache</b> (Coll &amp;collection, std::tuple&lt; Args... &gt; args)</td></tr>
+<tr class="separator:ab782db6a206da776dc32e6630f7590d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a094f8287fa2895ad38099b9e5c18e0c0"><td class="memTemplParams" colspan="2"><a id="a094f8287fa2895ad38099b9e5c18e0c0"></a>
+template&lt;typename KeyView &gt; </td></tr>
+<tr class="memitem:a094f8287fa2895ad38099b9e5c18e0c0"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; V &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>find</b> (const KeyView &amp;key) const</td></tr>
+<tr class="separator:a094f8287fa2895ad38099b9e5c18e0c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0037f9321134fb57128bb99a211cd7b1"><td class="memTemplParams" colspan="2"><a id="a0037f9321134fb57128bb99a211cd7b1"></a>
 template&lt;class Container &gt; </td></tr>
-<tr class="memitem:a9232b3b8b7725412c6f591f3425a0665"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>collect_into</b> (Container &amp;container) const</td></tr>
-<tr class="separator:a9232b3b8b7725412c6f591f3425a0665"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ea10280b0bc40cd396d8775cc987622"><td class="memTemplParams" colspan="2"><a id="a9ea10280b0bc40cd396d8775cc987622"></a>
+<tr class="memitem:a0037f9321134fb57128bb99a211cd7b1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>collect_into</b> (Container &amp;container) const</td></tr>
+<tr class="separator:a0037f9321134fb57128bb99a211cd7b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7686fa3b3c20f0cf58b2451bae0d8f28"><td class="memTemplParams" colspan="2"><a id="a7686fa3b3c20f0cf58b2451bae0d8f28"></a>
 template&lt;class Coll &gt; </td></tr>
-<tr class="memitem:a9ea10280b0bc40cd396d8775cc987622"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>import</b> (Coll &amp;collection)</td></tr>
-<tr class="separator:a9ea10280b0bc40cd396d8775cc987622"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7686fa3b3c20f0cf58b2451bae0d8f28"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>import</b> (Coll &amp;collection)</td></tr>
+<tr class="separator:a7686fa3b3c20f0cf58b2451bae0d8f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a640abd43b47e11fcceb738f3e105c468"><td class="memItemLeft" align="right" valign="top"><a id="a640abd43b47e11fcceb738f3e105c468"></a>
+<tr class="memitem:af253ce6d20d49a2e1042b9aa5e9ce1d6"><td class="memItemLeft" align="right" valign="top"><a id="af253ce6d20d49a2e1042b9aa5e9ce1d6"></a>
 LockGuard&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> () const</td></tr>
-<tr class="separator:a640abd43b47e11fcceb738f3e105c468"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a43f24b5bac010c4ab393b8523213b9"><td class="memItemLeft" align="right" valign="top"><a id="a7a43f24b5bac010c4ab393b8523213b9"></a>
+<tr class="separator:af253ce6d20d49a2e1042b9aa5e9ce1d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3811dc3e0f0723a5cd293edc727fcf4b"><td class="memItemLeft" align="right" valign="top"><a id="a3811dc3e0f0723a5cd293edc727fcf4b"></a>
 LockGuard&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> (std::defer_lock_t defer_lock_tag) const</td></tr>
-<tr class="separator:a7a43f24b5bac010c4ab393b8523213b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7f419d3b4a3392189af52c34e3957e5"><td class="memItemLeft" align="right" valign="top"><a id="aa7f419d3b4a3392189af52c34e3957e5"></a>
+<tr class="separator:a3811dc3e0f0723a5cd293edc727fcf4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab765af0f206c0e09333cae4e0f17aa82"><td class="memItemLeft" align="right" valign="top"><a id="ab765af0f206c0e09333cae4e0f17aa82"></a>
 std::pair&lt; LockGuard, LockGuard &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>lock_pair</b> (<a class="el" href="classcachemere_1_1Cache.html">CacheType</a> &amp;other) const</td></tr>
-<tr class="separator:aa7f419d3b4a3392189af52c34e3957e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0c49346cfdc61f82f80292b54b290c8"><td class="memTemplParams" colspan="2"><a id="ae0c49346cfdc61f82f80292b54b290c8"></a>
+<tr class="separator:ab765af0f206c0e09333cae4e0f17aa82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedad1ef6621208f93b66f6f51e3a6c4c"><td class="memTemplParams" colspan="2"><a id="aedad1ef6621208f93b66f6f51e3a6c4c"></a>
 template&lt;typename C &gt; </td></tr>
-<tr class="memitem:ae0c49346cfdc61f82f80292b54b290c8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>import</b> (C &amp;collection)</td></tr>
-<tr class="separator:ae0c49346cfdc61f82f80292b54b290c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedad1ef6621208f93b66f6f51e3a6c4c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>import</b> (C &amp;collection)</td></tr>
+<tr class="separator:aedad1ef6621208f93b66f6f51e3a6c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Key, typename Value, template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, template&lt; class, class &gt; class ConstraintPolicy, typename MeasureValue = measurement::Size&lt;Value&gt;, typename MeasureKey = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt;<br />
-class cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;</h3>
+<div class="textblock"><h3>template&lt;typename Key, typename Value, template&lt; class, class, class &gt; class InsertionPolicy, template&lt; class, class, class &gt; class EvictionPolicy, template&lt; class, class, class &gt; class ConstraintPolicy, typename MeasureValue = measurement::Size&lt;Value&gt;, typename MeasureKey = measurement::Size&lt;Key&gt;, typename KeyHash = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt;<br />
+class cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;</h3>
 
 <p>Thread-safe memory-restricted cache. </p>
 <p>This class keeps the inserted items alive, and it handles the bulk of the Insert/Evict logic while respecting the size constraints.</p>
@@ -222,28 +228,29 @@ class cachemere::Cache&lt; Key, Value, InsertionPolicy, EvictionPolicy, Constrai
   <table class="tparams">
     <tr><td class="paramname">Key</td><td>The type of the key used for retrieving items. </td></tr>
     <tr><td class="paramname">Value</td><td>The type of the items stored in the cache. </td></tr>
-    <tr><td class="paramname">InsertionPolicy</td><td>A template parameterized by <code>Key</code> and <code>Value</code> implementing the insertion policy interface. </td></tr>
-    <tr><td class="paramname">EvictionPolicy</td><td>A template parameterized by <code>Key</code> and <code>Value</code> implementing the eviction policy interface. </td></tr>
-    <tr><td class="paramname">ConstraintPolicy</td><td>A template parameterized by <code>Key</code> and <code>Value</code> implementing the constraint policy interface. </td></tr>
+    <tr><td class="paramname">InsertionPolicy</td><td>A template parameterized by <code>Key</code>, <code>KeyHash</code>, and <code>Value</code> implementing the insertion policy interface. </td></tr>
+    <tr><td class="paramname">EvictionPolicy</td><td>A template parameterized by <code>Key</code> <code>KeyHash</code>, and <code>Value</code> implementing the eviction policy interface. </td></tr>
+    <tr><td class="paramname">ConstraintPolicy</td><td>A template parameterized by <code>Key</code> <code>KeyHash</code>, and <code>Value</code> implementing the constraint policy interface. </td></tr>
     <tr><td class="paramname">MeasureValue</td><td>A functor returning the size of a cache value. </td></tr>
     <tr><td class="paramname">MeasureKey</td><td>A functor returning the size of a cache key. </td></tr>
+    <tr><td class="paramname">KeyHash</td><td>A default-constructible callable type returning a hash of a key. Defaults to <code>absl::Hash&lt;Key&gt;</code>. </td></tr>
     <tr><td class="paramname">ThreadSafe</td><td>Whether to enable locking. When true, all cache operations will be protected by a lock. <code>true</code> by default. </td></tr>
   </table>
   </dd>
 </dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a7e58cf1f7e976717e494c2a82930d1a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e58cf1f7e976717e494c2a82930d1a1">&#9670;&nbsp;</a></span>Cache() <span class="overload">[1/2]</span></h2>
+<a id="ab9792ddeece90042373786ed8d59ec1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9792ddeece90042373786ed8d59ec1c">&#9670;&nbsp;</a></span>Cache() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, template&lt; class, class &gt; class ConstraintPolicy, typename MeasureValue , typename MeasureKey , bool ThreadSafe&gt; </div>
+template&lt;typename Key , typename Value , template&lt; class, class, class &gt; class InsertionPolicy, template&lt; class, class, class &gt; class EvictionPolicy, template&lt; class, class, class &gt; class ConstraintPolicy, typename MeasureValue , typename MeasureKey , typename KeyHash , bool ThreadSafe&gt; </div>
 <div class="memtemplate">
 template&lt;typename... Args&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;::<a class="el" href="classcachemere_1_1Cache.html">Cache</a> </td>
+          <td class="memname"><a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;::<a class="el" href="classcachemere_1_1Cache.html">Cache</a> </td>
           <td>(</td>
           <td class="paramtype">Args...&#160;</td>
           <td class="paramname"><em>args</em></td><td>)</td>
@@ -262,18 +269,18 @@ template&lt;typename... Args&gt; </div>
 
 </div>
 </div>
-<a id="a786af0872ad252415e1e8aed77aa116d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a786af0872ad252415e1e8aed77aa116d">&#9670;&nbsp;</a></span>Cache() <span class="overload">[2/2]</span></h2>
+<a id="a5a42edf1ccf08d3ff0b3266ec2567bbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a42edf1ccf08d3ff0b3266ec2567bbf">&#9670;&nbsp;</a></span>Cache() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, template&lt; class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;typename Key , typename Value , template&lt; class, class, class &gt; class InsertionPolicy, template&lt; class, class, class &gt; class EvictionPolicy, template&lt; class, class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
 <div class="memtemplate">
 template&lt;typename C , typename... Args&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;::<a class="el" href="classcachemere_1_1Cache.html">Cache</a> </td>
+          <td class="memname"><a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;::<a class="el" href="classcachemere_1_1Cache.html">Cache</a> </td>
           <td>(</td>
           <td class="paramtype">C &amp;&#160;</td>
           <td class="paramname"><em>collection</em>, </td>
@@ -305,19 +312,19 @@ template&lt;typename C , typename... Args&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a0da0df2c6bfc1cb05dbc622414d42318"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0da0df2c6bfc1cb05dbc622414d42318">&#9670;&nbsp;</a></span>byte_hit_rate()</h2>
+<a id="abcb03f316f40980e9d2164cd30012bc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcb03f316f40980e9d2164cd30012bc5">&#9670;&nbsp;</a></span>byte_hit_rate()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::byte_hit_rate</td>
+          <td class="memname">double <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::byte_hit_rate</td>
         </tr>
       </table>
   </td>
@@ -332,18 +339,18 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 
 </div>
 </div>
-<a id="a6973ebec90fb7f75b8935e4a2c1d76ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6973ebec90fb7f75b8935e4a2c1d76ca">&#9670;&nbsp;</a></span>collect_into()</h2>
+<a id="a77e1809c2bb23433c2551af93b3d00c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77e1809c2bb23433c2551af93b3d00c6">&#9670;&nbsp;</a></span>collect_into()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, template&lt; class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;typename Key , typename Value , template&lt; class, class, class &gt; class InsertionPolicy, template&lt; class, class, class &gt; class EvictionPolicy, template&lt; class, class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
 <div class="memtemplate">
 template&lt;typename C &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;::collect_into </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;::collect_into </td>
           <td>(</td>
           <td class="paramtype">C &amp;&#160;</td>
           <td class="paramname"><em>container</em></td><td>)</td>
@@ -362,21 +369,23 @@ template&lt;typename C &gt; </div>
 
 </div>
 </div>
-<a id="a42cc91e6cc65f9fc7bea93572e4ba4a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42cc91e6cc65f9fc7bea93572e4ba4a5">&#9670;&nbsp;</a></span>contains()</h2>
+<a id="a377cfe394ef216b4f7b019e273f51592"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a377cfe394ef216b4f7b019e273f51592">&#9670;&nbsp;</a></span>contains()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, template&lt; class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
+<div class="memtemplate">
+template&lt;typename KeyView &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::contains </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::contains </td>
           <td>(</td>
-          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramtype">const KeyView &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -389,6 +398,12 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 </div><div class="memdoc">
 
 <p>Check whether a given key is stored in the cache. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">KeyView</td><td>The type of the key used for retrieving items. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key whose presence to test. </td></tr>
@@ -399,18 +414,20 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 
 </div>
 </div>
-<a id="a563b737e0c1e791cf7e0343d545d8437"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a563b737e0c1e791cf7e0343d545d8437">&#9670;&nbsp;</a></span>find()</h2>
+<a id="af4ea31ad36af4973ecbe0a610612cee1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4ea31ad36af4973ecbe0a610612cee1">&#9670;&nbsp;</a></span>find()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, template&lt; class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;typename Key , typename Value , template&lt; class, class, class &gt; class InsertionPolicy, template&lt; class, class, class &gt; class EvictionPolicy, template&lt; class, class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+<div class="memtemplate">
+template&lt;typename KeyView &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::optional&lt; V &gt; <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::find </td>
+          <td class="memname">std::optional&lt;Value&gt; <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;::find </td>
           <td>(</td>
-          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramtype">const KeyView &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -418,6 +435,12 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 </div><div class="memdoc">
 
 <p>Find a given key in cache returning the associated value when it exists. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">KeyView</td><td>The type of the key used for retrieving items. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key to lookup. </td></tr>
@@ -428,18 +451,18 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 
 </div>
 </div>
-<a id="ae3870b6e0cc0712a857e3c7430de54bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3870b6e0cc0712a857e3c7430de54bd">&#9670;&nbsp;</a></span>for_each()</h2>
+<a id="a87ef925a7e1d2cc2f079d20f4109bd54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87ef925a7e1d2cc2f079d20f4109bd54">&#9670;&nbsp;</a></span>for_each()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <div class="memtemplate">
 template&lt;class F &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::for_each </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::for_each </td>
           <td>(</td>
           <td class="paramtype">F&#160;</td>
           <td class="paramname"><em>unary_function</em></td><td>)</td>
@@ -458,19 +481,19 @@ template&lt;class F &gt; </div>
 
 </div>
 </div>
-<a id="a80fef5d0a61973e6c21b9c720a72f0e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80fef5d0a61973e6c21b9c720a72f0e0">&#9670;&nbsp;</a></span>hit_rate()</h2>
+<a id="a2e07018b6325ee1c4967184b7e33d61a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e07018b6325ee1c4967184b7e33d61a">&#9670;&nbsp;</a></span>hit_rate()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::hit_rate</td>
+          <td class="memname">double <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::hit_rate</td>
         </tr>
       </table>
   </td>
@@ -485,16 +508,16 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 
 </div>
 </div>
-<a id="a2b2cb36c96d61e71dc72352c62114323"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b2cb36c96d61e71dc72352c62114323">&#9670;&nbsp;</a></span>insert()</h2>
+<a id="ae4e99360ef97b1dd4d117940a2561c28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4e99360ef97b1dd4d117940a2561c28">&#9670;&nbsp;</a></span>insert()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, template&lt; class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;typename Key , typename Value , template&lt; class, class, class &gt; class InsertionPolicy, template&lt; class, class, class &gt; class EvictionPolicy, template&lt; class, class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::insert </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::insert </td>
           <td>(</td>
           <td class="paramtype">Key&#160;</td>
           <td class="paramname"><em>key</em>, </td>
@@ -525,19 +548,19 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 
 </div>
 </div>
-<a id="a2e56ba870329889bb7a1e30415be2f48"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e56ba870329889bb7a1e30415be2f48">&#9670;&nbsp;</a></span>number_of_items()</h2>
+<a id="a514dc13c11a91a6d106d369291b7ef6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a514dc13c11a91a6d106d369291b7ef6e">&#9670;&nbsp;</a></span>number_of_items()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::number_of_items</td>
+          <td class="memname">size_t <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::number_of_items</td>
         </tr>
       </table>
   </td>
@@ -553,16 +576,16 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 
 </div>
 </div>
-<a id="aa9b1d3e571f1489d1a01dd3ae42122e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa9b1d3e571f1489d1a01dd3ae42122e8">&#9670;&nbsp;</a></span>remove()</h2>
+<a id="ad399dd7b0ca51df9b12fcbf1718b8722"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad399dd7b0ca51df9b12fcbf1718b8722">&#9670;&nbsp;</a></span>remove()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, template&lt; class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;typename Key , typename Value , template&lt; class, class, class &gt; class InsertionPolicy, template&lt; class, class, class &gt; class EvictionPolicy, template&lt; class, class, class &gt; class ConstraintPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, ThreadSafe &gt;::remove </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;::remove </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
@@ -582,18 +605,18 @@ template&lt;typename Key , typename Value , template&lt; class, class &gt; class
 
 </div>
 </div>
-<a id="a288411b8f38e4c7b507805e9d04edf24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a288411b8f38e4c7b507805e9d04edf24">&#9670;&nbsp;</a></span>retain()</h2>
+<a id="ad5f4bcc543b713c5c3ec829eb16ff291"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5f4bcc543b713c5c3ec829eb16ff291">&#9670;&nbsp;</a></span>retain()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <div class="memtemplate">
 template&lt;class P &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::retain </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::retain </td>
           <td>(</td>
           <td class="paramtype">P&#160;</td>
           <td class="paramname"><em>predicate_fn</em></td><td>)</td>
@@ -618,19 +641,19 @@ template&lt;class P &gt; </div>
 
 </div>
 </div>
-<a id="a58a825ab53518ac0a3956b1552f8a8f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58a825ab53518ac0a3956b1552f8a8f1">&#9670;&nbsp;</a></span>statistics_window_size() <span class="overload">[1/2]</span></h2>
+<a id="a6407fd0859e1145ed21e41781fe921ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6407fd0859e1145ed21e41781fe921ed">&#9670;&nbsp;</a></span>statistics_window_size() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::statistics_window_size</td>
+          <td class="memname">uint32_t <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::statistics_window_size</td>
         </tr>
       </table>
   </td>
@@ -645,19 +668,19 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 
 </div>
 </div>
-<a id="a70f19566b05307dd2e5f2f7ff9c200aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70f19566b05307dd2e5f2f7ff9c200aa">&#9670;&nbsp;</a></span>statistics_window_size() <span class="overload">[2/2]</span></h2>
+<a id="aa7ac1aceab46efcc8937b0a3e005a0bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7ac1aceab46efcc8937b0a3e005a0bc">&#9670;&nbsp;</a></span>statistics_window_size() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::statistics_window_size </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::statistics_window_size </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>window_size</em></td><td>)</td>
@@ -682,19 +705,19 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 
 </div>
 </div>
-<a id="acfb6bcabd0e48485fa4bf79f2b36725b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfb6bcabd0e48485fa4bf79f2b36725b">&#9670;&nbsp;</a></span>swap()</h2>
+<a id="a8764c0d27fc80326247b2ae819298032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8764c0d27fc80326247b2ae819298032">&#9670;&nbsp;</a></span>swap()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::swap </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::swap </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classcachemere_1_1Cache.html">CacheType</a> &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
@@ -718,18 +741,18 @@ template&lt;class K , class V , template&lt; class, class &gt; class I, template
 
 </div>
 </div>
-<a id="ae08f40df4f0a448c6659a156195fb5ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae08f40df4f0a448c6659a156195fb5ed">&#9670;&nbsp;</a></span>update_constraint()</h2>
+<a id="a9d90e5c1c3dec9f1bfd6a002947bb0bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d90e5c1c3dec9f1bfd6a002947bb0bd">&#9670;&nbsp;</a></span>update_constraint()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </div>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </div>
 <div class="memtemplate">
 template&lt;typename... Args&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt;::update_constraint </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1Cache.html">cachemere::Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt;::update_constraint </td>
           <td>(</td>
           <td class="paramtype">Args...&#160;</td>
           <td class="paramname"><em>args</em></td><td>)</td>

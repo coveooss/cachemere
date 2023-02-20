@@ -4,5 +4,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node0 [label="cachemere::policy::\lEvictionSegmentedLRU\l\< Key, Value \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcachemere_1_1policy_1_1EvictionSegmentedLRU.html",tooltip="Segmented Least Recently Used (S-LRU) Eviction Policy."];
+  Node0 [label="cachemere::policy::\lEvictionGDSF\< Key, KeyHash,\l Value, Cost \>::VictimIterator",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html",tooltip="Iterator for iterating over cache items in the order they should be evicted."];
 }

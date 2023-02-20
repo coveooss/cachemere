@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['remove_140',['remove',['../classcachemere_1_1Cache.html#aa9b1d3e571f1489d1a01dd3ae42122e8',1,'cachemere::Cache']]],
-  ['retain_141',['retain',['../classcachemere_1_1Cache.html#a288411b8f38e4c7b507805e9d04edf24',1,'cachemere::Cache']]]
+  ['remove_147',['remove',['../classcachemere_1_1Cache.html#ad399dd7b0ca51df9b12fcbf1718b8722',1,'cachemere::Cache']]],
+  ['retain_148',['retain',['../classcachemere_1_1Cache.html#ad5f4bcc543b713c5c3ec829eb16ff291',1,'cachemere::Cache']]]
 ];

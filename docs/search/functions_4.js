@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['estimate_119',['estimate',['../classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a836f02f188ca1523dff0613c50824739',1,'cachemere::policy::detail::CountingBloomFilter']]],
-  ['eviction_5fpolicy_120',['eviction_policy',['../classcachemere_1_1Cache.html#ae9367163f148353f47e68aabc320e17c',1,'cachemere::Cache::eviction_policy()'],['../classcachemere_1_1Cache.html#a8bfcd871ae6600bea0fdd8bafd7ea87a',1,'cachemere::Cache::eviction_policy() const']]]
+  ['estimate_126',['estimate',['../classcachemere_1_1policy_1_1detail_1_1CountingBloomFilter.html#a047699b05ef23e2e68493f7b13b7a3c1',1,'cachemere::policy::detail::CountingBloomFilter']]],
+  ['eviction_5fpolicy_127',['eviction_policy',['../classcachemere_1_1Cache.html#a5db9ac3d0a6c53fe313d3aab22ab676e',1,'cachemere::Cache::eviction_policy()'],['../classcachemere_1_1Cache.html#a26b12e6db45ffca59ede7475a4962da9',1,'cachemere::Cache::eviction_policy() const']]]
 ];

@@ -91,13 +91,18 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcachemere_1_1Item.html">Item</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A wrapper for items stored in the cache.  <a href="structcachemere_1_1Item.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcachemere_1_1MultiHash.html">MultiHash</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows combining hashers for multiple types into a single hashing object.  <a href="structcachemere_1_1MultiHash.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcachemere_1_1MultiHash_3_01Key_00_01KeyHash_01_4.html">MultiHash&lt; Key, KeyHash &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:affe827b5c8e42526a10cd0c39b3ed4c6"><td class="memTemplParams" colspan="2"><a id="affe827b5c8e42526a10cd0c39b3ed4c6"></a>
-template&lt;class K , class V , template&lt; class, class &gt; class I, template&lt; class, class &gt; class E, template&lt; class, class &gt; class C, class SV , class SK , bool TS&gt; </td></tr>
-<tr class="memitem:affe827b5c8e42526a10cd0c39b3ed4c6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>swap</b> (<a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt; &amp;lhs, <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; K, V, I, E, C, SV, SK, TS &gt; &amp;rhs) noexcept</td></tr>
-<tr class="separator:affe827b5c8e42526a10cd0c39b3ed4c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe22352321b0a89b78fb6ca5c4ae0ac6"><td class="memTemplParams" colspan="2"><a id="afe22352321b0a89b78fb6ca5c4ae0ac6"></a>
+template&lt;class K , class V , template&lt; class, class, class &gt; class I, template&lt; class, class, class &gt; class E, template&lt; class, class, class &gt; class C, class SV , class SK , class KH , bool TS&gt; </td></tr>
+<tr class="memitem:afe22352321b0a89b78fb6ca5c4ae0ac6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>swap</b> (<a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt; &amp;lhs, <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; K, V, I, E, C, SV, SK, KH, TS &gt; &amp;rhs) noexcept</td></tr>
+<tr class="separator:afe22352321b0a89b78fb6ca5c4ae0ac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e654e04dca78cddf6b26e3b72a36783"><td class="memTemplParams" colspan="2"><a id="a7e654e04dca78cddf6b26e3b72a36783"></a>
 template&lt;typename Value &gt; </td></tr>
 <tr class="memitem:a7e654e04dca78cddf6b26e3b72a36783"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>swap</b> (<a class="el" href="structcachemere_1_1Item.html">Item</a>&lt; Value &gt; &amp;a, <a class="el" href="structcachemere_1_1Item.html">Item</a>&lt; Value &gt; &amp;b) noexcept</td></tr>

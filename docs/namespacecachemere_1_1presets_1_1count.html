@@ -78,36 +78,36 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a85464ee3af176e805113598446ce1dab"><td class="memTemplParams" colspan="2"><a id="a85464ee3af176e805113598446ce1dab"></a>
-template&lt;typename Key , typename Value , template&lt; class, class &gt; class InsertionPolicy, template&lt; class, class &gt; class EvictionPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </td></tr>
-<tr class="memitem:a85464ee3af176e805113598446ce1dab"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>CountConstrainedCache</b> = <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html">policy::ConstraintCount</a>, MeasureValue, MeasureKey, ThreadSafe &gt;</td></tr>
-<tr class="separator:a85464ee3af176e805113598446ce1dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a737b8e0890d6b0ca07bd510c31d7656f"><td class="memTemplParams" colspan="2">template&lt;typename Key , typename Value , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </td></tr>
-<tr class="memitem:a737b8e0890d6b0ca07bd510c31d7656f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecachemere_1_1presets_1_1count.html#a737b8e0890d6b0ca07bd510c31d7656f">LRUCache</a> = <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt; Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">policy::InsertionAlways</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html">policy::EvictionLRU</a>, MeasureValue, MeasureKey, ThreadSafe &gt;</td></tr>
-<tr class="memdesc:a737b8e0890d6b0ca07bd510c31d7656f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Least-Recently-Used <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>.  <a href="namespacecachemere_1_1presets_1_1count.html#a737b8e0890d6b0ca07bd510c31d7656f">More...</a><br /></td></tr>
-<tr class="separator:a737b8e0890d6b0ca07bd510c31d7656f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e04b7fd7e3843b706f5f47df7230ad4"><td class="memTemplParams" colspan="2">template&lt;typename Key , typename Value , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </td></tr>
-<tr class="memitem:a7e04b7fd7e3843b706f5f47df7230ad4"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecachemere_1_1presets_1_1count.html#a7e04b7fd7e3843b706f5f47df7230ad4">TinyLFUCache</a> = <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt; Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">policy::InsertionTinyLFU</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">policy::EvictionSegmentedLRU</a>, MeasureValue, MeasureKey, ThreadSafe &gt;</td></tr>
-<tr class="memdesc:a7e04b7fd7e3843b706f5f47df7230ad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">TinyLFU <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>.  <a href="namespacecachemere_1_1presets_1_1count.html#a7e04b7fd7e3843b706f5f47df7230ad4">More...</a><br /></td></tr>
-<tr class="separator:a7e04b7fd7e3843b706f5f47df7230ad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11c083bf19faf0145070db722afd0ad9"><td class="memTemplParams" colspan="2">template&lt;typename Key , typename Value , typename Cost , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </td></tr>
-<tr class="memitem:a11c083bf19faf0145070db722afd0ad9"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecachemere_1_1presets_1_1count.html#a11c083bf19faf0145070db722afd0ad9">CustomCostCache</a> = <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt; Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">policy::InsertionAlways</a>, <a class="el" href="structcachemere_1_1policy_1_1bind.html">policy::bind</a>&lt; <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html">policy::EvictionGDSF</a>, Cost &gt;::template ttype, MeasureValue, MeasureKey, ThreadSafe &gt;</td></tr>
-<tr class="memdesc:a11c083bf19faf0145070db722afd0ad9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Custom-Cost <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>.  <a href="namespacecachemere_1_1presets_1_1count.html#a11c083bf19faf0145070db722afd0ad9">More...</a><br /></td></tr>
-<tr class="separator:a11c083bf19faf0145070db722afd0ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bb06e0ef7519559b7f09fa8c4603cda"><td class="memTemplParams" colspan="2"><a id="a4bb06e0ef7519559b7f09fa8c4603cda"></a>
+template&lt;typename Key , typename Value , template&lt; class, class, class &gt; class InsertionPolicy, template&lt; class, class, class &gt; class EvictionPolicy, typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </td></tr>
+<tr class="memitem:a4bb06e0ef7519559b7f09fa8c4603cda"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>CountConstrainedCache</b> = <a class="el" href="classcachemere_1_1Cache.html">Cache</a>&lt; Key, Value, InsertionPolicy, EvictionPolicy, <a class="el" href="classcachemere_1_1policy_1_1ConstraintCount.html">policy::ConstraintCount</a>, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;</td></tr>
+<tr class="separator:a4bb06e0ef7519559b7f09fa8c4603cda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19d5dcf1df2433fc2c1126a1398702ee"><td class="memTemplParams" colspan="2">template&lt;typename Key , typename Value , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </td></tr>
+<tr class="memitem:a19d5dcf1df2433fc2c1126a1398702ee"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecachemere_1_1presets_1_1count.html#a19d5dcf1df2433fc2c1126a1398702ee">LRUCache</a> = <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt; Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">policy::InsertionAlways</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html">policy::EvictionLRU</a>, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;</td></tr>
+<tr class="memdesc:a19d5dcf1df2433fc2c1126a1398702ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Least-Recently-Used <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>.  <a href="namespacecachemere_1_1presets_1_1count.html#a19d5dcf1df2433fc2c1126a1398702ee">More...</a><br /></td></tr>
+<tr class="separator:a19d5dcf1df2433fc2c1126a1398702ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b5b7d1cdb992e8123081a4d598b1c2f"><td class="memTemplParams" colspan="2">template&lt;typename Key , typename Value , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </td></tr>
+<tr class="memitem:a2b5b7d1cdb992e8123081a4d598b1c2f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecachemere_1_1presets_1_1count.html#a2b5b7d1cdb992e8123081a4d598b1c2f">TinyLFUCache</a> = <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt; Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">policy::InsertionTinyLFU</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">policy::EvictionSegmentedLRU</a>, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;</td></tr>
+<tr class="memdesc:a2b5b7d1cdb992e8123081a4d598b1c2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">TinyLFU <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>.  <a href="namespacecachemere_1_1presets_1_1count.html#a2b5b7d1cdb992e8123081a4d598b1c2f">More...</a><br /></td></tr>
+<tr class="separator:a2b5b7d1cdb992e8123081a4d598b1c2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80f2376feb51b5b4c9bad50e128d2b61"><td class="memTemplParams" colspan="2">template&lt;typename Key , typename Value , typename Cost , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </td></tr>
+<tr class="memitem:a80f2376feb51b5b4c9bad50e128d2b61"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecachemere_1_1presets_1_1count.html#a80f2376feb51b5b4c9bad50e128d2b61">CustomCostCache</a> = <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt; Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">policy::InsertionAlways</a>, <a class="el" href="structcachemere_1_1policy_1_1bind.html">policy::bind</a>&lt; <a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html">policy::EvictionGDSF</a>, Cost &gt;::template ttype, MeasureValue, MeasureKey, KeyHash, ThreadSafe &gt;</td></tr>
+<tr class="memdesc:a80f2376feb51b5b4c9bad50e128d2b61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Custom-Cost <a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a>.  <a href="namespacecachemere_1_1presets_1_1count.html#a80f2376feb51b5b4c9bad50e128d2b61">More...</a><br /></td></tr>
+<tr class="separator:a80f2376feb51b5b4c9bad50e128d2b61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Count-constrained cache presets. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="a11c083bf19faf0145070db722afd0ad9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11c083bf19faf0145070db722afd0ad9">&#9670;&nbsp;</a></span>CustomCostCache</h2>
+<a id="a80f2376feb51b5b4c9bad50e128d2b61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80f2376feb51b5b4c9bad50e128d2b61">&#9670;&nbsp;</a></span>CustomCostCache</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , typename Cost , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;typename Key , typename Value , typename Cost , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacecachemere_1_1presets_1_1count.html#a11c083bf19faf0145070db722afd0ad9">cachemere::presets::count::CustomCostCache</a> = typedef <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt;Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">policy::InsertionAlways</a>, <a class="el" href="structcachemere_1_1policy_1_1bind.html">policy::bind</a>&lt;<a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html">policy::EvictionGDSF</a>, Cost&gt;::template ttype, MeasureValue, MeasureKey, ThreadSafe&gt;</td>
+          <td class="memname">using <a class="el" href="namespacecachemere_1_1presets_1_1count.html#a80f2376feb51b5b4c9bad50e128d2b61">cachemere::presets::count::CustomCostCache</a> = typedef <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt;Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">policy::InsertionAlways</a>, <a class="el" href="structcachemere_1_1policy_1_1bind.html">policy::bind</a>&lt;<a class="el" href="classcachemere_1_1policy_1_1EvictionGDSF.html">policy::EvictionGDSF</a>, Cost&gt;::template ttype, MeasureValue, MeasureKey, KeyHash, ThreadSafe&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -120,6 +120,7 @@ template&lt;typename Key , typename Value , typename Cost , typename MeasureValu
     <tr><td class="paramname">Cost</td><td>A functor taking a <code>const <a class="el" href="structcachemere_1_1Item.html" title="A wrapper for items stored in the cache.">Item</a>&lt;Key, Value&gt;&amp;</code> returning the cost to load this item in cache. </td></tr>
     <tr><td class="paramname">MeasureValue</td><td>A functor returning the size of a cache value. </td></tr>
     <tr><td class="paramname">MeasureKey</td><td>A functor returning the size of a cache key. </td></tr>
+    <tr><td class="paramname">KeyHash</td><td>A default-constructible callable type returning a hash of a key. Defaults to <code>absl::Hash&lt;Key&gt;</code>. </td></tr>
     <tr><td class="paramname">ThreadSafe</td><td>Whether to protect this cache for concurrent access. (true by default) </td></tr>
   </table>
   </dd>
@@ -127,16 +128,16 @@ template&lt;typename Key , typename Value , typename Cost , typename MeasureValu
 
 </div>
 </div>
-<a id="a737b8e0890d6b0ca07bd510c31d7656f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a737b8e0890d6b0ca07bd510c31d7656f">&#9670;&nbsp;</a></span>LRUCache</h2>
+<a id="a19d5dcf1df2433fc2c1126a1398702ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19d5dcf1df2433fc2c1126a1398702ee">&#9670;&nbsp;</a></span>LRUCache</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;typename Key , typename Value , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacecachemere_1_1presets_1_1count.html#a737b8e0890d6b0ca07bd510c31d7656f">cachemere::presets::count::LRUCache</a> = typedef <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt;Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">policy::InsertionAlways</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html">policy::EvictionLRU</a>, MeasureValue, MeasureKey, ThreadSafe&gt;</td>
+          <td class="memname">using <a class="el" href="namespacecachemere_1_1presets_1_1count.html#a19d5dcf1df2433fc2c1126a1398702ee">cachemere::presets::count::LRUCache</a> = typedef <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt;Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionAlways.html">policy::InsertionAlways</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionLRU.html">policy::EvictionLRU</a>, MeasureValue, MeasureKey, KeyHash, ThreadSafe&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -148,6 +149,7 @@ template&lt;typename Key , typename Value , typename MeasureValue  = measurement
     <tr><td class="paramname">Value</td><td>The type of the items stored in the cache. </td></tr>
     <tr><td class="paramname">MeasureValue</td><td>A functor returning the size of a cache value. </td></tr>
     <tr><td class="paramname">MeasureKey</td><td>A functor returning the size of a cache key. </td></tr>
+    <tr><td class="paramname">KeyHash</td><td>A default-constructible callable type returning a hash of a key. Defaults to <code>absl::Hash&lt;Key&gt;</code>. </td></tr>
     <tr><td class="paramname">ThreadSafe</td><td>Whether to protect this cache for concurrent access. (true by default) </td></tr>
   </table>
   </dd>
@@ -155,16 +157,16 @@ template&lt;typename Key , typename Value , typename MeasureValue  = measurement
 
 </div>
 </div>
-<a id="a7e04b7fd7e3843b706f5f47df7230ad4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e04b7fd7e3843b706f5f47df7230ad4">&#9670;&nbsp;</a></span>TinyLFUCache</h2>
+<a id="a2b5b7d1cdb992e8123081a4d598b1c2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b5b7d1cdb992e8123081a4d598b1c2f">&#9670;&nbsp;</a></span>TinyLFUCache</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
+template&lt;typename Key , typename Value , typename MeasureValue  = measurement::Size&lt;Value&gt;, typename MeasureKey  = measurement::Size&lt;Key&gt;, typename KeyHash  = absl::Hash&lt;Key&gt;, bool ThreadSafe = true&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacecachemere_1_1presets_1_1count.html#a7e04b7fd7e3843b706f5f47df7230ad4">cachemere::presets::count::TinyLFUCache</a> = typedef <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt;Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">policy::InsertionTinyLFU</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">policy::EvictionSegmentedLRU</a>, MeasureValue, MeasureKey, ThreadSafe&gt;</td>
+          <td class="memname">using <a class="el" href="namespacecachemere_1_1presets_1_1count.html#a2b5b7d1cdb992e8123081a4d598b1c2f">cachemere::presets::count::TinyLFUCache</a> = typedef <a class="el" href="classcachemere_1_1Cache.html">CountConstrainedCache</a>&lt;Key, Value, <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">policy::InsertionTinyLFU</a>, <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU.html">policy::EvictionSegmentedLRU</a>, MeasureValue, MeasureKey, KeyHash, ThreadSafe&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -176,6 +178,7 @@ template&lt;typename Key , typename Value , typename MeasureValue  = measurement
     <tr><td class="paramname">Value</td><td>The type of the items stored in the cache. </td></tr>
     <tr><td class="paramname">MeasureValue</td><td>A functor returning the size of a cache value. </td></tr>
     <tr><td class="paramname">MeasureKey</td><td>A functor returning the size of a cache key. </td></tr>
+    <tr><td class="paramname">KeyHash</td><td>A default-constructible callable type returning a hash of a key. Defaults to <code>absl::Hash&lt;Key&gt;</code>. </td></tr>
     <tr><td class="paramname">ThreadSafe</td><td>Whether to protect this cache for concurrent access. (true by default) </td></tr>
   </table>
   </dd>

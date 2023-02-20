@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['victimiterator_98',['VictimIterator',['../classcachemere_1_1policy_1_1EvictionLRU_1_1VictimIterator.html',1,'cachemere::policy::EvictionLRU&lt; Key, Value &gt;::VictimIterator'],['../classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html',1,'cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;::VictimIterator'],['../classcachemere_1_1policy_1_1EvictionGDSF_1_1VictimIterator.html',1,'cachemere::policy::EvictionGDSF&lt; Key, Value, Cost &gt;::VictimIterator']]]
+  ['size_100',['Size',['../structcachemere_1_1measurement_1_1Size.html',1,'cachemere::measurement']]],
+  ['size_3c_20key_20_3e_101',['Size&lt; Key &gt;',['../structcachemere_1_1measurement_1_1Size.html',1,'cachemere::measurement']]],
+  ['size_3c_20value_20_3e_102',['Size&lt; Value &gt;',['../structcachemere_1_1measurement_1_1Size.html',1,'cachemere::measurement']]],
+  ['sizeof_103',['SizeOf',['../structcachemere_1_1measurement_1_1SizeOf.html',1,'cachemere::measurement']]]
 ];

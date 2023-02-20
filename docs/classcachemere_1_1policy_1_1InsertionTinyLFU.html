@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cachemere: cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt; Class Template Reference</title>
+<title>Cachemere: cachemere::policy::InsertionTinyLFU&lt; Key, KeyHash, Value &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,7 +71,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcachemere_1_1policy_1_1InsertionTinyLFU-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt; Class Template Reference</div>  </div>
+<div class="title">cachemere::policy::InsertionTinyLFU&lt; Key, KeyHash, Value &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -82,49 +82,57 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a87b7528c2c6673ed0b7954ffbbcc9758"><td class="memItemLeft" align="right" valign="top"><a id="a87b7528c2c6673ed0b7954ffbbcc9758"></a>
+<tr class="memitem:a121db2974e5fc5c89c54ed4c6153dd37"><td class="memItemLeft" align="right" valign="top"><a id="a121db2974e5fc5c89c54ed4c6153dd37"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>CacheItem</b> = <a class="el" href="structcachemere_1_1Item.html">cachemere::Item</a>&lt; Value &gt;</td></tr>
-<tr class="separator:a87b7528c2c6673ed0b7954ffbbcc9758"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a121db2974e5fc5c89c54ed4c6153dd37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1357c73b332200196865fcb57b103b6d"><td class="memItemLeft" align="right" valign="top"><a id="a1357c73b332200196865fcb57b103b6d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a1357c73b332200196865fcb57b103b6d">clear</a> ()</td></tr>
-<tr class="memdesc:a1357c73b332200196865fcb57b103b6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the policy. <br /></td></tr>
-<tr class="separator:a1357c73b332200196865fcb57b103b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8740266743a566c50dac7b5e036b8f6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a8740266743a566c50dac7b5e036b8f6f">on_cache_hit</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
-<tr class="memdesc:a8740266743a566c50dac7b5e036b8f6f"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a8740266743a566c50dac7b5e036b8f6f">More...</a><br /></td></tr>
-<tr class="separator:a8740266743a566c50dac7b5e036b8f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38f2786111b95130d48c9b518aa2211c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a38f2786111b95130d48c9b518aa2211c">on_cache_miss</a> (const Key &amp;key)</td></tr>
-<tr class="memdesc:a38f2786111b95130d48c9b518aa2211c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> miss event handler.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a38f2786111b95130d48c9b518aa2211c">More...</a><br /></td></tr>
-<tr class="separator:a38f2786111b95130d48c9b518aa2211c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28cc61a4dfecb2b1713514c8e2251c9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a28cc61a4dfecb2b1713514c8e2251c9d">set_cardinality</a> (uint32_t cardinality)</td></tr>
-<tr class="memdesc:a28cc61a4dfecb2b1713514c8e2251c9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the cardinality of the policy.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a28cc61a4dfecb2b1713514c8e2251c9d">More...</a><br /></td></tr>
-<tr class="separator:a28cc61a4dfecb2b1713514c8e2251c9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a2bb514d2cd57f8c485ad4525bdef9a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a2a2bb514d2cd57f8c485ad4525bdef9a">should_add</a> (const Key &amp;key)</td></tr>
-<tr class="memdesc:a2a2bb514d2cd57f8c485ad4525bdef9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given key should be inserted into the cache.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a2a2bb514d2cd57f8c485ad4525bdef9a">More...</a><br /></td></tr>
-<tr class="separator:a2a2bb514d2cd57f8c485ad4525bdef9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9179a8e12a48c2bacdbbb91e69ce3a95"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a9179a8e12a48c2bacdbbb91e69ce3a95">should_replace</a> (const Key &amp;victim, const Key &amp;candidate)</td></tr>
-<tr class="memdesc:a9179a8e12a48c2bacdbbb91e69ce3a95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given victim should be replaced by a given candidate.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a9179a8e12a48c2bacdbbb91e69ce3a95">More...</a><br /></td></tr>
-<tr class="separator:a9179a8e12a48c2bacdbbb91e69ce3a95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02203277dc5610c50a12c8307af906cd"><td class="memItemLeft" align="right" valign="top"><a id="a02203277dc5610c50a12c8307af906cd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a02203277dc5610c50a12c8307af906cd">clear</a> ()</td></tr>
+<tr class="memdesc:a02203277dc5610c50a12c8307af906cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the policy. <br /></td></tr>
+<tr class="separator:a02203277dc5610c50a12c8307af906cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0359faa2ca19ba783f975abd8e53dcf8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a0359faa2ca19ba783f975abd8e53dcf8">on_cache_hit</a> (const Key &amp;key, const <a class="el" href="structcachemere_1_1Item.html">CacheItem</a> &amp;item)</td></tr>
+<tr class="memdesc:a0359faa2ca19ba783f975abd8e53dcf8"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> hit event handler.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a0359faa2ca19ba783f975abd8e53dcf8">More...</a><br /></td></tr>
+<tr class="separator:a0359faa2ca19ba783f975abd8e53dcf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a855606569f50049f4df9b50c7c605468"><td class="memTemplParams" colspan="2">template&lt;typename KeyType &gt; </td></tr>
+<tr class="memitem:a855606569f50049f4df9b50c7c605468"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a855606569f50049f4df9b50c7c605468">on_cache_miss</a> (const KeyType &amp;key)</td></tr>
+<tr class="memdesc:a855606569f50049f4df9b50c7c605468"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classcachemere_1_1Cache.html" title="Thread-safe memory-restricted cache.">Cache</a> miss event handler.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#a855606569f50049f4df9b50c7c605468">More...</a><br /></td></tr>
+<tr class="separator:a855606569f50049f4df9b50c7c605468"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa74f942d5dc9a7a7d97bfec71a82b7d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#aa74f942d5dc9a7a7d97bfec71a82b7d6">set_cardinality</a> (uint32_t cardinality)</td></tr>
+<tr class="memdesc:aa74f942d5dc9a7a7d97bfec71a82b7d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the cardinality of the policy.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#aa74f942d5dc9a7a7d97bfec71a82b7d6">More...</a><br /></td></tr>
+<tr class="separator:aa74f942d5dc9a7a7d97bfec71a82b7d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7a957bf89da949258f7f91a95721f47"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#ae7a957bf89da949258f7f91a95721f47">should_add</a> (const Key &amp;key)</td></tr>
+<tr class="memdesc:ae7a957bf89da949258f7f91a95721f47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given key should be inserted into the cache.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#ae7a957bf89da949258f7f91a95721f47">More...</a><br /></td></tr>
+<tr class="separator:ae7a957bf89da949258f7f91a95721f47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab889cca33adba7b540728ef44fb6e10d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#ab889cca33adba7b540728ef44fb6e10d">should_replace</a> (const Key &amp;victim, const Key &amp;candidate)</td></tr>
+<tr class="memdesc:ab889cca33adba7b540728ef44fb6e10d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given victim should be replaced by a given candidate.  <a href="classcachemere_1_1policy_1_1InsertionTinyLFU.html#ab889cca33adba7b540728ef44fb6e10d">More...</a><br /></td></tr>
+<tr class="separator:ab889cca33adba7b540728ef44fb6e10d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Key, typename Value&gt;<br />
-class cachemere::policy::InsertionTinyLFU&lt; Key, Value &gt;</h3>
+<div class="textblock"><h3>template&lt;typename Key, typename KeyHash, typename Value&gt;<br />
+class cachemere::policy::InsertionTinyLFU&lt; Key, KeyHash, Value &gt;</h3>
 
 <p>Tiny Least Frequently Used (TinyLFU) insertion policy. </p>
-<p>TinyLFU is a state-of-the-art insertion policy that helps determine whether a given item should be inserted and/or kept in cache while using a constant amount of memory. The policy uses a combination of frequency sketches to keep track of items that have yet to be inserted in the cache, and uses those sketches to decide which items should me prioritized. </p>
+<p>TinyLFU is a state-of-the-art insertion policy that helps determine whether a given item should be inserted and/or kept in cache while using a constant amount of memory. The policy uses a combination of frequency sketches to keep track of items that have yet to be inserted in the cache, and uses those sketches to decide which items should me prioritized. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Key</td><td>The type of the keys used to identify items in the cache. </td></tr>
+    <tr><td class="paramname">KeyHash</td><td>The type of the hasher used to hash item keys. </td></tr>
+    <tr><td class="paramname">Value</td><td>The type of the values stored in the cache. </td></tr>
+  </table>
+  </dd>
+</dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8740266743a566c50dac7b5e036b8f6f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8740266743a566c50dac7b5e036b8f6f">&#9670;&nbsp;</a></span>on_cache_hit()</h2>
+<a id="a0359faa2ca19ba783f975abd8e53dcf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0359faa2ca19ba783f975abd8e53dcf8">&#9670;&nbsp;</a></span>on_cache_hit()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, Value &gt;::on_cache_hit </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, KeyHash, Value &gt;::on_cache_hit </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em>, </td>
@@ -154,18 +162,20 @@ template&lt;typename Key , typename Value &gt; </div>
 
 </div>
 </div>
-<a id="a38f2786111b95130d48c9b518aa2211c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38f2786111b95130d48c9b518aa2211c">&#9670;&nbsp;</a></span>on_cache_miss()</h2>
+<a id="a855606569f50049f4df9b50c7c605468"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a855606569f50049f4df9b50c7c605468">&#9670;&nbsp;</a></span>on_cache_miss()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
+<div class="memtemplate">
+template&lt;class KeyType &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, Value &gt;::on_cache_miss </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, KeyHash, Value &gt;::on_cache_miss </td>
           <td>(</td>
-          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramtype">const KeyType &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
           <td></td>
         </tr>
@@ -182,16 +192,16 @@ template&lt;typename Key , typename Value &gt; </div>
 
 </div>
 </div>
-<a id="a28cc61a4dfecb2b1713514c8e2251c9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a28cc61a4dfecb2b1713514c8e2251c9d">&#9670;&nbsp;</a></span>set_cardinality()</h2>
+<a id="aa74f942d5dc9a7a7d97bfec71a82b7d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa74f942d5dc9a7a7d97bfec71a82b7d6">&#9670;&nbsp;</a></span>set_cardinality()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, Value &gt;::set_cardinality </td>
+          <td class="memname">void <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, KeyHash, Value &gt;::set_cardinality </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>cardinality</em></td><td>)</td>
@@ -210,16 +220,16 @@ template&lt;typename Key , typename Value &gt; </div>
 
 </div>
 </div>
-<a id="a2a2bb514d2cd57f8c485ad4525bdef9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a2bb514d2cd57f8c485ad4525bdef9a">&#9670;&nbsp;</a></span>should_add()</h2>
+<a id="ae7a957bf89da949258f7f91a95721f47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7a957bf89da949258f7f91a95721f47">&#9670;&nbsp;</a></span>should_add()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, Value &gt;::should_add </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, KeyHash, Value &gt;::should_add </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
@@ -238,16 +248,16 @@ template&lt;typename Key , typename Value &gt; </div>
 
 </div>
 </div>
-<a id="a9179a8e12a48c2bacdbbb91e69ce3a95"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9179a8e12a48c2bacdbbb91e69ce3a95">&#9670;&nbsp;</a></span>should_replace()</h2>
+<a id="ab889cca33adba7b540728ef44fb6e10d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab889cca33adba7b540728ef44fb6e10d">&#9670;&nbsp;</a></span>should_replace()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Key , typename Value &gt; </div>
+template&lt;class Key , class KeyHash , class Value &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, Value &gt;::should_replace </td>
+          <td class="memname">bool <a class="el" href="classcachemere_1_1policy_1_1InsertionTinyLFU.html">cachemere::policy::InsertionTinyLFU</a>&lt; Key, KeyHash, Value &gt;::should_replace </td>
           <td>(</td>
           <td class="paramtype">const Key &amp;&#160;</td>
           <td class="paramname"><em>victim</em>, </td>

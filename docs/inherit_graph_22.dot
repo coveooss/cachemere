@@ -4,5 +4,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node0 [label="cachemere::policy::\lInsertionTinyLFU\< Key,\l Value \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcachemere_1_1policy_1_1InsertionTinyLFU.html",tooltip="Tiny Least Frequently Used (TinyLFU) insertion policy."];
+  Node0 [label="cachemere::policy::\lEvictionSegmentedLRU\l\< Key, KeyHash, Value \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcachemere_1_1policy_1_1EvictionSegmentedLRU.html",tooltip="Segmented Least Recently Used (S-LRU) Eviction Policy."];
 }

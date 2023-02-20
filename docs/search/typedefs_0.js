@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['customcostcache_157',['CustomCostCache',['../namespacecachemere_1_1presets_1_1memory.html#a172e442b970777c2e000404b1def264a',1,'cachemere::presets::memory::CustomCostCache()'],['../namespacecachemere_1_1presets_1_1count.html#a11c083bf19faf0145070db722afd0ad9',1,'cachemere::presets::count::CustomCostCache()']]]
+  ['customcostcache_164',['CustomCostCache',['../namespacecachemere_1_1presets_1_1memory.html#a9a28333c7e5d1a7b143c18c89917c8a5',1,'cachemere::presets::memory::CustomCostCache()'],['../namespacecachemere_1_1presets_1_1count.html#a80f2376feb51b5b4c9bad50e128d2b61',1,'cachemere::presets::count::CustomCostCache()']]]
 ];

@@ -4,5 +4,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node0 [label="cachemere::policy::\lbind\< Policy, Args \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcachemere_1_1policy_1_1bind.html",tooltip="Binds a Policy<K, V, Args...> template to a Policy<K, V> template to be used with the cache."];
+  Node0 [label="cachemere::measurement\l::SizeOf\< T \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcachemere_1_1measurement_1_1SizeOf.html",tooltip="Get the size of an object via sizeof()."];
 }

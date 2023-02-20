@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cachemere: cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;::VictimIterator Class Reference</title>
+<title>Cachemere: cachemere::policy::EvictionSegmentedLRU&lt; Key, KeyHash, Value &gt;::VictimIterator Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,7 +71,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;::VictimIterator Class Reference</div>  </div>
+<div class="title">cachemere::policy::EvictionSegmentedLRU&lt; Key, KeyHash, Value &gt;::VictimIterator Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -82,34 +82,34 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a07b4909d008d5c74fe26bcef80643189"><td class="memItemLeft" align="right" valign="top"><a id="a07b4909d008d5c74fe26bcef80643189"></a>
+<tr class="memitem:ae78e83f97e4eb2c87ac09806408cf8de"><td class="memItemLeft" align="right" valign="top"><a id="ae78e83f97e4eb2c87ac09806408cf8de"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>KeyRefReverseIt</b> = typename std::list&lt; KeyRef &gt;::const_reverse_iterator</td></tr>
-<tr class="separator:a07b4909d008d5c74fe26bcef80643189"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ae78e83f97e4eb2c87ac09806408cf8de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae800764bdf5e0aae49e2c7304431eb0f"><td class="memItemLeft" align="right" valign="top"><a id="ae800764bdf5e0aae49e2c7304431eb0f"></a>
+<tr class="memitem:a0e48302ba512c66f5312e7e352f76aa5"><td class="memItemLeft" align="right" valign="top"><a id="a0e48302ba512c66f5312e7e352f76aa5"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>VictimIterator</b> (const KeyRefReverseIt &amp;probation_iterator, const KeyRefReverseIt &amp;probation_end_iterator, const KeyRefReverseIt &amp;protected_iterator)</td></tr>
-<tr class="separator:ae800764bdf5e0aae49e2c7304431eb0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05c09959bc8b03b0ddfd42d7af487166"><td class="memItemLeft" align="right" valign="top"><a id="a05c09959bc8b03b0ddfd42d7af487166"></a>
+<tr class="separator:a0e48302ba512c66f5312e7e352f76aa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f8064632ab63130777847a9eaeb049a"><td class="memItemLeft" align="right" valign="top"><a id="a7f8064632ab63130777847a9eaeb049a"></a>
 const Key &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> () const</td></tr>
-<tr class="separator:a05c09959bc8b03b0ddfd42d7af487166"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3768e1e2e36caf3b3fb9d28a38a60a4"><td class="memItemLeft" align="right" valign="top"><a id="ac3768e1e2e36caf3b3fb9d28a38a60a4"></a>
+<tr class="separator:a7f8064632ab63130777847a9eaeb049a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3e0150bfa532a7b22d70616046c38be"><td class="memItemLeft" align="right" valign="top"><a id="ac3e0150bfa532a7b22d70616046c38be"></a>
 <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html">VictimIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator++</b> ()</td></tr>
-<tr class="separator:ac3768e1e2e36caf3b3fb9d28a38a60a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa529f5d64a8fa0b22b31ef05b0823de0"><td class="memItemLeft" align="right" valign="top"><a id="aa529f5d64a8fa0b22b31ef05b0823de0"></a>
+<tr class="separator:ac3e0150bfa532a7b22d70616046c38be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ce69115b7be682ac937450d6c58d94a"><td class="memItemLeft" align="right" valign="top"><a id="a4ce69115b7be682ac937450d6c58d94a"></a>
 <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html">VictimIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator++</b> (int)</td></tr>
-<tr class="separator:aa529f5d64a8fa0b22b31ef05b0823de0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0de681fe21ad0a2e087dc7ca04f9bddf"><td class="memItemLeft" align="right" valign="top"><a id="a0de681fe21ad0a2e087dc7ca04f9bddf"></a>
+<tr class="separator:a4ce69115b7be682ac937450d6c58d94a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98538f080a867cbda5d16804931e0f1e"><td class="memItemLeft" align="right" valign="top"><a id="a98538f080a867cbda5d16804931e0f1e"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html">VictimIterator</a> &amp;other) const</td></tr>
-<tr class="separator:a0de681fe21ad0a2e087dc7ca04f9bddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea0d25bc9ee3c01577e5eb1cda1c8501"><td class="memItemLeft" align="right" valign="top"><a id="aea0d25bc9ee3c01577e5eb1cda1c8501"></a>
+<tr class="separator:a98538f080a867cbda5d16804931e0f1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f450ab5fdf45127774ab74528b65557"><td class="memItemLeft" align="right" valign="top"><a id="a0f450ab5fdf45127774ab74528b65557"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="classcachemere_1_1policy_1_1EvictionSegmentedLRU_1_1VictimIterator.html">VictimIterator</a> &amp;other) const</td></tr>
-<tr class="separator:aea0d25bc9ee3c01577e5eb1cda1c8501"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a0f450ab5fdf45127774ab74528b65557"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Key, typename Value&gt;<br />
-class cachemere::policy::EvictionSegmentedLRU&lt; Key, Value &gt;::VictimIterator</h3>
+<div class="textblock"><h3>template&lt;typename Key, typename KeyHash, typename Value&gt;<br />
+class cachemere::policy::EvictionSegmentedLRU&lt; Key, KeyHash, Value &gt;::VictimIterator</h3>
 
 <p>Iterator for iterating over cache items in the order they should be. </p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
