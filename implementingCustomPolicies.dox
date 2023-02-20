@@ -5,6 +5,9 @@ This page is meant to guide you through the implementation of custom policies.
 ## Shared Characteristics
 ### Construction Requirements
 Insertion and eviction policies _must_ be [default-constructible](http://www.cplusplus.com/reference/type_traits/is_default_constructible/). The constraint policy may take parameters, these parameters will be forwarded to the policy from the cache constructor.
+### Template Parameters
+Cache policies are templates, which must take exactly three template parameters: `typename Key`, `typename KeyHash`, and `typename Value`.
+If a policy needs additional parameterization, `cachemere::policy::bind` can be used for partial specialization, allowing use with the cache.
 ### Event Handlers
 The policies _may_ define the following event handlers to be notified of changes in the cache. These handlers do not all need to be implemented; a policy only needs to define the handlers that are relevant to its implementation. The cache will detect available handlers on its policies at compile-time, and will only call those that are defined.
 * `void on_insert(K& key, cachemere::detail::Item<V>& item)`
@@ -19,8 +22,9 @@ The policies _may_ define the following event handlers to be notified of changes
 
     Called immediately after a cache hit (a successful call to `cachemere::Cache::find`).
 
-* `void on_cache_miss(K& key)`
+* `template<typename KeyType> void on_cache_miss(const KeyView& key)`
 
+    Where `KeyType` is a type that hashes to the same value as its corresponding `Key` using `KeyHash`.
     Called immediately after a cache miss (an unsuccessful call to `cachemere::Cache::find`).
 
 * `void on_evict(K& key)`

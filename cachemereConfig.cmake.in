@@ -3,5 +3,6 @@
 if(NOT TARGET cachemere::cachemere)
     include(CMakeFindDependencyMacro)
     find_dependency(Boost 1.65)
+    find_dependency(absl)
     include(${CMAKE_CURRENT_LIST_DIR}/cachemere-targets.cmake)
 endif()
