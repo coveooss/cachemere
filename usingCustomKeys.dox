@@ -23,17 +23,17 @@ The key does _not_ need to be copyable.
 struct ComplexKey {
     std::string first;
     std::string second;
-    
+
     bool operator==(const ComplexKey& other) const {
-        return 
+        return
     }
-    
+
     /// Override for the type to be hashable by `absl::Hash`.
     template<typename H> friend H AbslHashValue(H h, const ComplexKey& s)
     {
         return H::combine(std::move(h), s.first, s.second);
     }
-    
+
     /// For use with cachemere::measurement::CapacityDynamicallyAllocated.
     size_t capacity() const {
         return first.capacity() + second.capacity();
@@ -42,9 +42,9 @@ struct ComplexKey {
 
 usig ValueT = int;
 
-using Cache = cachemere::presets::memory::LRUCache<ComplexKey, 
-                                                   ValueT, 
-                                                   cachemere::measurement::SizeOf, 
+using Cache = cachemere::presets::memory::LRUCache<ComplexKey,
+                                                   ValueT,
+                                                   cachemere::measurement::SizeOf,
                                                    cachemere::measurement::CapacityDynamicallyAllocated>;
 ```
 
@@ -58,17 +58,11 @@ using Cache = cachemere::presets::memory::LRUCache<ComplexKey,
 struct ComplexKey {
     std::string first;
     std::string second;
-    
+
     bool operator==(const ComplexKey& other) const {
-        return 
+        return
     }
-    
-    /// Override for the type to be hashable by `absl::Hash`.
-    template<typename H> friend H AbslHashValue(H h, const ComplexKey& s)
-    {
-        return H::combine(std::move(h), s.first, s.second);
-    }
-    
+
     /// For use with cachemere::measurement::CapacityDynamicallyAllocated.
     size_t capacity() const {
         return first.capacity() + second.capacity();
@@ -84,9 +78,9 @@ struct VeryBadHash {
 
 usig ValueT = int;
 
-using Cache = cachemere::presets::memory::LRUCache<ComplexKey, 
-                                                   ValueT, 
-                                                   cachemere::measurement::SizeOf, 
+using Cache = cachemere::presets::memory::LRUCache<ComplexKey,
+                                                   ValueT,
+                                                   cachemere::measurement::SizeOf,
                                                    cachemere::measurement::CapacityDynamicallyAllocated,
                                                    VeryBadHash>;
 ```
