@@ -115,7 +115,7 @@ template<typename ItemHash> template<typename ItemKey> void CountingBloomFilter<
 
 template<typename ItemHash> void CountingBloomFilter<ItemHash>::clear()
 {
-    std::fill(m_filter.begin(), m_filter.end(), 0);
+    std::ranges::fill(m_filter.begin(), m_filter.end(), 0);
     m_nb_nonzero = 0;
 }
 

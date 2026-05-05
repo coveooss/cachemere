@@ -218,12 +218,12 @@ template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Ke
 
 template<class Key, class KeyHash, class Value, class Cost> auto EvictionGDSF<Key, KeyHash, Value, Cost>::victim_begin() const -> VictimIterator
 {
-    return VictimIterator{std::move(m_priority_set.begin())};
+    return VictimIterator{m_priority_set.begin()};
 }
 
 template<class Key, class KeyHash, class Value, class Cost> auto EvictionGDSF<Key, KeyHash, Value, Cost>::victim_end() const -> VictimIterator
 {
-    return VictimIterator{std::move(m_priority_set.end())};
+    return VictimIterator{m_priority_set.end()};
 }
 
 template<class Key, class KeyHash, class Value, class Cost>
