@@ -40,7 +40,7 @@ jobs:
                   submodules: recursive
                   fetch-depth: 0
 
-            - uses: ilammy/msvc-dev-cmd@d39d8f7626e5667b00caa504eaefd7c24c9ba49d
+            - uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
 
             - name: Enable vcpkg cache
               uses: actions/cache@v4
