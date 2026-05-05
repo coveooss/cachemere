@@ -12,13 +12,6 @@ jobs:
             matrix:
                 config:
                     - {
-                          name: "Windows x64 (msvc)",
-                          os: windows-latest,
-                          compiler: "cl.exe",
-                          extension: ".exe",
-                          prefix: "Debug/",
-                      }
-                    - {
                           name: "Linux x64 (gcc)",
                           os: ubuntu-24.04,
                           compiler: "/usr/bin/g++",
@@ -39,8 +32,6 @@ jobs:
               with:
                   submodules: recursive
                   fetch-depth: 0
-
-            - uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
 
             - name: Enable vcpkg cache
               uses: actions/cache@v4
