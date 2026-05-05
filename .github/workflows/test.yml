@@ -20,14 +20,14 @@ jobs:
                       }
                     - {
                           name: "Linux x64 (gcc)",
-                          os: ubuntu-20.04,
+                          os: ubuntu-24.04,
                           compiler: "/usr/bin/g++",
                           extension: "",
                           prefix: "",
                       }
                     - {
                           name: "Linux x64 (clang)",
-                          os: ubuntu-20.04,
+                          os: ubuntu-24.04,
                           compiler: "/usr/bin/clang++",
                           extension: "",
                           prefix: "",
@@ -43,7 +43,7 @@ jobs:
             - uses: ilammy/msvc-dev-cmd@d39d8f7626e5667b00caa504eaefd7c24c9ba49d
 
             - name: Enable vcpkg cache
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   path: |
                       ~/.cache
@@ -51,7 +51,7 @@ jobs:
                   key: ${{ runner.os }}-cachemere
 
             - name: Install apt dependencies
-              if: matrix.config.os == 'ubuntu-20.04'
+              if: matrix.config.os == 'ubuntu-24.04'
               run: |
                   sudo apt-get update && sudo apt-get install -y clang build-essential libssl-dev curl
 
