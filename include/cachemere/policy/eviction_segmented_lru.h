@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_EVICTION_SEGMENTED_LRU_H
-#define CACHEMERE_EVICTION_SEGMENTED_LRU_H
+#pragma once
 
 #include <list>
 
@@ -114,5 +113,3 @@ private:
 }  // namespace cachemere::policy
 
 #include "eviction_segmented_lru.hpp"
-
-#endif

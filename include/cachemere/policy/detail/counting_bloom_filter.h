@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_COUNTINGBLOOMFILTER_H
-#define CACHEMERE_COUNTINGBLOOMFILTER_H
+#pragma once
 
 #include <functional>
 #include <vector>
@@ -76,5 +75,3 @@ private:
 }  // namespace cachemere::policy::detail
 
 #include "counting_bloom_filter.hpp"
-
-#endif

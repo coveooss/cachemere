@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_CONSTRAINT_COUNT_H
-#define CACHEMERE_CONSTRAINT_COUNT_H
+#pragma once
 
 #include "cachemere/item.h"
 
@@ -73,5 +72,3 @@ private:
 }  // namespace cachemere::policy
 
 #include "constraint_count.hpp"
-
-#endif

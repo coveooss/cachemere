@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_CACHE_H
-#define CACHEMERE_CACHE_H
+#pragma once
 
 #include <cstdint>
 #include <functional>
@@ -256,5 +255,3 @@ void swap(Cache<K, V, I, E, C, SV, SK, KH, TS>& lhs, Cache<K, V, I, E, C, SV, SK
 }  // namespace cachemere
 
 #include "cache.hpp"
-
-#endif

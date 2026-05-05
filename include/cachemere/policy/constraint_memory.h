@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_CONSTRAINT_MEMORY_H
-#define CACHEMERE_CONSTRAINT_MEMORY_H
+#pragma once
 
 #include "cachemere/item.h"
 
@@ -82,5 +81,3 @@ private:
 }  // namespace cachemere::policy
 
 #include "constraint_memory.hpp"
-
-#endif

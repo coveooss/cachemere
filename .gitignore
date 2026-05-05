@@ -31,10 +31,11 @@
 *.out
 *.app
 
-build/*
+build*
 debug/*
 release/*
 out/*
+.cache/*
 
 .vscode/*
 

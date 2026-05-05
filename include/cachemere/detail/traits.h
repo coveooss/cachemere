@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_TRAITS_H
-#define CACHEMERE_TRAITS_H
+#pragma once
 
 #include "cachemere/item.h"
 
@@ -57,5 +56,3 @@ constexpr auto has_on_evict = boost::hana::is_valid(
 }  // namespace event
 
 }  // namespace cachemere::detail::traits
-
-#endif

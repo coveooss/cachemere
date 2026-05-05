@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_EVICTION_GDSF
-#define CACHEMERE_EVICTION_GDSF
+#pragma once
 
 #include <algorithm>
 
@@ -122,5 +121,3 @@ private:
 }  // namespace cachemere::policy
 
 #include "eviction_gdsf.hpp"
-
-#endif

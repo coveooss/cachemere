@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_BLOOM_FILTER_H
-#define CACHEMERE_BLOOM_FILTER_H
+#pragma once
 
 #include <cstdint>
 #include <functional>
@@ -76,5 +75,3 @@ private:
 }  // namespace cachemere::policy::detail
 
 #include "bloom_filter.hpp"
-
-#endif

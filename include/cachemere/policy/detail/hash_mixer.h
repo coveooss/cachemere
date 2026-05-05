@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_HASHMIXER_H
-#define CACHEMERE_HASHMIXER_H
+#pragma once
 
 #include <cstdint>
 #include <random>
@@ -31,5 +30,3 @@ private:
 }  // namespace cachemere::policy::detail
 
 #include "hash_mixer.hpp"
-
-#endif

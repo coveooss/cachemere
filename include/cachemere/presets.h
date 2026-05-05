@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_PRESETS_H
-#define CACHEMERE_PRESETS_H
+#pragma once
 
 #include <absl/hash/hash.h>
 
@@ -168,5 +167,3 @@ using CustomCostCache = CountConstrainedCache<Key,
 }  // namespace count
 
 }  // namespace cachemere::presets
-
-#endif

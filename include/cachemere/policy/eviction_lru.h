@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_EVICTION_LRU
-#define CACHEMERE_EVICTION_LRU
+#pragma once
 
 #include <cassert>
 #include <functional>
@@ -95,5 +94,3 @@ private:
 }  // namespace cachemere::policy
 
 #include "eviction_lru.hpp"
-
-#endif

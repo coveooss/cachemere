@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_HASH_H
-#define CACHEMERE_HASH_H
+#pragma once
 
 #include <cstdint>
 
@@ -35,5 +34,3 @@ template<typename Key, typename KeyHash, typename... Tail> struct MultiHash : pu
 };
 
 }  // namespace cachemere
-
-#endif  // CACHEMERE_HASH_H

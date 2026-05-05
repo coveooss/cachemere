@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_INSERTION_ALWAYS_H
-#define CACHEMERE_INSERTION_ALWAYS_H
+#pragma once
 
 #include <iostream>
 
@@ -32,5 +31,3 @@ public:
 }  // namespace cachemere::policy
 
 #include "insertion_always.hpp"
-
-#endif

@@ -1,6 +1,4 @@
-
-#ifndef CACHEMERE_BLOOM_FILTER_MATH_H
-#define CACHEMERE_BLOOM_FILTER_MATH_H
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
@@ -13,5 +11,3 @@ namespace cachemere::policy::detail {
 }  // namespace cachemere::policy::detail
 
 #include "bloom_filter_math.hpp"
-
-#endif

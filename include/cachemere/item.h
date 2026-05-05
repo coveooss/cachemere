@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_ITEM_H
-#define CACHEMERE_ITEM_H
+#pragma once
 
 #include <cstring>
 #include <utility>
@@ -39,5 +38,3 @@ template<typename Value> void swap(Item<Value>& a, Item<Value>& b) noexcept
 }
 
 }  // namespace cachemere
-
-#endif

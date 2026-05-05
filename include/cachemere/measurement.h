@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_MEASUREMENT_H
-#define CACHEMERE_MEASUREMENT_H
+#pragma once
 
 #include <cstdint>
 
@@ -28,5 +27,3 @@ private:
 }  // namespace cachemere::measurement
 
 #include "measurement.hpp"
-
-#endif

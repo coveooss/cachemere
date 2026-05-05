@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_INSERTION_TINYLFU_H
-#define CACHEMERE_INSERTION_TINYLFU_H
+#pragma once
 
 #include <cstdint>
 
@@ -72,5 +71,3 @@ private:
 }  // namespace cachemere::policy
 
 #include "insertion_tinylfu.hpp"
-
-#endif
