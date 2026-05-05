@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cassert>
+#include <cstddef>
+#include <functional>
 #include <list>
 
 #include <absl/container/flat_hash_map.h>

@@ -1,6 +1,10 @@
 #pragma once
 
+#include <algorithm>
+#include <cassert>
+#include <cstddef>
 #include <memory>
+#include <utility>
 
 /// @brief Utilities for measuring cached items.
 namespace cachemere::measurement {

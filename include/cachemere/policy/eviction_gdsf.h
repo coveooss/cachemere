@@ -1,6 +1,9 @@
 #pragma once
 
 #include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <set>
 
 #include <absl/container/btree_map.h>
 
