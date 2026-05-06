@@ -48,12 +48,9 @@ namespace cachemere {
 /// @tparam ThreadSafe Whether to enable locking. When true, all cache operations will be protected by a lock. `true` by default.
 template<typename Key,
          typename Value,
-         template<class, class, class>
-         class InsertionPolicy,
-         template<class, class, class>
-         class EvictionPolicy,
-         template<class, class, class>
-         class ConstraintPolicy,
+         template<class, class, class> class InsertionPolicy,
+         template<class, class, class> class EvictionPolicy,
+         template<class, class, class> class ConstraintPolicy,
          typename MeasureValue = measurement::Size<Value>,
          typename MeasureKey   = measurement::Size<Key>,
          typename KeyHash      = absl::Hash<Key>,
@@ -239,12 +236,9 @@ private:
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -253,12 +247,9 @@ void swap(Cache<K, V, I, E, C, SV, SK, KH, TS>& lhs, Cache<K, V, I, E, C, SV, SK
 
 template<typename Key,
          typename Value,
-         template<class, class, class>
-         class InsertionPolicy,
-         template<class, class, class>
-         class EvictionPolicy,
-         template<class, class, class>
-         class ConstraintPolicy,
+         template<class, class, class> class InsertionPolicy,
+         template<class, class, class> class EvictionPolicy,
+         template<class, class, class> class ConstraintPolicy,
          typename MeasureValue,
          typename MeasureKey,
          typename KeyHash,
@@ -277,12 +268,9 @@ Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValu
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -303,12 +291,9 @@ Cache<K, V, I, E, C, SV, SK, KH, TS>::Cache(Coll& collection, std::tuple<Args...
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -322,12 +307,9 @@ inline bool Cache<K, V, I, E, C, SV, SK, KH, TS>::contains(const KeyView& key) c
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -349,12 +331,9 @@ std::optional<V> Cache<K, V, I, E, C, SV, SK, KH, TS>::find(const KeyView& key) 
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -386,12 +365,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::collect_into(Container& container) co
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -427,12 +403,9 @@ bool Cache<K, V, I, E, C, SV, SK, KH, TS>::insert(K key, V value)
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -451,12 +424,9 @@ bool Cache<K, V, I, E, C, SV, SK, KH, TS>::remove(const K& key)
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -477,12 +447,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::clear()
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -505,12 +472,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::retain(P predicate_fn)
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -526,12 +490,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::for_each(F unary_function)
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -574,12 +535,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::swap(CacheType& other) noexcept
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -592,12 +550,9 @@ inline size_t Cache<K, V, I, E, C, SV, SK, KH, TS>::number_of_items() const
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -627,12 +582,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::update_constraint(Args... args)
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -644,12 +596,9 @@ inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::insertion_policy() -> MyInsert
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -661,12 +610,9 @@ inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::insertion_policy() const -> co
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -678,12 +624,9 @@ inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::eviction_policy() -> MyEvictio
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -695,12 +638,9 @@ inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::eviction_policy() const -> con
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -712,12 +652,9 @@ inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::constraint_policy() -> MyConst
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -729,12 +666,9 @@ inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::constraint_policy() const -> c
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -746,12 +680,9 @@ inline double Cache<K, V, I, E, C, SV, SK, KH, TS>::hit_rate() const
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -763,12 +694,9 @@ inline double Cache<K, V, I, E, C, SV, SK, KH, TS>::byte_hit_rate() const
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -780,12 +708,9 @@ inline uint32_t Cache<K, V, I, E, C, SV, SK, KH, TS>::statistics_window_size() c
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -800,12 +725,9 @@ inline void Cache<K, V, I, E, C, SV, SK, KH, TS>::statistics_window_size(uint32_
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -823,12 +745,9 @@ auto Cache<K, V, I, E, C, SV, SK, KH, TS>::lock() const -> LockGuard
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -846,12 +765,9 @@ auto Cache<K, V, I, E, C, SV, SK, KH, TS>::lock([[maybe_unused]] std::defer_lock
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -870,12 +786,9 @@ auto Cache<K, V, I, E, C, SV, SK, KH, TS>::lock_pair(CacheType& other) const -> 
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -900,12 +813,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::import(Coll& collection)
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -959,12 +869,9 @@ bool Cache<K, V, I, E, C, SV, SK, KH, TS>::check_insert(const K& key, const Cach
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -1030,12 +937,9 @@ bool Cache<K, V, I, E, C, SV, SK, KH, TS>::check_replace(const K& key, const Cac
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -1057,12 +961,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::insert_or_update(K&& key, CacheItem&&
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -1075,12 +976,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove(DataMapIt it)
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -1088,30 +986,18 @@ template<class K,
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_insert(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
-    boost::hana::if_(
-        detail::traits::event::has_on_insert<K, KH, V, I>,
-        [&](auto& x) { return x.on_insert(key, item); },
-        [](auto&) {})(*m_insertion_policy);
+    boost::hana::if_(detail::traits::event::has_on_insert<K, KH, V, I>, [&](auto& x) { return x.on_insert(key, item); }, [](auto&) {})(*m_insertion_policy);
 
-    boost::hana::if_(
-        detail::traits::event::has_on_insert<K, KH, V, E>,
-        [&](auto& x) { return x.on_insert(key, item); },
-        [](auto&) {})(*m_eviction_policy);
+    boost::hana::if_(detail::traits::event::has_on_insert<K, KH, V, E>, [&](auto& x) { return x.on_insert(key, item); }, [](auto&) {})(*m_eviction_policy);
 
-    boost::hana::if_(
-        detail::traits::event::has_on_insert<K, KH, V, C>,
-        [&](auto& x) { return x.on_insert(key, item); },
-        [](auto&) {})(*m_constraint_policy);
+    boost::hana::if_(detail::traits::event::has_on_insert<K, KH, V, C>, [&](auto& x) { return x.on_insert(key, item); }, [](auto&) {})(*m_constraint_policy);
 }
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -1137,12 +1023,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_update(const K& key, const CacheIt
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -1159,25 +1042,19 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_hit(const K& key, const Cach
         [&](auto& x) { return x.on_cache_hit(key, item); },
         [](auto&) {})(*m_insertion_policy);
 
-    boost::hana::if_(
-        detail::traits::event::has_on_cachehit<K, KH, V, E>,
-        [&](auto& x) { return x.on_cache_hit(key, item); },
-        [](auto&) {})(*m_eviction_policy);
+    boost::hana::if_(detail::traits::event::has_on_cachehit<K, KH, V, E>, [&](auto& x) { return x.on_cache_hit(key, item); }, [](auto&) {})(*m_eviction_policy);
 
     boost::hana::if_(
-        detail::traits::event::has_on_cachehit<K, KH, V, E>,
+        detail::traits::event::has_on_cachehit<K, KH, V, C>,
         [&](auto& x) { return x.on_cache_hit(key, item); },
-        [](auto&) {})(*m_eviction_policy);
+        [](auto&) {})(*m_constraint_policy);
 }
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -1190,30 +1067,18 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_miss(const KeyView& key) con
     m_byte_hit_rate_acc(0);
 
     // Call event handler iif the method is defined in the policy.
-    boost::hana::if_(
-        detail::traits::event::has_on_cachemiss<K, KH, V, I>,
-        [&](auto& x) { return x.on_cache_miss(key); },
-        [](auto&) {})(*m_insertion_policy);
+    boost::hana::if_(detail::traits::event::has_on_cachemiss<K, KH, V, I>, [&](auto& x) { return x.on_cache_miss(key); }, [](auto&) {})(*m_insertion_policy);
 
-    boost::hana::if_(
-        detail::traits::event::has_on_cachemiss<K, KH, V, E>,
-        [&](auto& x) { return x.on_cache_miss(key); },
-        [](auto&) {})(*m_eviction_policy);
+    boost::hana::if_(detail::traits::event::has_on_cachemiss<K, KH, V, E>, [&](auto& x) { return x.on_cache_miss(key); }, [](auto&) {})(*m_eviction_policy);
 
-    boost::hana::if_(
-        detail::traits::event::has_on_cachemiss<K, KH, V, C>,
-        [&](auto& x) { return x.on_cache_miss(key); },
-        [](auto&) {})(*m_constraint_policy);
+    boost::hana::if_(detail::traits::event::has_on_cachemiss<K, KH, V, C>, [&](auto& x) { return x.on_cache_miss(key); }, [](auto&) {})(*m_constraint_policy);
 }
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
@@ -1221,30 +1086,18 @@ template<class K,
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_evict(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
-    boost::hana::if_(
-        detail::traits::event::has_on_evict<K, KH, V, I>,
-        [&](auto& x) { return x.on_evict(key, item); },
-        [](auto&) {})(*m_insertion_policy);
+    boost::hana::if_(detail::traits::event::has_on_evict<K, KH, V, I>, [&](auto& x) { return x.on_evict(key, item); }, [](auto&) {})(*m_insertion_policy);
 
-    boost::hana::if_(
-        detail::traits::event::has_on_evict<K, KH, V, E>,
-        [&](auto& x) { return x.on_evict(key, item); },
-        [](auto&) {})(*m_eviction_policy);
+    boost::hana::if_(detail::traits::event::has_on_evict<K, KH, V, E>, [&](auto& x) { return x.on_evict(key, item); }, [](auto&) {})(*m_eviction_policy);
 
-    boost::hana::if_(
-        detail::traits::event::has_on_evict<K, KH, V, C>,
-        [&](auto& x) { return x.on_evict(key, item); },
-        [](auto&) {})(*m_constraint_policy);
+    boost::hana::if_(detail::traits::event::has_on_evict<K, KH, V, C>, [&](auto& x) { return x.on_evict(key, item); }, [](auto&) {})(*m_constraint_policy);
 }
 
 template<class K,
          class V,
-         template<class, class, class>
-         class I,
-         template<class, class, class>
-         class E,
-         template<class, class, class>
-         class C,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
          class SV,
          class SK,
          class KH,
