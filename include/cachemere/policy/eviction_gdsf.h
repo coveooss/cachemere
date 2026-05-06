@@ -152,7 +152,9 @@ template<class Key, class KeyHash, class Value, class Cost> auto EvictionGDSF<Ke
 
 template<class Key, class KeyHash, class Value, class Cost> auto EvictionGDSF<Key, KeyHash, Value, Cost>::VictimIterator::operator++(int) -> VictimIterator
 {
-    return (*this)++;
+    auto tmp = *this;
+    ++m_iterator;
+    return tmp;
 }
 
 template<class Key, class KeyHash, class Value, class Cost>
@@ -183,8 +185,9 @@ template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Ke
 {
     m_frequency_sketch.add(key);
 
-    PrioritySetIt it              = m_priority_set.emplace(std::ref(key), get_h_coefficient(key, item));
-    m_iterator_map[std::ref(key)] = std::move(it);
+    PrioritySetIt it                          = m_priority_set.emplace(std::ref(key), get_h_coefficient(key, item));
+    [[maybe_unused]] const auto [_, inserted] = m_iterator_map.emplace(std::ref(key), it);
+    assert(inserted);
 }
 
 template<class Key, class KeyHash, class Value, class Cost>
@@ -202,7 +205,9 @@ template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Ke
 
     m_priority_set.erase(it);
 
-    on_insert(key, item);
+    m_frequency_sketch.add(key);
+    m_priority_set.erase(keyref_and_it->second);
+    keyref_and_it->second = m_priority_set.emplace(std::ref(key), get_h_coefficient(key, item));
 }
 
 template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Key, KeyHash, Value, Cost>::on_evict(const Key& key, const CacheItem& /* item */)

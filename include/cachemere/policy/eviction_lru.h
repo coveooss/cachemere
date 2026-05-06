@@ -108,7 +108,9 @@ template<class Key, class KeyHash, class Value> auto EvictionLRU<Key, KeyHash, V
 
 template<class Key, class KeyHash, class Value> auto EvictionLRU<Key, KeyHash, Value>::VictimIterator::operator++(int) -> VictimIterator
 {
-    return (*this)++;
+    auto tmp = *this;
+    ++m_iterator;
+    return tmp;
 }
 
 template<class Key, class KeyHash, class Value> bool EvictionLRU<Key, KeyHash, Value>::VictimIterator::operator==(const VictimIterator& other) const
