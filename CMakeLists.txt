@@ -5,32 +5,32 @@ option(BUILD_BENCHMARKS "Build benchmarks" OFF)
 option(USE_VCPKG "Use vcpkg for dependencies" OFF)
 
 if (USE_VCPKG)
-    set(VCPKG_FEATURE_FLAGS "versions")
+  set(VCPKG_FEATURE_FLAGS "versions")
 
-    if (DEFINED ENV{VCPKG_ROOT})
-        set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
+  if (DEFINED ENV{VCPKG_ROOT})
+    set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
                 CACHE STRING "Vcpkg toolchain file")
-    else ()
-        set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
+  else ()
+    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
                 CACHE STRING "Vcpkg toolchain file")
-    endif ()
+  endif ()
 
-    if (BUILD_TESTS)
-        list(APPEND VCPKG_MANIFEST_FEATURES "tests")
-    endif ()
+  if (BUILD_TESTS)
+    list(APPEND VCPKG_MANIFEST_FEATURES "tests")
+  endif ()
 
-    if (BUILD_BENCHMARKS)
-        list(APPEND VCPKG_MANIFEST_FEATURES "benchmarks")
-    endif ()
+  if (BUILD_BENCHMARKS)
+    list(APPEND VCPKG_MANIFEST_FEATURES "benchmarks")
+  endif ()
 endif ()
 
 if (BUILD_TESTS OR BUILD_BENCHMARKS)
-    enable_testing()
+  enable_testing()
 endif ()
 
 project(cachemere)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Boost 1.65 REQUIRED)
@@ -39,9 +39,9 @@ find_package(absl CONFIG REQUIRED)
 add_library(cachemere INTERFACE)
 
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"))
-    add_compile_options("-Wall" "-Wextra")
+  add_compile_options("-Wall" "-Wextra")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options("/W4")
+  add_compile_options("/W4")
 endif ()
 
 target_link_libraries(cachemere
@@ -76,11 +76,11 @@ configure_package_config_file(cachemereConfig.cmake.in
 install(FILES ${PROJECT_BINARY_DIR}/cachemereConfig.cmake DESTINATION ${INSTALL_CMAKEDIR})
 
 if (BUILD_BENCHMARKS)
-    add_subdirectory(benchmarks)
+  add_subdirectory(benchmarks)
 endif ()
 
 if (BUILD_TESTS)
-    add_subdirectory(tests)
+  add_subdirectory(tests)
 endif ()
 
 target_sources(cachemere
