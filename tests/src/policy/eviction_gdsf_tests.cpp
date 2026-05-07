@@ -38,6 +38,14 @@ template<typename Policy> void insert_item(std::string key, int32_t value, Polic
     policy.on_insert(key_and_item->first, key_and_item->second);
 }
 
+template<typename Policy> std::string pop_victim_key(Policy& policy)
+{
+    auto victim = policy.pop_victim();
+    auto key    = std::string{victim.key()};
+    policy.rollback(std::move(victim));
+    return key;
+}
+
 TEST(EvictionGDSF, MaximizesCostPerByteWithConstantCost)
 {
     ConstantCostGDSF policy;
@@ -53,7 +61,7 @@ TEST(EvictionGDSF, MaximizesCostPerByteWithConstantCost)
 
     // Since GDSF gives priority to items with a higher cost per byte, using a constant cost favors small items.
     // This means that short_key should be favored over long_key
-    EXPECT_EQ(*policy.victim_begin(), long_key);
+    EXPECT_EQ(pop_victim_key(policy), long_key);
 
     for (size_t i = 0; i < 10; ++i) {
         auto key_and_item = item_store.find(long_key);
@@ -61,7 +69,7 @@ TEST(EvictionGDSF, MaximizesCostPerByteWithConstantCost)
     }
 
     // GDSF does take frequency into account, so touching "this is supposed to be a much longer string" a few times gives it priority again.
-    EXPECT_EQ(*policy.victim_begin(), short_key);
+    EXPECT_EQ(pop_victim_key(policy), short_key);
 
     // But since cost/byte is favored, we can load "a" fewer times and get it to stay in cache
     for (size_t i = 0; i < 4; ++i) {
@@ -69,7 +77,7 @@ TEST(EvictionGDSF, MaximizesCostPerByteWithConstantCost)
         policy.on_cache_hit(key_and_item->first, key_and_item->second);
     }
 
-    EXPECT_EQ(*policy.victim_begin(), long_key);
+    EXPECT_EQ(pop_victim_key(policy), long_key);
 }
 
 TEST(EvictionGDSF, MaximizeCostPerByteWithQuadraticCost)
@@ -88,7 +96,7 @@ TEST(EvictionGDSF, MaximizeCostPerByteWithQuadraticCost)
     // Here GDSF still tries to favor cost/byte, but in this scenario cost increases exponentially with size.
     // This means that bigger items are highly favored in cases where the cost of a cache miss grows
     // heavily with size.
-    EXPECT_EQ(*policy.victim_begin(), short_key);
+    EXPECT_EQ(pop_victim_key(policy), short_key);
 
     // We can demonstrate this by accessing the short key more than the long key. The bigger item will still be favored.
     for (size_t i = 0; i < 10; ++i) {
@@ -100,7 +108,7 @@ TEST(EvictionGDSF, MaximizeCostPerByteWithQuadraticCost)
         auto key_and_item = item_store.find(long_key);
         policy.on_cache_hit(key_and_item->first, key_and_item->second);
     }
-    EXPECT_EQ(*policy.victim_begin(), short_key);
+    EXPECT_EQ(pop_victim_key(policy), short_key);
 }
 
 TEST(EvictionGDSF, VictimIteration)
@@ -115,9 +123,15 @@ TEST(EvictionGDSF, VictimIteration)
     }
 
     const std::set<std::string> expected_key_set{keys.begin(), keys.end()};
-    std::set<std::string>       key_set;
-    for (auto it = policy.victim_begin(); it != policy.victim_end(); ++it) {
-        key_set.insert(*it);
+    std::set<std::string>              key_set;
+    std::vector<QuadraticCostGDSF::Ticket> popped_victims;
+    for (size_t i = 0; i < keys.size(); ++i) {
+        auto victim = policy.pop_victim();
+        key_set.insert(victim.key());
+        popped_victims.push_back(std::move(victim));
+    }
+    for (auto it = popped_victims.rbegin(); it != popped_victims.rend(); ++it) {
+        policy.rollback(std::move(*it));
     }
 
     EXPECT_EQ(key_set, expected_key_set);

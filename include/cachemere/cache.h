@@ -221,11 +221,13 @@ private:
     mutable MeanAccumulator m_hit_rate_acc;
     mutable MeanAccumulator m_byte_hit_rate_acc;
 
-    bool check_insert(const Key& candidate_key, const CacheItem& item);
-    bool check_replace(const Key& candidate_key, const CacheItem& old_item, const CacheItem& new_item);
+    template<class ConstraintTicket> bool collect_evictions(const Key& candidate_key, ConstraintTicket& ticket);
+    bool                                  check_insert(const Key& candidate_key, const CacheItem& item);
+    bool                                  check_replace(const Key& candidate_key, const CacheItem& old_item, const CacheItem& new_item);
 
     void insert_or_update(Key&& key, CacheItem&& value);
     void remove(DataMapIt it);
+    void remove_popped_victim(DataMapIt it);
 
     void                            on_insert(const Key& key, const CacheItem& item) const;
     void                            on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item) const;
@@ -563,18 +565,14 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::update_constraint(Args... args)
     LockGuard guard(lock());
     m_constraint_policy->update(std::forward<Args>(args)...);
 
-    auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && !m_constraint_policy->is_satisfied(); };
+    while (!m_constraint_policy->is_satisfied()) {
+        auto eviction_ticket = m_eviction_policy->pop_victim();
+        auto key_and_item    = m_data.find(eviction_ticket.key());
 
-    for (auto victim_it = m_eviction_policy->victim_begin(); should_evict_another(victim_it); victim_it = m_eviction_policy->victim_begin()) {
-        const K& key_to_evict = *victim_it;
-        auto     key_and_item = m_data.find(key_to_evict);
+        // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the cache are out of sync.
+        assert(key_and_item != m_data.end());
 
-        if (key_and_item != m_data.end()) {
-            remove(key_and_item);
-        } else {
-            // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the cache are out of sync.
-            assert(false);
-        }
+        remove_popped_victim(key_and_item);
     }
 
     assert(m_constraint_policy->is_satisfied());
@@ -803,7 +801,7 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::import(Coll& collection)
         const auto value_size = static_cast<size_t>(m_measure_value(value));
         CacheItem  item{key_size, std::move(value), value_size};
 
-        if (!m_constraint_policy->can_add(key, item)) {
+        if (!m_constraint_policy->prepare_insert(key, item).is_satisfied()) {
             return;
         }
 
@@ -820,51 +818,61 @@ template<class K,
          class SK,
          class KH,
          bool TS>
+template<class ConstraintTicket>
+bool Cache<K, V, I, E, C, SV, SK, KH, TS>::collect_evictions(const K& candidate_key, ConstraintTicket& ticket)
+{
+    std::vector<std::pair<typename MyEvictionPolicy::Ticket, DataMapIt>> keys_to_evict;
+
+    while (!ticket.is_satisfied()) {
+        auto eviction_ticket = m_eviction_policy->pop_victim();
+        auto key_and_item    = m_data.find(eviction_ticket.key());
+
+        // If this trips, the eviction policy recommended the eviction of a key not in cache: the eviction policy and the
+        // cache are out of sync.
+        assert(key_and_item != m_data.end());
+
+        if (!m_insertion_policy->should_replace(key_and_item->first, candidate_key)) {
+            m_eviction_policy->rollback(std::move(eviction_ticket));
+            for (auto it = keys_to_evict.rbegin(); it != keys_to_evict.rend(); ++it) {
+                m_eviction_policy->rollback(std::move(it->first));
+            }
+            return false;
+        }
+
+        ticket.register_eviction(key_and_item->first, key_and_item->second);
+        keys_to_evict.emplace_back(std::move(eviction_ticket), key_and_item);
+    }
+
+    for (auto& [_, key_and_item] : keys_to_evict) {
+        remove_popped_victim(key_and_item);
+    }
+
+    return true;
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
 bool Cache<K, V, I, E, C, SV, SK, KH, TS>::check_insert(const K& key, const CacheItem& item)
 {
-    if (m_constraint_policy->can_add(key, item)) {
+    auto insertion_ticket = m_constraint_policy->prepare_insert(key, item);
+
+    if (insertion_ticket.is_satisfied()) {
+        // The constraint is already satisfied, so we just check the insertion policy.
         return m_insertion_policy->should_add(key);
     }
 
-    // We need to perform some evictions to try and make some room.
-    // Since the insertion process can fail at anytime before we know how many keys to evict (e.g. if should_replace was to return false) however,
-    // we can't directly evict items as we go. To fix this, we copy the constraint policy to see how many keys we'd have to evict. If we manage to
-    // satisfy the constraint copy, we evict the keys we picked and proceed with the insertion.
-    auto                   constraint_copy = std::make_unique<MyConstraintPolicy>(*m_constraint_policy);
-    std::vector<DataMapIt> keys_to_evict;
-
-    auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && !constraint_copy->can_add(key, item); };
-
-    // As long as the constraint isn't satisfied, we keep evicting keys.
-    for (auto victim_it = m_eviction_policy->victim_begin(); should_evict_another(victim_it); ++victim_it) {
-        const K& key_to_evict = *victim_it;
-        auto     key_and_item = m_data.find(key_to_evict);
-
-        if (key_and_item != m_data.end()) {
-            if (!m_insertion_policy->should_replace(key_to_evict, key)) {
-                // This key to evict is considered "better" to have in cache than the item to be inserted.
-                // In this case, we abort the insertion.
-                return false;
-            }
-
-            constraint_copy->on_evict(key_and_item->first, key_and_item->second);
-            keys_to_evict.push_back(key_and_item);
-        } else {
-            // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the
-            // cache are out of sync.
-            assert(false);
-        }
+    if (!insertion_ticket.is_satisfiable()) {
+        return false;  // item can't be inserted even if we evict everything.
     }
 
-    if (constraint_copy->can_add(key, item)) {
-        // The constraint is happy with that, so we actually evict the collected keys.
-        for (auto key_and_item : keys_to_evict) {
-            remove(key_and_item);
-        }
-        return true;
-    }
-
-    return false;
+    return collect_evictions(key, insertion_ticket);
 }
 
 template<class K,
@@ -878,61 +886,17 @@ template<class K,
          bool TS>
 bool Cache<K, V, I, E, C, SV, SK, KH, TS>::check_replace(const K& key, const CacheItem& old_item, const CacheItem& new_item)
 {
-    if (m_constraint_policy->can_replace(key, old_item, new_item)) {
+    auto replacement_ticket = m_constraint_policy->prepare_replace(key, old_item, new_item);
+
+    if (replacement_ticket.is_satisfied()) {
         return true;
     }
 
-    // The logic here is very similar to check_insert but with an important modification.
-    // Since in this code path we're updating an existing key instead of adding a new one, we need to handle the case
-    // where the eviction policy recommends the eviction of the key we're trying to insert. If this happens and the constraint
-    // is still not satisfied afterwards, we need to treat all subsequent constraint checks as if we were inserting instead of updating our key
-    // (because the original was evicted).
-    auto constraint_copy      = std::make_unique<MyConstraintPolicy>(*m_constraint_policy);
-    bool evicted_original_key = false;
-
-    auto can_replace = [&]() {
-        if (evicted_original_key) {
-            return constraint_copy->can_add(key, new_item);
-        } else {
-            return constraint_copy->can_replace(key, old_item, new_item);
-        }
-    };
-
-    auto should_evict_another = [&](auto victim_it) { return victim_it != m_eviction_policy->victim_end() && !can_replace(); };
-
-    // Evict until the constraint copy is happy.
-    std::vector<DataMapIt> keys_to_evict;
-
-    for (auto victim_it = m_eviction_policy->victim_begin(); should_evict_another(victim_it); ++victim_it) {
-        const K& key_to_evict = *victim_it;
-        auto     key_and_item = m_data.find(key_to_evict);
-
-        if (key_and_item != m_data.end()) {
-            if (!m_insertion_policy->should_replace(key_to_evict, key)) {
-                return false;
-            }
-
-            if (!evicted_original_key) {
-                evicted_original_key = key_and_item->first == key;
-            }
-
-            constraint_copy->on_evict(key_and_item->first, key_and_item->second);
-            keys_to_evict.push_back(key_and_item);
-        } else {
-            // If this trips, the eviction policy tried to evict an item not in cache: the eviction policy and the
-            // cache are out of sync.
-            assert(false);
-        }
+    if (!replacement_ticket.is_satisfiable()) {
+        return false;
     }
 
-    if (can_replace()) {
-        for (auto key_and_item : keys_to_evict) {
-            remove(key_and_item);
-        }
-        return true;
-    }
-
-    return false;
+    return collect_evictions(key, replacement_ticket);
 }
 
 template<class K,
@@ -971,6 +935,28 @@ template<class K,
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove(DataMapIt it)
 {
     on_evict(it->first, it->second);
+    m_data.erase(it);
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
+void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_popped_victim(DataMapIt it)
+{
+    boost::hana::if_(
+        detail::traits::event::has_on_evict<K, KH, V, I>,
+        [&](auto& x) { return x.on_evict(it->first, it->second); },
+        [](auto&) {})(*m_insertion_policy);
+    boost::hana::if_(
+        detail::traits::event::has_on_evict<K, KH, V, C>,
+        [&](auto& x) { return x.on_evict(it->first, it->second); },
+        [](auto&) {})(*m_constraint_policy);
     m_data.erase(it);
 }
 

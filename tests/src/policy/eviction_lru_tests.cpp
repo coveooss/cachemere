@@ -24,11 +24,17 @@ void insert_item(std::string key, int32_t value, TestLRU& policy, ItemMap& item_
     policy.on_insert(key_and_item->first, key_and_item->second);
 }
 
-void expect_victims(const TestLRU& policy, const std::vector<std::string>& expected_victims)
+void expect_victims(TestLRU& policy, const std::vector<std::string>& expected_victims)
 {
+    std::vector<TestLRU::Ticket> popped_victims;
     std::vector<std::string> victims;
-    for (auto it = policy.victim_begin(); it != policy.victim_end(); ++it) {
-        victims.push_back(*it);
+    for (size_t i = 0; i < expected_victims.size(); ++i) {
+        auto victim = policy.pop_victim();
+        victims.push_back(victim.key());
+        popped_victims.push_back(std::move(victim));
+    }
+    for (auto it = popped_victims.rbegin(); it != popped_victims.rend(); ++it) {
+        policy.rollback(std::move(*it));
     }
     EXPECT_EQ(victims, expected_victims);
 }
@@ -44,9 +50,10 @@ TEST(EvictionLRU, EvictionsWithoutReordering)
     insert_item("b", 18, policy, item_store);
     insert_item("c", 1337, policy, item_store);
 
-    const auto victim = *policy.victim_begin();
+    auto victim = policy.pop_victim();
+    policy.rollback(TestLRU::Ticket{victim});
 
-    EXPECT_EQ("a", victim);
+    EXPECT_EQ("a", victim.key());
 }
 
 TEST(EvictionLRU, NoOpReordering)

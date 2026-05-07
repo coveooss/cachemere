@@ -103,3 +103,36 @@ TEST(MemoryCacheTest, SizeUpdateNoUnderflow)
     cache.insert(1, SelfSized{11});
     EXPECT_LT(cache.constraint_policy().memory(), 100);
 }
+
+TEST(MemoryCacheTest, ReplaceCanEvictOriginalKeyAndContinue)
+{
+    struct SelfSized {
+        SelfSized(size_t size) : m_size(size)
+        {
+        }
+
+        size_t size() const
+        {
+            return m_size;
+        }
+
+    private:
+        size_t m_size;
+    };
+
+    using CacheT = presets::memory::LRUCache<uint32_t, SelfSized, measurement::Size<SelfSized>, measurement::SizeOf<uint32_t>>;
+
+    CacheT cache{20};
+
+    ASSERT_TRUE(cache.insert(1, SelfSized{1}));  // total size 5
+    ASSERT_TRUE(cache.insert(2, SelfSized{4}));  // total size 8
+    ASSERT_TRUE(cache.insert(3, SelfSized{3}));  // total size 7
+    ASSERT_EQ(cache.constraint_policy().memory(), 20);
+
+    ASSERT_TRUE(cache.insert(1, SelfSized{6}));
+
+    EXPECT_TRUE(cache.contains(1));
+    EXPECT_FALSE(cache.contains(2));
+    EXPECT_TRUE(cache.contains(3));
+    EXPECT_EQ(cache.constraint_policy().memory(), 17);
+}

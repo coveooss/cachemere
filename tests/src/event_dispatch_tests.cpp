@@ -48,28 +48,13 @@ template<typename Key, typename KeyHash, typename Value> class TrackingEvictionP
 {
 public:
     using CacheItem = cachemere::Item<Value>;
-    class VictimIterator
+    struct Ticket
     {
     public:
-        const Key& operator*() const
+        [[nodiscard]] const Key& key() const
         {
             assert(false);
             return *static_cast<const Key*>(nullptr);
-        }
-
-        VictimIterator& operator++()
-        {
-            return *this;
-        }
-
-        bool operator==(const VictimIterator&) const
-        {
-            return true;
-        }
-
-        bool operator!=(const VictimIterator&) const
-        {
-            return false;
         }
     };
 
@@ -84,14 +69,13 @@ public:
 
     void on_evict(const Key&, const CacheItem&) {}
 
-    [[nodiscard]] VictimIterator victim_begin() const
+    [[nodiscard]] Ticket pop_victim()
     {
         return {};
     }
 
-    [[nodiscard]] VictimIterator victim_end() const
+    void rollback(Ticket)
     {
-        return {};
     }
 };
 
@@ -99,17 +83,31 @@ template<typename Key, typename KeyHash, typename Value> class TrackingConstrain
 {
 public:
     using CacheItem = cachemere::Item<Value>;
+    struct Ticket
+    {
+        [[nodiscard]] bool is_satisfiable() const
+        {
+            return true;
+        }
+
+        [[nodiscard]] bool is_satisfied() const
+        {
+            return true;
+        }
+
+        void register_eviction(const Key&, const CacheItem&) {}
+    };
 
     void clear() {}
 
-    bool can_add(const Key&, const CacheItem&) const
+    [[nodiscard]] Ticket prepare_insert(const Key&, const CacheItem&) const
     {
-        return true;
+        return {};
     }
 
-    bool can_replace(const Key&, const CacheItem&, const CacheItem&) const
+    [[nodiscard]] Ticket prepare_replace(const Key&, const CacheItem&, const CacheItem&) const
     {
-        return true;
+        return {};
     }
 
     void on_insert(const Key&, const CacheItem&) {}

@@ -22,11 +22,17 @@ void insert_item(std::string key, int32_t value, TestSLRU& policy, ItemMap& item
     policy.on_insert(key_and_item->first, key_and_item->second);
 }
 
-void expect_victims(const TestSLRU& policy, std::vector<std::string> expected_victims)
+void expect_victims(TestSLRU& policy, std::vector<std::string> expected_victims)
 {
+    std::vector<TestSLRU::Ticket> popped_victims;
     std::vector<std::string> victims;
-    for (auto it = policy.victim_begin(); it != policy.victim_end(); ++it) {
-        victims.push_back(*it);
+    for (size_t i = 0; i < expected_victims.size(); ++i) {
+        auto victim = policy.pop_victim();
+        victims.push_back(victim.key());
+        popped_victims.push_back(std::move(victim));
+    }
+    for (auto it = popped_victims.rbegin(); it != popped_victims.rend(); ++it) {
+        policy.rollback(std::move(*it));
     }
     EXPECT_EQ(victims, expected_victims);
 }
@@ -46,13 +52,17 @@ TEST(EvictionSegmentedLRU, BasicInsertEvict)
 
     // After the loop, "a" is the coldest item in cache, and is in the probation segment because it wasn't ever loaded.
     // The first victim should be a.
-    EXPECT_EQ("a", *policy.victim_begin());
+    auto victim = policy.pop_victim();
+    EXPECT_EQ("a", victim.key());
+    policy.rollback(std::move(victim));
 
     // If we touch a, it should be promoted to the protected segment.
     // The first victim should now be b.
     auto key_and_item = item_store.find("a");
     policy.on_cache_hit(key_and_item->first, key_and_item->second);
-    EXPECT_EQ("b", *policy.victim_begin());
+    victim = policy.pop_victim();
+    EXPECT_EQ("b", victim.key());
+    policy.rollback(std::move(victim));
 
     // Before this loop, the probation segment contains [e, d, c, b] and the protected segment contains [a].
     for (auto i = 4; i > 0; --i) {
@@ -62,8 +72,7 @@ TEST(EvictionSegmentedLRU, BasicInsertEvict)
 
     // After the last loop, the protected segment should contain [b, c, d, e] and the probation segment should contain [a].
     // This means that requesting an eviction should return a, and then e.
-    EXPECT_EQ("a", *policy.victim_begin());
-    EXPECT_EQ("e", *++policy.victim_begin());
+    expect_victims(policy, {"a", "e", "d", "c", "b"});
 }
 
 TEST(EvictionSegmentedLRU, RandomEvictions)

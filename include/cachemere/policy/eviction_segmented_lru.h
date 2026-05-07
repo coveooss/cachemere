@@ -31,27 +31,22 @@ private:
 public:
     using CacheItem = cachemere::Item<Value>;
 
-    /// @brief Iterator for iterating over cache items in the order they should be
-    //         evicted.
-    class VictimIterator
+    struct EvictionTicket
     {
-    public:
-        using KeyRefReverseIt = typename std::list<KeyRef>::const_reverse_iterator;
+        EvictionTicket(KeyRef key, bool from_probation) : m_key{key}, m_from_probation{from_probation}
+        {
+        }
 
-        VictimIterator(const KeyRefReverseIt& probation_iterator, const KeyRefReverseIt& probation_end_iterator, const KeyRefReverseIt& protected_iterator);
+        [[nodiscard]] const Key& key() const
+        {
+            return m_key;
+        }
 
-        const Key&      operator*() const;
-        VictimIterator& operator++();
-        VictimIterator  operator++(int);
-        bool            operator==(const VictimIterator& other) const;
-        bool            operator!=(const VictimIterator& other) const;
-
-    private:
-        KeyRefReverseIt m_probation_iterator;
-        KeyRefReverseIt m_probation_end_iterator;
-        KeyRefReverseIt m_protected_iterator;
-        bool            m_done_with_probation;
+        KeyRef m_key;
+        bool   m_from_probation;
     };
+
+    using Ticket = EvictionTicket;
 
     /// @brief Clears the policy.
     void clear();
@@ -89,16 +84,8 @@ public:
     /// @param item The item that was evicted.
     void on_evict(const Key& key, const CacheItem& item);
 
-    /// @brief Get an iterator to the first item that should be evicted.
-    /// @details Considering that the keys are ordered internally from most-recently used
-    ///          to least-recently used, this iterator will effectively walk the internal
-    ///          structure backwards.
-    /// @return An item iterator.
-    [[nodiscard]] VictimIterator victim_begin() const;
-
-    /// @brief Get an end iterator.
-    /// @return The end iterator.
-    [[nodiscard]] VictimIterator victim_end() const;
+    [[nodiscard]] Ticket pop_victim();
+    void rollback(Ticket ticket);
 
 private:
     size_t m_protected_segment_size;
@@ -112,52 +99,6 @@ private:
     bool move_to_protected(const Key& key);
     bool pop_to_probation();
 };
-
-template<class Key, class KeyHash, class Value>
-EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::VictimIterator(const KeyRefReverseIt& probation_iterator,
-                                                                          const KeyRefReverseIt& probation_end_iterator,
-                                                                          const KeyRefReverseIt& protected_iterator)
- : m_probation_iterator{probation_iterator},
-   m_probation_end_iterator{probation_end_iterator},
-   m_protected_iterator{protected_iterator},
-   m_done_with_probation{probation_iterator == probation_end_iterator}
-{
-}
-
-template<class Key, class KeyHash, class Value> const Key& EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator*() const
-{
-    const auto it = m_done_with_probation ? m_protected_iterator : m_probation_iterator;
-    return *it;
-}
-
-template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator++() -> VictimIterator&
-{
-    if (m_done_with_probation) {
-        ++m_protected_iterator;
-    } else {
-        ++m_probation_iterator;
-        m_done_with_probation |= m_probation_iterator == m_probation_end_iterator;
-    }
-    return *this;
-}
-
-template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator++(int) -> VictimIterator
-{
-    auto tmp = *this;
-    ++*this;
-    return tmp;
-}
-
-template<class Key, class KeyHash, class Value> bool EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator==(const VictimIterator& other) const
-{
-    return m_protected_iterator == other.m_protected_iterator && m_probation_iterator == other.m_probation_iterator &&
-           m_done_with_probation == other.m_done_with_probation;
-}
-
-template<class Key, class KeyHash, class Value> bool EvictionSegmentedLRU<Key, KeyHash, Value>::VictimIterator::operator!=(const VictimIterator& other) const
-{
-    return !(*this == other);
-}
 
 template<class Key, class KeyHash, class Value> void EvictionSegmentedLRU<Key, KeyHash, Value>::clear()
 {
@@ -230,14 +171,33 @@ template<class Key, class KeyHash, class Value> void EvictionSegmentedLRU<Key, K
     }
 }
 
-template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::victim_begin() const -> VictimIterator
+template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::pop_victim() -> Ticket
 {
-    return VictimIterator{m_probation_list.rbegin(), m_probation_list.rend(), m_protected_list.rbegin()};
+    if (!m_probation_list.empty()) {
+        const KeyRef victim_key = m_probation_list.back();
+        m_probation_nodes.erase(victim_key);
+        m_probation_list.pop_back();
+        return Ticket{victim_key, true};
+    }
+
+    assert(!m_protected_list.empty());
+    const KeyRef victim_key = m_protected_list.back();
+    m_protected_nodes.erase(victim_key);
+    m_protected_list.pop_back();
+    return Ticket{victim_key, false};
 }
 
-template<class Key, class KeyHash, class Value> auto EvictionSegmentedLRU<Key, KeyHash, Value>::victim_end() const -> VictimIterator
+template<class Key, class KeyHash, class Value> void EvictionSegmentedLRU<Key, KeyHash, Value>::rollback(Ticket ticket)
 {
-    return VictimIterator{m_probation_list.rend(), m_probation_list.rend(), m_protected_list.rend()};
+    if (ticket.m_from_probation) {
+        assert(m_probation_nodes.find(ticket.m_key) == m_probation_nodes.end());
+        m_probation_list.emplace_back(ticket.m_key);
+        m_probation_nodes.emplace(ticket.m_key, std::prev(m_probation_list.end()));
+    } else {
+        assert(m_protected_nodes.find(ticket.m_key) == m_protected_nodes.end());
+        m_protected_list.emplace_back(ticket.m_key);
+        m_protected_nodes.emplace(ticket.m_key, std::prev(m_protected_list.end()));
+    }
 }
 
 template<class Key, class KeyHash, class Value> bool EvictionSegmentedLRU<Key, KeyHash, Value>::move_to_protected(const Key& key)

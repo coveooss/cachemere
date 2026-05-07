@@ -6,7 +6,6 @@
 #include <set>
 
 #include <absl/container/btree_map.h>
-
 #include <cachemere/item.h>
 
 #include "detail/counting_bloom_filter.h"
@@ -42,24 +41,23 @@ private:
     using PrioritySetIt = typename PrioritySet::const_iterator;
 
 public:
-    using CacheItem = Item<Value>;
+    /// @brief Eviction event struct, containing the key and the coefficient of the evicted item.
+    /// @details This struct is used to rollback the policy state in case of an aborted insert.
+    struct EvictionTicket {
+        EvictionTicket(PriorityEntry entry) : m_entry{std::move(entry)}
+        {
+        }
 
-    /// @brief Iterator for iterating over cache items in the order they should be
-    ///        evicted.
-    class VictimIterator
-    {
-    public:
-        VictimIterator(PrioritySetIt iterator);
+        const Key& key() const
+        {
+            return m_entry.m_key;
+        }
 
-        const Key&      operator*() const;
-        VictimIterator& operator++();
-        VictimIterator  operator++(int);
-        bool            operator==(const VictimIterator& other) const;
-        bool            operator!=(const VictimIterator& other) const;
-
-    private:
-        PrioritySetIt m_iterator;
+        PriorityEntry m_entry;
     };
+
+    using CacheItem = Item<Value>;
+    using Ticket    = EvictionTicket;
 
     /// @brief Clears the policy.
     void clear();
@@ -97,13 +95,25 @@ public:
     /// @param item The item that was evicted.
     void on_evict(const Key& key, const CacheItem& item);
 
-    /// @brief Get an iterator to the first item that should be evicted.
-    /// @return An item iterator.
-    [[nodiscard]] VictimIterator victim_begin() const;
+    Ticket pop_victim()
+    {
+        assert(!m_priority_set.empty());
 
-    /// @brief Get an end iterator.
-    /// @return The end iterator.
-    [[nodiscard]] VictimIterator victim_end() const;
+        auto          victim_it    = m_priority_set.begin();
+        PriorityEntry victim_entry = *victim_it;
+        m_priority_set.erase(victim_it);
+        m_iterator_map.erase(victim_entry.m_key);
+        return Ticket{std::move(victim_entry)};
+    }
+
+    void rollback(Ticket ticket)
+    {
+        const Key& victim_key = ticket.key();
+        assert(m_iterator_map.find(std::ref(victim_key)) == m_iterator_map.end());
+
+        const auto it = m_priority_set.emplace(std::move(ticket.m_entry));
+        m_iterator_map.emplace(std::ref(victim_key), it);
+    }
 
 private:
     using IteratorMap = absl::btree_map<KeyRef, PrioritySetIt, std::less<const Key>>;
@@ -113,9 +123,7 @@ private:
     detail::CountingBloomFilter<KeyHash> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};  // TODO: Replace with a count-min sketch to get rid of cardinality
 
     PrioritySet m_priority_set;  // A multiset of keys sorted by H-coefficients in ascending order.
-
-    IteratorMap m_iterator_map;  // A map of keys pointing to the corresponding iterator in the priority set. This is necessary because since PrioritySet uses
-                                 // coefficients to compare items to one another, we can't test for key membership directly.
+    IteratorMap m_iterator_map;  // A map of keys pointing to the corresponding iterator in the priority set.
 
     uint64_t m_clock{0};
 
@@ -134,41 +142,6 @@ bool EvictionGDSF<Key, KeyHash, Value, Cost>::PriorityEntry::operator<(const Pri
     return m_h_coefficient < other.m_h_coefficient;
 }
 
-template<class Key, class KeyHash, class Value, class Cost>
-EvictionGDSF<Key, KeyHash, Value, Cost>::VictimIterator::VictimIterator(PrioritySetIt iterator) : m_iterator(std::move(iterator))
-{
-}
-
-template<class Key, class KeyHash, class Value, class Cost> const Key& EvictionGDSF<Key, KeyHash, Value, Cost>::VictimIterator::operator*() const
-{
-    return m_iterator->m_key;
-}
-
-template<class Key, class KeyHash, class Value, class Cost> auto EvictionGDSF<Key, KeyHash, Value, Cost>::VictimIterator::operator++() -> VictimIterator&
-{
-    ++m_iterator;
-    return *this;
-}
-
-template<class Key, class KeyHash, class Value, class Cost> auto EvictionGDSF<Key, KeyHash, Value, Cost>::VictimIterator::operator++(int) -> VictimIterator
-{
-    auto tmp = *this;
-    ++m_iterator;
-    return tmp;
-}
-
-template<class Key, class KeyHash, class Value, class Cost>
-bool EvictionGDSF<Key, KeyHash, Value, Cost>::VictimIterator::operator==(const VictimIterator& other) const
-{
-    return m_iterator == other.m_iterator;
-}
-
-template<class Key, class KeyHash, class Value, class Cost>
-bool EvictionGDSF<Key, KeyHash, Value, Cost>::VictimIterator::operator!=(const VictimIterator& other) const
-{
-    return m_iterator != other.m_iterator;
-}
-
 template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Key, KeyHash, Value, Cost>::clear()
 {
     m_priority_set.clear();
@@ -185,9 +158,10 @@ template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Ke
 {
     m_frequency_sketch.add(key);
 
-    PrioritySetIt it                          = m_priority_set.emplace(std::ref(key), get_h_coefficient(key, item));
-    [[maybe_unused]] const auto [_, inserted] = m_iterator_map.emplace(std::ref(key), it);
-    assert(inserted);
+    assert(m_iterator_map.find(std::ref(key)) == m_iterator_map.end());
+
+    const auto it = m_priority_set.emplace(std::ref(key), get_h_coefficient(key, item));
+    m_iterator_map.emplace(std::ref(key), it);
 }
 
 template<class Key, class KeyHash, class Value, class Cost>
@@ -201,10 +175,6 @@ template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Ke
     auto keyref_and_it = m_iterator_map.find(std::ref(key));
     assert(keyref_and_it != m_iterator_map.end());
 
-    PrioritySetIt it = keyref_and_it->second;
-
-    m_priority_set.erase(it);
-
     m_frequency_sketch.add(key);
     m_priority_set.erase(keyref_and_it->second);
     keyref_and_it->second = m_priority_set.emplace(std::ref(key), get_h_coefficient(key, item));
@@ -215,23 +185,11 @@ template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Ke
     auto keyref_and_it = m_iterator_map.find(std::ref(key));
     assert(keyref_and_it != m_iterator_map.end());
 
-    PrioritySetIt it = keyref_and_it->second;
-    m_clock          = std::max(m_clock, static_cast<uint64_t>(it->m_h_coefficient));
+    const auto priority_it = keyref_and_it->second;
+    m_clock                = std::max(m_clock, static_cast<uint64_t>(priority_it->m_h_coefficient));
 
-    m_priority_set.erase(it);
+    m_priority_set.erase(priority_it);
     m_iterator_map.erase(keyref_and_it);
-
-    assert(m_iterator_map.find(key) == m_iterator_map.end());
-}
-
-template<class Key, class KeyHash, class Value, class Cost> auto EvictionGDSF<Key, KeyHash, Value, Cost>::victim_begin() const -> VictimIterator
-{
-    return VictimIterator{m_priority_set.begin()};
-}
-
-template<class Key, class KeyHash, class Value, class Cost> auto EvictionGDSF<Key, KeyHash, Value, Cost>::victim_end() const -> VictimIterator
-{
-    return VictimIterator{m_priority_set.end()};
 }
 
 template<class Key, class KeyHash, class Value, class Cost>
