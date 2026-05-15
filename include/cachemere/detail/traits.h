@@ -26,6 +26,11 @@ concept ReservableContainer = requires(T t) {
     { t.size() } -> std::convertible_to<size_t>;
 };
 
+template<typename T, typename K, typename V>
+concept FactoryFn = requires(T t, K key) {
+    { t(key) } -> std::convertible_to<V>;
+};
+
 // Traits for cache event handlers.
 namespace event {
 
