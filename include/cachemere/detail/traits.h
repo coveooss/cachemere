@@ -1,11 +1,32 @@
 #pragma once
 
 #include <concepts>
+#include <string>
+#include <string_view>
+#include <type_traits>
 #include <utility>
 
 #include <cachemere/item.h>
 
 namespace cachemere::detail::traits {
+
+template<typename T> struct is_basic_string : std::false_type {
+};
+
+template<typename CharT, typename Traits, typename Alloc> struct is_basic_string<std::basic_string<CharT, Traits, Alloc>> : std::true_type {
+};
+
+template<typename T>
+concept BasicString = is_basic_string<std::remove_cvref_t<T>>::value;
+
+template<class T> struct is_basic_string_view : std::false_type {
+};
+
+template<class CharT, class Traits> struct is_basic_string_view<std::basic_string_view<CharT, Traits>> : std::true_type {
+};
+
+template<class T>
+concept BasicStringView = is_basic_string_view<std::remove_cvref_t<T>>::value;
 
 template<typename T, typename... Args>
 concept SequenceContainer = requires(T t, Args... args) {
