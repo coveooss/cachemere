@@ -1,5 +1,8 @@
 #pragma once
 
+#include <concepts>
+#include <utility>
+
 #include <cachemere/item.h>
 
 namespace cachemere::detail::traits {
