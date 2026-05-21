@@ -6,6 +6,7 @@
 #include <set>
 
 #include <absl/container/btree_map.h>
+
 #include <cachemere/item.h>
 
 #include "detail/counting_bloom_filter.h"
@@ -43,8 +44,8 @@ private:
 public:
     /// @brief Eviction event struct, containing the key and the coefficient of the evicted item.
     /// @details This struct is used to rollback the policy state in case of an aborted insert.
-    struct EvictionTicket {
-        EvictionTicket(PriorityEntry entry) : m_entry{std::move(entry)}
+    struct Ticket {
+        Ticket(PriorityEntry entry, uint64_t previous_clock) : m_entry{std::move(entry)}, m_previous_clock{previous_clock}
         {
         }
 
@@ -54,10 +55,10 @@ public:
         }
 
         PriorityEntry m_entry;
+        uint64_t      m_previous_clock;
     };
 
     using CacheItem = Item<Value>;
-    using Ticket    = EvictionTicket;
 
     /// @brief Clears the policy.
     void clear();
@@ -103,7 +104,11 @@ public:
         PriorityEntry victim_entry = *victim_it;
         m_priority_set.erase(victim_it);
         m_iterator_map.erase(victim_entry.m_key);
-        return Ticket{std::move(victim_entry)};
+
+        const uint64_t previous_clock = m_clock;
+        update_clock(static_cast<uint64_t>(victim_entry.m_h_coefficient));
+
+        return Ticket{std::move(victim_entry), previous_clock};
     }
 
     void rollback(Ticket ticket)
@@ -113,6 +118,9 @@ public:
 
         const auto it = m_priority_set.emplace(std::move(ticket.m_entry));
         m_iterator_map.emplace(std::ref(victim_key), it);
+
+        assert(m_clock >= ticket.m_previous_clock);
+        m_clock = ticket.m_previous_clock;
     }
 
 private:
@@ -128,6 +136,10 @@ private:
     uint64_t m_clock{0};
 
     [[nodiscard]] double get_h_coefficient(const Key& key, const CacheItem& item) const noexcept;
+    void                 update_clock(uint64_t new_clock)
+    {
+        m_clock = std::max(m_clock, new_clock);
+    }
 };
 
 template<class Key, class KeyHash, class Value, class Cost>
@@ -186,7 +198,7 @@ template<class Key, class KeyHash, class Value, class Cost> void EvictionGDSF<Ke
     assert(keyref_and_it != m_iterator_map.end());
 
     const auto priority_it = keyref_and_it->second;
-    m_clock                = std::max(m_clock, static_cast<uint64_t>(priority_it->m_h_coefficient));
+    update_clock(static_cast<uint64_t>(priority_it->m_h_coefficient));
 
     m_priority_set.erase(priority_it);
     m_iterator_map.erase(keyref_and_it);
