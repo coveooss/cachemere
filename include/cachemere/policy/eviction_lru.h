@@ -27,9 +27,8 @@ private:
 public:
     using CacheItem = cachemere::Item<Value>;
 
-    struct EvictionTicket
-    {
-        explicit EvictionTicket(KeyRef key) : m_key{key}
+    struct Ticket {
+        explicit Ticket(KeyRef key) : m_key{key}
         {
         }
 
@@ -40,8 +39,6 @@ public:
 
         KeyRef m_key;
     };
-
-    using Ticket = EvictionTicket;
 
     /// @brief Clears the policy.
     void clear();
@@ -72,7 +69,7 @@ public:
     void on_evict(const Key& key, const CacheItem& item);
 
     [[nodiscard]] Ticket pop_victim();
-    void rollback(Ticket ticket);
+    void                 rollback(Ticket ticket);
 
 private:
     std::list<KeyRef> m_keys;

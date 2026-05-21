@@ -72,13 +72,6 @@ public:
     [[nodiscard]] InsertionTicket   prepare_insert(const Key& key, const CacheItem& item);
     [[nodiscard]] ReplacementTicket prepare_replace(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
 
-    /// @brief Determines whether an insertion candidate can be added into the cache.
-    /// @details That is, whether the constraint would still be satisfied after inserting the candidate.
-    /// @param key The key of the insertion candidate.
-    /// @param item The candidate item.
-    /// @return Whether the item can be added in cache.
-    [[nodiscard]] bool can_add(const Key& key, const CacheItem& item);
-
     /// @brief Returns whether the constraint is satisfied.
     /// @details Used by the cache after a constraint update to compute how many items should be evicted, if any.
     /// @return Whether the cache constraint is satisfied.

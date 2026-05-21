@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <cassert>
+#include <exception>
 
 #include "cachemere/cache.h"
 #include "cachemere/item.h"
@@ -26,14 +27,16 @@ template<typename Key, typename KeyHash, typename Value> class TrackingInsertion
 public:
     using CacheItem = cachemere::Item<Value>;
 
-    void clear() {}
+    void clear()
+    {
+    }
 
-    bool should_add(const Key&) const
+    [[nodiscard]] bool should_add(const Key&) const
     {
         return true;
     }
 
-    bool should_replace(const Key&, const Key&) const
+    [[nodiscard]] bool should_replace(const Key&, const Key&) const
     {
         return true;
     }
@@ -48,26 +51,30 @@ template<typename Key, typename KeyHash, typename Value> class TrackingEvictionP
 {
 public:
     using CacheItem = cachemere::Item<Value>;
-    struct Ticket
-    {
+    struct Ticket {
     public:
         [[nodiscard]] const Key& key() const
         {
-            assert(false);
-            return *static_cast<const Key*>(nullptr);
+            std::terminate();
         }
     };
 
-    void clear() {}
+    void clear()
+    {
+    }
 
-    void on_insert(const Key&, const CacheItem&) {}
+    void on_insert(const Key&, const CacheItem&)
+    {
+    }
 
     void on_cache_hit(const Key&, const CacheItem&)
     {
         ++EventCounters::eviction_hits;
     }
 
-    void on_evict(const Key&, const CacheItem&) {}
+    void on_evict(const Key&, const CacheItem&)
+    {
+    }
 
     [[nodiscard]] Ticket pop_victim()
     {
@@ -83,8 +90,7 @@ template<typename Key, typename KeyHash, typename Value> class TrackingConstrain
 {
 public:
     using CacheItem = cachemere::Item<Value>;
-    struct Ticket
-    {
+    struct Ticket {
         [[nodiscard]] bool is_satisfiable() const
         {
             return true;
@@ -95,10 +101,14 @@ public:
             return true;
         }
 
-        void register_eviction(const Key&, const CacheItem&) {}
+        void register_eviction(const Key&, const CacheItem&)
+        {
+        }
     };
 
-    void clear() {}
+    void clear()
+    {
+    }
 
     [[nodiscard]] Ticket prepare_insert(const Key&, const CacheItem&) const
     {
@@ -110,16 +120,22 @@ public:
         return {};
     }
 
-    void on_insert(const Key&, const CacheItem&) {}
+    void on_insert(const Key&, const CacheItem&)
+    {
+    }
 
-    void on_update(const Key&, const CacheItem&, const CacheItem&) {}
+    void on_update(const Key&, const CacheItem&, const CacheItem&)
+    {
+    }
 
     void on_cache_hit(const Key&, const CacheItem&)
     {
         ++EventCounters::constraint_hits;
     }
 
-    void on_evict(const Key&, const CacheItem&) {}
+    void on_evict(const Key&, const CacheItem&)
+    {
+    }
 };
 
 using TrackingCache = cachemere::Cache<int,

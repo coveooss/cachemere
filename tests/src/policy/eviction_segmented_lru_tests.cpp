@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <ranges>
 #include <string>
 #include <map>
 
@@ -22,17 +23,19 @@ void insert_item(std::string key, int32_t value, TestSLRU& policy, ItemMap& item
     policy.on_insert(key_and_item->first, key_and_item->second);
 }
 
-void expect_victims(TestSLRU& policy, std::vector<std::string> expected_victims)
+void expect_victims(TestSLRU& policy, const std::vector<std::string>& expected_victims)
 {
     std::vector<TestSLRU::Ticket> popped_victims;
-    std::vector<std::string> victims;
+    std::vector<std::string>      victims;
+
     for (size_t i = 0; i < expected_victims.size(); ++i) {
         auto victim = policy.pop_victim();
         victims.push_back(victim.key());
-        popped_victims.push_back(std::move(victim));
+        popped_victims.push_back(victim);
     }
-    for (auto it = popped_victims.rbegin(); it != popped_victims.rend(); ++it) {
-        policy.rollback(std::move(*it));
+
+    for (auto& popped_victim : std::ranges::reverse_view(popped_victims)) {
+        policy.rollback(popped_victim);
     }
     EXPECT_EQ(victims, expected_victims);
 }
@@ -54,7 +57,7 @@ TEST(EvictionSegmentedLRU, BasicInsertEvict)
     // The first victim should be a.
     auto victim = policy.pop_victim();
     EXPECT_EQ("a", victim.key());
-    policy.rollback(std::move(victim));
+    policy.rollback(victim);
 
     // If we touch a, it should be promoted to the protected segment.
     // The first victim should now be b.
@@ -62,7 +65,7 @@ TEST(EvictionSegmentedLRU, BasicInsertEvict)
     policy.on_cache_hit(key_and_item->first, key_and_item->second);
     victim = policy.pop_victim();
     EXPECT_EQ("b", victim.key());
-    policy.rollback(std::move(victim));
+    policy.rollback(victim);
 
     // Before this loop, the probation segment contains [e, d, c, b] and the protected segment contains [a].
     for (auto i = 4; i > 0; --i) {

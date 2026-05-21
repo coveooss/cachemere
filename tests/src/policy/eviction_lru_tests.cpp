@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <map>
+#include <ranges>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -27,14 +28,15 @@ void insert_item(std::string key, int32_t value, TestLRU& policy, ItemMap& item_
 void expect_victims(TestLRU& policy, const std::vector<std::string>& expected_victims)
 {
     std::vector<TestLRU::Ticket> popped_victims;
-    std::vector<std::string> victims;
+    std::vector<std::string>     victims;
     for (size_t i = 0; i < expected_victims.size(); ++i) {
         auto victim = policy.pop_victim();
         victims.push_back(victim.key());
-        popped_victims.push_back(std::move(victim));
+        popped_victims.push_back(victim);
     }
-    for (auto it = popped_victims.rbegin(); it != popped_victims.rend(); ++it) {
-        policy.rollback(std::move(*it));
+
+    for (auto& popped_victim : std::ranges::reverse_view(popped_victims)) {
+        policy.rollback(popped_victim);
     }
     EXPECT_EQ(victims, expected_victims);
 }
@@ -51,7 +53,7 @@ TEST(EvictionLRU, EvictionsWithoutReordering)
     insert_item("c", 1337, policy, item_store);
 
     auto victim = policy.pop_victim();
-    policy.rollback(TestLRU::Ticket{victim});
+    policy.rollback(victim);
 
     EXPECT_EQ("a", victim.key());
 }
