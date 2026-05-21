@@ -41,107 +41,92 @@ public:
     };
 
     /// @brief Clears the policy.
-    void clear();
+    void clear()
+    {
+        m_keys.clear();
+        m_nodes.clear();
+    }
 
     /// @brief Insertion event handler.
     /// @details Inserts the provided item at the front of the list.
     /// @param key The key of the inserted item.
     /// @param item The item that has been inserted in cache.
-    void on_insert(const Key& key, const CacheItem& item);
+    void on_insert(const Key& key, const CacheItem& /* item */)
+    {
+        assert(m_nodes.find(std::ref(key)) == m_nodes.end());  // Validate the item is not already in policy.
+        m_keys.emplace_front(std::ref(key));
+        m_nodes.emplace(std::ref(key), m_keys.begin());
+    }
 
     /// @brief Update event handler.
     /// @details Moves the provided item to the front of the list.
     /// @param key The key that has been updated in the cache.
     /// @param old_item The old value for this key.
     /// @param new_item The new value for this key
-    void on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
+    void on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
+    {
+        on_cache_hit(key, new_item);
+    }
 
     /// @brief Cache hit event handler.
     /// @details Moves the provided item at the front of the list.
     /// @param key The key that has been hit.
     /// @param item The item that has been hit.
-    void on_cache_hit(const Key& key, const CacheItem& item);
+    void on_cache_hit(const Key& key, const CacheItem& /* item */)
+    {
+        auto node_it = m_nodes.find(key);
+        if (node_it != m_nodes.end()) {
+            // No need to shuffle stuff around if item is already the hottest item in cache.
+            if (node_it->second != m_keys.begin()) {
+                m_keys.splice(m_keys.begin(), m_keys, node_it->second);
+            }
+        } else {
+            // If this is tripped, there is a disconnect between the contents of the policy and the contents of the cache.
+            assert(false);
+        }
+    }
 
     /// @brief Eviction event handler.
     /// @details Removes the item at the back of the list - ensuring it has the provided key.
     /// @param key The key that was evicted.
     /// @param item The item that was evicted.
-    void on_evict(const Key& key, const CacheItem& item);
+    void on_evict(const Key& key, const CacheItem& /* item */)
+    {
+        assert(!m_nodes.empty());
+        assert(!m_keys.empty());
 
-    [[nodiscard]] Ticket pop_victim();
-    void                 rollback(Ticket ticket);
+        if (m_keys.back().get() == key) {
+            m_nodes.erase(key);
+            m_keys.pop_back();
+        } else {
+            auto it = m_nodes.find(key);
+            assert(it != m_nodes.end());
+            m_keys.erase(it->second);
+            m_nodes.erase(it);
+        }
+    }
+
+    [[nodiscard]] Ticket pop_victim()
+    {
+        assert(!m_keys.empty());
+
+        const KeyRef victim_key = m_keys.back();
+        m_nodes.erase(victim_key);
+        m_keys.pop_back();
+        return Ticket{victim_key};
+    }
+
+    void rollback(Ticket ticket)
+    {
+        assert(m_nodes.find(ticket.m_key) == m_nodes.end());
+
+        m_keys.emplace_back(ticket.m_key);
+        m_nodes.emplace(ticket.m_key, std::prev(m_keys.end()));
+    }
 
 private:
     std::list<KeyRef> m_keys;
     KeyRefMap         m_nodes;
 };
-
-template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::clear()
-{
-    m_keys.clear();
-    m_nodes.clear();
-}
-
-template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::on_insert(const Key& key, const CacheItem& /* item */)
-{
-    assert(m_nodes.find(std::ref(key)) == m_nodes.end());  // Validate the item is not already in policy.
-
-    m_keys.emplace_front(std::ref(key));
-    m_nodes.emplace(std::ref(key), m_keys.begin());
-}
-
-template<class Key, class KeyHash, class Value>
-void EvictionLRU<Key, KeyHash, Value>::on_update(const Key& key, const CacheItem& /* old_item */, const CacheItem& new_item)
-{
-    on_cache_hit(key, new_item);
-}
-
-template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
-{
-    auto node_it = m_nodes.find(key);
-    if (node_it != m_nodes.end()) {
-        // No need to shuffle stuff around if item is already the hottest item in cache.
-        if (node_it->second != m_keys.begin()) {
-            m_keys.splice(m_keys.begin(), m_keys, node_it->second);
-        }
-    } else {
-        // If this is tripped, there is a disconnect between the contents of the policy and the contents of the cache.
-        assert(false);
-    }
-}
-
-template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::on_evict(const Key& key, const CacheItem& /* item */)
-{
-    assert(!m_nodes.empty());
-    assert(!m_keys.empty());
-
-    if (m_keys.back().get() == key) {
-        m_nodes.erase(key);
-        m_keys.pop_back();
-    } else {
-        auto it = m_nodes.find(key);
-        assert(it != m_nodes.end());
-        m_keys.erase(it->second);
-        m_nodes.erase(it);
-    }
-}
-
-template<class Key, class KeyHash, class Value> auto EvictionLRU<Key, KeyHash, Value>::pop_victim() -> Ticket
-{
-    assert(!m_keys.empty());
-
-    const KeyRef victim_key = m_keys.back();
-    m_nodes.erase(victim_key);
-    m_keys.pop_back();
-    return Ticket{victim_key};
-}
-
-template<class Key, class KeyHash, class Value> void EvictionLRU<Key, KeyHash, Value>::rollback(Ticket ticket)
-{
-    assert(m_nodes.find(ticket.m_key) == m_nodes.end());
-
-    m_keys.emplace_back(ticket.m_key);
-    m_nodes.emplace(ticket.m_key, std::prev(m_keys.end()));
-}
 
 }  // namespace cachemere::policy

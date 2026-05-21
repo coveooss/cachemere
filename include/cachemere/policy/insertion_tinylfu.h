@@ -23,18 +23,28 @@ public:
     using CacheItem = cachemere::Item<Value>;
 
     /// @brief Clears the policy.
-    void clear();
+    void clear()
+    {
+        m_gatekeeper.clear();
+        m_frequency_sketch.clear();
+    }
 
     /// @brief Cache hit event handler.
     /// @details Updates the internal frequency sketches for the given item.
     /// @param key The key that has been hit.
     /// @param item The item that has been hit.
-    void on_cache_hit(const Key& key, const CacheItem& item);
+    void on_cache_hit(const Key& key, const CacheItem& /* item */)
+    {
+        touch_item(key);
+    }
 
     /// @brief Cache miss event handler.
     /// @details Updates the internal frequency sketches for the given key.
     /// @param key The key that was missed.
-    template<typename KeyType> void on_cache_miss(const KeyType& key);
+    template<typename KeyType> void on_cache_miss(const KeyType& key)
+    {
+        touch_item(key);
+    }
 
     /// @brief Set the cardinality of the policy.
     /// @details The set cardinality should be a decent approximation of the cardinality
@@ -42,12 +52,19 @@ public:
     ///          accurate estimate is very important, because an underestimation will severely
     ///          decrease the accuracy of the policy, while an overestimation will use too much memory.
     /// @param cardinality The expected cardinality of the set of items.
-    void set_cardinality(uint32_t cardinality);
+    void set_cardinality(uint32_t cardinality)
+    {
+        m_gatekeeper       = detail::BloomFilter<KeyHash>(cardinality);
+        m_frequency_sketch = detail::CountingBloomFilter<KeyHash>(cardinality);
+    }
 
     /// @brief Determines whether a given key should be inserted into the cache.
     /// @details TinyLFU always accepts insertions of items if there is room for them in the cache.
     /// @param key The key of the insertion candidate.
-    bool should_add(const Key& key);
+    bool should_add(const Key& key)
+    {
+        return m_gatekeeper.maybe_contains(key);
+    }
 
     /// @brief Determines whether a given victim should be replaced by a given candidate.
     /// @details TinyLFU will use its internal sketches to build a frequency
@@ -55,77 +72,43 @@ public:
     ///          that the candidate key is accessed more frequently than the victim key.
     /// @param victim The key of the victim the candidate will be compared to.
     /// @param candidate The replacement candidate.
-    bool should_replace(const Key& victim, const Key& candidate);
+    bool should_replace(const Key& victim, const Key& candidate)
+    {
+        return estimate_count_for_key(candidate) > estimate_count_for_key(victim);
+    }
 
 private:
     const static uint32_t                DEFAULT_CACHE_CARDINALITY = 2000;
     detail::BloomFilter<KeyHash>         m_gatekeeper{DEFAULT_CACHE_CARDINALITY};        // TODO: Investigate using cuckoo filter here instead.
     detail::CountingBloomFilter<KeyHash> m_frequency_sketch{DEFAULT_CACHE_CARDINALITY};  // TODO: Replace with count-min sketch to get rid of cardinality param.
 
-    uint32_t estimate_count_for_key(const Key& key) const;
-    void     reset();
-
-    template<typename KeyType> void touch_item(const KeyType& key);
-};
-
-template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHash, Value>::clear()
-{
-    m_gatekeeper.clear();
-    m_frequency_sketch.clear();
-}
-
-template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHash, Value>::on_cache_hit(const Key& key, const CacheItem& /* item */)
-{
-    touch_item(key);
-}
-
-template<class Key, class KeyHash, class Value> template<class KeyType> void InsertionTinyLFU<Key, KeyHash, Value>::on_cache_miss(const KeyType& key)
-{
-    touch_item(key);
-}
-
-template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHash, Value>::set_cardinality(uint32_t cardinality)
-{
-    m_gatekeeper       = detail::BloomFilter<KeyHash>(cardinality);
-    m_frequency_sketch = detail::CountingBloomFilter<KeyHash>(cardinality);
-}
-
-template<class Key, class KeyHash, class Value> bool InsertionTinyLFU<Key, KeyHash, Value>::should_add(const Key& key)
-{
-    return m_gatekeeper.maybe_contains(key);
-}
-
-template<class Key, class KeyHash, class Value> bool InsertionTinyLFU<Key, KeyHash, Value>::should_replace(const Key& victim, const Key& candidate)
-{
-    return estimate_count_for_key(candidate) > estimate_count_for_key(victim);
-}
-
-template<class Key, class KeyHash, class Value> uint32_t InsertionTinyLFU<Key, KeyHash, Value>::estimate_count_for_key(const Key& key) const
-{
-    uint32_t sketch_estimation = m_frequency_sketch.estimate(key);
-    if (m_gatekeeper.maybe_contains(key)) {
-        ++sketch_estimation;
-    }
-
-    return sketch_estimation;
-}
-
-template<class Key, class KeyHash, class Value> void InsertionTinyLFU<Key, KeyHash, Value>::reset()
-{
-    m_gatekeeper.clear();
-    m_frequency_sketch.decay();
-}
-
-template<class Key, class KeyHash, class Value> template<class KeyType> void InsertionTinyLFU<Key, KeyHash, Value>::touch_item(const KeyType& key)
-{
-    if (m_gatekeeper.maybe_contains(key)) {
-        m_frequency_sketch.add(key);
-        if (m_frequency_sketch.estimate(key) > m_frequency_sketch.cardinality()) {
-            reset();
+    uint32_t estimate_count_for_key(const Key& key) const
+    {
+        uint32_t sketch_estimation = m_frequency_sketch.estimate(key);
+        if (m_gatekeeper.maybe_contains(key)) {
+            ++sketch_estimation;
         }
-    } else {
-        m_gatekeeper.add(key);
+
+        return sketch_estimation;
     }
-}
+
+    void reset()
+    {
+        m_gatekeeper.clear();
+        m_frequency_sketch.decay();
+    }
+
+    template<typename KeyType> void touch_item(const KeyType& key)
+    {
+        if (m_gatekeeper.maybe_contains(key)) {
+            m_frequency_sketch.add(key);
+            if (m_frequency_sketch.estimate(key) > m_frequency_sketch.cardinality()) {
+                reset();
+            }
+        } else {
+            m_gatekeeper.add(key);
+        }
+    }
+};
 
 }  // namespace cachemere::policy
