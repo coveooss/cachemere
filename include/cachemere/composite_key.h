@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <tuple>
 #include <utility>
 
@@ -11,7 +12,7 @@ template<typename... Keys> class CompositeKey
 {
 public:
     template<typename... OtherKeys>
-        requires(sizeof...(OtherKeys) == sizeof...(Keys) && (std::constructible_from<Keys, OtherKeys&&> && ...))
+        requires(sizeof...(OtherKeys) == sizeof...(Keys) && (std::constructible_from<Keys, OtherKeys &&> && ...))
     CompositeKey(OtherKeys&&... keys) : m_keys(std::forward<OtherKeys>(keys)...)
     {
     }

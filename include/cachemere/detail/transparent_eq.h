@@ -1,7 +1,5 @@
 #pragma once
 
-#include <absl/hash/hash.h>
-
 namespace cachemere::detail {
 
 template<typename Key> struct TransparentEq {
@@ -30,7 +28,7 @@ private:
     {
         if constexpr (requires { lhs == rhs; }) {
             return lhs == rhs;
-        } else {
+        } else if constexpr (requires { lhs <=> rhs; }) {
             return (lhs <=> rhs) == 0;
         }
     }

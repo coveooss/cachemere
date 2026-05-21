@@ -93,7 +93,7 @@ public:
     /// @param key The key to lookup.
     /// @param fn The factory function to generate the value if the key is not in cache.
     /// @return The value associated with the key.
-    template<typename KeyView, detail::traits::FactoryFn<KeyView, Value> Fn> Value find_or_insert(const KeyView& key, Fn&& fn) const;
+    template<typename KeyView, detail::traits::FactoryFn<KeyView, Value> Fn> Value find_or_insert(const KeyView& key, Fn&& fn);
 
     /// @brief Copy the cache contents in the provided container.
     /// @details The container should conform to either of the STL's interfaces for associative
@@ -348,7 +348,7 @@ template<class K,
          class KH,
          bool TS>
 template<typename KeyView, detail::traits::FactoryFn<KeyView, V> Fn>
-V Cache<K, V, I, E, C, SV, SK, KH, TS>::find_or_insert(const KeyView& key, Fn&& fn) const
+V Cache<K, V, I, E, C, SV, SK, KH, TS>::find_or_insert(const KeyView& key, Fn&& fn)
 {
     LockGuard guard(lock());
 
@@ -361,7 +361,7 @@ V Cache<K, V, I, E, C, SV, SK, KH, TS>::find_or_insert(const KeyView& key, Fn&& 
     on_cache_miss(key);
 
     V value = fn(key);
-    const_cast<Cache<K, V, I, E, C, SV, SK, KH, TS>*>(this)->insert(K(key), value);
+    insert(K(key), value);
     return value;
 }
 
@@ -982,7 +982,7 @@ template<class K,
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_popped_victim(DataMapIt it)
 {
     if constexpr (detail::traits::event::HasOnEvict<K, KH, V, I>) {
-        m_eviction_policy->on_evict(it->first, it->second);
+        m_insertion_policy->on_evict(it->first, it->second);
     }
 
     if constexpr (detail::traits::event::HasOnEvict<K, KH, V, C>) {
