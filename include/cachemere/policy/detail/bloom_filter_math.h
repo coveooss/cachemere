@@ -1,17 +1,30 @@
+#pragma once
 
-#ifndef CACHEMERE_BLOOM_FILTER_MATH_H
-#define CACHEMERE_BLOOM_FILTER_MATH_H
-
+#include <cassert>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <numbers>
 
 namespace cachemere::policy::detail {
 
 [[nodiscard]] size_t   optimal_filter_size(const uint32_t cardinality) noexcept;
 [[nodiscard]] uint32_t optimal_nb_of_hash_functions(const uint32_t cardinality, const size_t filter_size) noexcept;
 
+inline size_t optimal_filter_size(uint32_t cardinality) noexcept
+{
+    const static double multiplier     = log(0.01) / pow(std::numbers::ln2, 2);
+    const double        ideal_set_size = -static_cast<double>(cardinality) * multiplier;
+
+    assert(ideal_set_size > 1);
+    return static_cast<size_t>(ideal_set_size);
+}
+
+inline uint32_t optimal_nb_of_hash_functions(uint32_t cardinality, size_t filter_size) noexcept
+{
+    const double nb_hashes = (static_cast<double>(filter_size) / static_cast<double>(cardinality)) * std::numbers::ln2;
+    assert(nb_hashes >= 1);
+    return static_cast<uint32_t>(nb_hashes);
+}
+
 }  // namespace cachemere::policy::detail
-
-#include "bloom_filter_math.hpp"
-
-#endif

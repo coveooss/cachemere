@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_POLICY_BIND_H
-#define CACHEMERE_POLICY_BIND_H
+#pragma once
 
 namespace cachemere::policy {
 
@@ -9,5 +8,3 @@ template<template<typename...> class Policy, typename... Args> struct bind {
 };
 
 }  // namespace cachemere::policy
-
-#endif

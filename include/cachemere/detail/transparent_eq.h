@@ -1,5 +1,4 @@
-#ifndef CACHEMERE_TRANSPARENT_EQ_H
-#define CACHEMERE_TRANSPARENT_EQ_H
+#pragma once
 
 #include <absl/hash/hash.h>
 
@@ -28,5 +27,3 @@ template<typename Key> struct TransparentEq {
 };
 
 }  // namespace cachemere::detail
-
-#endif  // CACHEMERE_TRANSPARENT_EQ_H
