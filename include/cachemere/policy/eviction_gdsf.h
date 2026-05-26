@@ -8,10 +8,16 @@
 #include <absl/container/btree_map.h>
 
 #include <cachemere/item.h>
+#include <cachemere/detail/traits.h>
 
 #include "detail/counting_bloom_filter.h"
 
 namespace cachemere::policy {
+
+template<typename T, typename Key, typename Value>
+concept CostFn = requires(T t, Key key, Item<Value> item) {
+    { t(key, item) } -> std::convertible_to<uint64_t>;
+};
 
 /// @brief Greedy-Dual-Size-Frequency (GDSF) eviction policy.
 /// @details Generally, GDSF tries to first evict the items that will be the least costly
@@ -24,7 +30,7 @@ namespace cachemere::policy {
 /// @tparam Cost A functor taking a a `Key&` and a `const Item<Value>&` returning the cost to load this item in cache.
 //          The cost must not exceed 2^64 and should ideally be quite a bit below this limit since the cost of the item is added to the
 //          policy's internal 64-bit clock on every insertion.
-template<typename Key, typename KeyHash, typename Value, typename Cost> class EvictionGDSF
+template<cachemere::detail::traits::Key Key, cachemere::detail::traits::HasherFor<Key> KeyHash, typename Value, CostFn<Key, Value> Cost> class EvictionGDSF
 {
 private:
     using KeyRef = std::reference_wrapper<const Key>;

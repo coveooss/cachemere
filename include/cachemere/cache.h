@@ -47,15 +47,15 @@ namespace cachemere {
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
-template<typename Key,
+template<detail::traits::Key Key,
          typename Value,
          template<class, class, class> class InsertionPolicy,
          template<class, class, class> class EvictionPolicy,
          template<class, class, class> class ConstraintPolicy,
-         typename MeasureValue   = measurement::Size<Value>,
-         typename MeasureKey     = measurement::Size<Key>,
-         typename KeyHash        = absl::Hash<Key>,
-         LockingStrategy Locking = LockingStrategy::Mutex>
+         detail::traits::MeasureFor<Value> MeasureValue = measurement::Size<Value>,
+         detail::traits::MeasureFor<Key>   MeasureKey   = measurement::Size<Key>,
+         detail::traits::HasherFor<Key>    KeyHash      = absl::Hash<Key>,
+         LockingStrategy                   Locking      = LockingStrategy::Mutex>
 class Cache
 {
 public:
@@ -112,7 +112,7 @@ public:
     /// @tparam KeyView The type of the key used for retrieving items.
     /// @param key The key whose presence to test.
     /// @return Whether the key is in cache.
-    template<typename KeyView> bool contains(const KeyView& key) const
+    template<detail::traits::LookupKeyFor<Key, KeyHash> KeyView> bool contains(const KeyView& key) const
     {
         const LockGuard guard{lock()};
         return m_data.find(key) != m_data.end();
@@ -281,7 +281,7 @@ public:
     /// @param predicate_fn The predicate function.
     /// @tparam P The type of the predicate function.
     ///           The predicate should have the signature `bool fn(const Key& key, const Value& value)`.
-    template<typename P> void retain(P predicate_fn)
+    template<detail::traits::PredicateFn<Key, Value> P> void retain(P predicate_fn)
     {
         const LockGuard guard{lock()};
         for (auto it = m_data.begin(); it != m_data.end();) {
@@ -298,7 +298,7 @@ public:
     /// @brief Apply a function to all objects in cache.
     /// @param unary_function The function to be applied to all items in cache.
     ///                       The function should have the signature `void fn(const Key& key, const Value& value)`.
-    template<typename F> void for_each(F unary_function)
+    template<detail::traits::UnaryFn<Key, Value> F> void for_each(F unary_function)
     {
         const LockGuard guard{lock()};
         for (const auto& [key, value] : m_data) {
@@ -751,7 +751,7 @@ private:
     }
 };
 
-template<class K,
+template<detail::traits::Key K,
          class V,
          template<class, class, class> class I,
          template<class, class, class> class E,

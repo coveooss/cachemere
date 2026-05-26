@@ -2,13 +2,15 @@
 
 #include <random>
 
+#include <cachemere/detail/traits.h>
+
 namespace cachemere::policy::detail {
 
 /// @brief Functor used for generating a uniform sequence of numbers in a given value range for a given key.
 /// @tparam Key The type of the key to be used as seed.
 /// @tparam KeyHash The functor to use for turning the provided key into a seed for the internal
 ///                 pseudo-random number generator.
-template<typename Key, typename KeyHash> class HashMixer : private KeyHash
+template<typename Key, cachemere::detail::traits::HasherFor<Key> KeyHash> class HashMixer : private KeyHash
 {
 public:
     /// @brief Constructor.
