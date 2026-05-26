@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <functional>
 
 #include <cachemere/item.h>
 
@@ -16,6 +17,78 @@ template<typename Key, typename KeyHash, typename Value> class ConstraintMemory
     using CacheItem = Item<Value>;
 
 public:
+    class InsertionTicket
+    {
+        friend class ConstraintMemory;
+
+    public:
+        [[nodiscard]] bool is_satisfiable() const
+        {
+            return m_satisfiable;
+        }
+
+        [[nodiscard]] bool is_satisfied() const
+        {
+            return m_memory_freed >= m_memory_to_free;
+        }
+
+        void register_eviction([[maybe_unused]] const Key& key, const CacheItem& item)
+        {
+            m_memory_freed += item.m_total_size;
+        }
+
+    private:
+        InsertionTicket(size_t memory_to_free, bool satisfiable) : m_memory_to_free{memory_to_free}, m_satisfiable{satisfiable}
+        {
+        }
+
+        size_t m_memory_to_free;
+        bool   m_satisfiable;
+        size_t m_memory_freed{};
+    };
+
+    class ReplacementTicket
+    {
+        friend class ConstraintMemory;
+
+    public:
+        [[nodiscard]] bool is_satisfiable() const
+        {
+            return m_satisfiable;
+        }
+
+        [[nodiscard]] bool is_satisfied() const
+        {
+            const size_t required_memory_to_free = m_evicted_original_key ? m_memory_to_free_with_insert : m_memory_to_free_with_replace;
+            return m_memory_freed >= required_memory_to_free;
+        }
+
+        void register_eviction(const Key& key, const CacheItem& item)
+        {
+            if (!m_evicted_original_key && key == m_original_key.get()) {
+                m_evicted_original_key = true;
+            }
+
+            m_memory_freed += item.m_total_size;
+        }
+
+    private:
+        ReplacementTicket(const Key& original_key, size_t memory_to_free_with_replace, size_t memory_to_free_with_insert, bool satisfiable)
+         : m_original_key{original_key},
+           m_memory_to_free_with_replace{memory_to_free_with_replace},
+           m_memory_to_free_with_insert{memory_to_free_with_insert},
+           m_satisfiable{satisfiable}
+        {
+        }
+
+        std::reference_wrapper<const Key> m_original_key;
+        size_t                            m_memory_to_free_with_replace;
+        size_t                            m_memory_to_free_with_insert;
+        bool                              m_satisfiable;
+        bool                              m_evicted_original_key{};
+        size_t                            m_memory_freed{};
+    };
+
     /// @brief Constructor.
     /// @param max_memory The maximum amount of memory to be used by the cache, in bytes.
     explicit ConstraintMemory(size_t max_memory);
@@ -28,15 +101,15 @@ public:
     /// @param key The key of the insertion candidate.
     /// @param item The candidate item.
     /// @return Whether the item can be added in cache.
-    [[nodiscard]] bool can_add(const Key& key, const CacheItem& item);
+    [[nodiscard]] InsertionTicket prepare_insert(const Key& key, const CacheItem& item);
 
-    /// @brief Determines whether an item already in cache can be updated.
-    /// @details That is, whether the key can be updated to the new value while still satisfying the constraint.
-    /// @param key The key to be updated.
+    /// @brief Determines how much memory would need to be freed to insert a candidate.
+    /// @details The returned ticket can be updated with evictions until it becomes satisfied.
+    /// @param key The key of the insertion candidate.
     /// @param old_item The current value of the key in cache.
     /// @param new_item The value that would replace the current value.
-    /// @return Whether the item can be replaced.
-    [[nodiscard]] bool can_replace(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
+    /// @return A ticket describing whether the replacement can be satisfied.
+    [[nodiscard]] ReplacementTicket prepare_replace(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
 
     /// @brief Returns whether the constraint is satisfied.
     /// @details Used by the cache after a constraint update to compute how many items should be evicted, if any.
@@ -90,15 +163,25 @@ template<class K, class KH, class V> void ConstraintMemory<K, KH, V>::clear()
     m_memory = 0;
 }
 
-template<class K, class KH, class V> bool ConstraintMemory<K, KH, V>::can_add(const K& /* key */, const CacheItem& item)
+template<class K, class KH, class V> auto ConstraintMemory<K, KH, V>::prepare_insert(const K& /* key */, const CacheItem& item) -> InsertionTicket
 {
-    return (m_memory + item.m_total_size) <= m_maximum_memory;
+    const size_t memory_to_free = (m_memory + item.m_total_size > m_maximum_memory) ? ((m_memory + item.m_total_size) - m_maximum_memory) : 0;
+    return InsertionTicket{memory_to_free, item.m_total_size <= m_maximum_memory};
 }
 
-template<class K, class KH, class V> bool ConstraintMemory<K, KH, V>::can_replace(const K& /* key */, const CacheItem& old_item, const CacheItem& new_item)
+template<class K, class KH, class V>
+auto ConstraintMemory<K, KH, V>::prepare_replace(const K& key, const CacheItem& old_item, const CacheItem& new_item) -> ReplacementTicket
 {
     assert(old_item.m_key_size == new_item.m_key_size);  // Key size *really* shouldn't have changed since the key is supposed to be const.
-    return ((m_memory - old_item.m_value_size) + new_item.m_value_size) <= m_maximum_memory;
+
+    const size_t memory_to_free_with_replace = ((m_memory - old_item.m_value_size) + new_item.m_value_size > m_maximum_memory)
+                                                   ? (((m_memory - old_item.m_value_size) + new_item.m_value_size) - m_maximum_memory)
+                                                   : 0;
+
+    const size_t memory_to_free_with_insert =
+        (m_memory + new_item.m_total_size > m_maximum_memory) ? ((m_memory + new_item.m_total_size) - m_maximum_memory) : 0;
+
+    return ReplacementTicket{key, memory_to_free_with_replace, memory_to_free_with_insert, new_item.m_total_size <= m_maximum_memory};
 }
 
 template<class K, class KH, class V> bool ConstraintMemory<K, KH, V>::is_satisfied()

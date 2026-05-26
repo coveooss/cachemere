@@ -21,7 +21,9 @@ TEST(ConstraintCount, InitializesMaxCountAndCount)
 TEST(ConstraintCount, CanAddWhenEnoughRoom)
 {
     TestConstraint constraint{2};
-    EXPECT_TRUE(constraint.can_add("asdf", TestItem{1, 1, 1}));
+    const auto     ticket = constraint.prepare_insert("asdf", TestItem{1, 1, 1});
+    EXPECT_TRUE(ticket.is_satisfiable());
+    EXPECT_TRUE(ticket.is_satisfied());
 }
 
 TEST(ConstraintCount, CanAddWhenFull)
@@ -33,7 +35,9 @@ TEST(ConstraintCount, CanAddWhenFull)
     }
 
     EXPECT_EQ(constraint.count(), 2);
-    EXPECT_FALSE(constraint.can_add("asdf", TestItem{1, 1, 1}));
+    const auto ticket = constraint.prepare_insert("asdf", TestItem{1, 1, 1});
+    EXPECT_TRUE(ticket.is_satisfiable());
+    EXPECT_FALSE(ticket.is_satisfied());
 }
 
 TEST(ConstraintCount, CanReplaceWhenThereIsRoom)
@@ -41,7 +45,9 @@ TEST(ConstraintCount, CanReplaceWhenThereIsRoom)
     TestConstraint constraint{2};
     constraint.on_insert("asdf", TestItem{1, 1, 1});
 
-    EXPECT_TRUE(constraint.can_replace("asdf", TestItem{1, 1, 1}, TestItem{2, 2, 2}));
+    const auto ticket = constraint.prepare_replace("asdf", TestItem{1, 1, 1}, TestItem{2, 2, 2});
+    EXPECT_TRUE(ticket.is_satisfiable());
+    EXPECT_TRUE(ticket.is_satisfied());
 }
 
 TEST(ConstraintCount, CanReplaceWhenFull)
@@ -49,7 +55,9 @@ TEST(ConstraintCount, CanReplaceWhenFull)
     TestConstraint constraint{1};
     constraint.on_insert("asdf", TestItem{1, 1, 1});
 
-    EXPECT_TRUE(constraint.can_replace("asdf", TestItem{1, 1, 1}, TestItem{2, 2, 2}));
+    const auto ticket = constraint.prepare_replace("asdf", TestItem{1, 1, 1}, TestItem{2, 2, 2});
+    EXPECT_TRUE(ticket.is_satisfiable());
+    EXPECT_TRUE(ticket.is_satisfied());
 }
 
 TEST(ConstraintCount, OnEvictDecreasesCount)

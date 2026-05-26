@@ -16,25 +16,61 @@ template<typename Key, typename KeyHash, typename Value> class ConstraintCount
     using CacheItem = Item<Value>;
 
 public:
+    class InsertionTicket
+    {
+        friend class ConstraintCount;
+
+    public:
+        [[nodiscard]] bool is_satisfiable() const
+        {
+            return m_satisfiable;
+        }
+
+        [[nodiscard]] bool is_satisfied() const
+        {
+            return m_count_freed >= m_count_to_free;
+        }
+
+        void register_eviction([[maybe_unused]] const Key& key, [[maybe_unused]] const CacheItem& item)
+        {
+            ++m_count_freed;
+        }
+
+    private:
+        InsertionTicket(size_t count_to_free, bool satisfiable) : m_count_to_free{count_to_free}, m_satisfiable{satisfiable}
+        {
+        }
+
+        size_t m_count_to_free;
+        bool   m_satisfiable;
+        size_t m_count_freed{};
+    };
+
+    class ReplacementTicket
+    {
+    public:
+        [[nodiscard]] bool is_satisfiable() const
+        {
+            return true;
+        }
+
+        [[nodiscard]] bool is_satisfied() const
+        {
+            return true;
+        }
+
+        void register_eviction([[maybe_unused]] const Key& key, [[maybe_unused]] const CacheItem& item)
+        {
+        }
+    };
+
     explicit ConstraintCount(size_t maximum_count);
 
     /// @brief Clears the policy.
     void clear();
 
-    /// @brief Determines whether an insertion candidate can be added into the cache.
-    /// @details That is, whether the constraint would still be satisfied after inserting the candidate.
-    /// @param key The key of the insertion candidate.
-    /// @param item The candidate item.
-    /// @return Whether the item can be added in cache.
-    [[nodiscard]] bool can_add(const Key& key, const CacheItem& item);
-
-    /// @brief Determines whether an item already in cache can be updated.
-    /// @details That is, whether the key can be updated to the new value while still satisfying the constraint.
-    /// @param key The key to be updated.
-    /// @param old_item The current value of the key in cache.
-    /// @param new_item The value that would replace the current value.
-    /// @return Whether the item can be replaced.
-    [[nodiscard]] bool can_replace(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
+    [[nodiscard]] InsertionTicket   prepare_insert(const Key& key, const CacheItem& item);
+    [[nodiscard]] ReplacementTicket prepare_replace(const Key& key, const CacheItem& old_item, const CacheItem& new_item);
 
     /// @brief Returns whether the constraint is satisfied.
     /// @details Used by the cache after a constraint update to compute how many items should be evicted, if any.
@@ -81,18 +117,16 @@ template<class K, class KH, class V> void ConstraintCount<K, KH, V>::clear()
     m_count = 0;
 }
 
-template<class K, class KH, class V> bool ConstraintCount<K, KH, V>::can_add(const K& /* key */, const CacheItem& /* item */)
+template<class K, class KH, class V> auto ConstraintCount<K, KH, V>::prepare_insert(const K& /* key */, const CacheItem& /* item */) -> InsertionTicket
 {
-    return m_count < m_maximum_count;
+    const size_t count_to_free = (m_count + 1 > m_maximum_count) ? ((m_count + 1) - m_maximum_count) : 0;
+    return InsertionTicket{count_to_free, m_maximum_count > 0};
 }
 
 template<class K, class KH, class V>
-bool ConstraintCount<K, KH, V>::can_replace(const K& /* key */, const CacheItem& /* old_item */, const CacheItem& /* new_item */)
+auto ConstraintCount<K, KH, V>::prepare_replace(const K& /* key */, const CacheItem& /* old_item */, const CacheItem& /* new_item */) -> ReplacementTicket
 {
-    assert(m_count > 0);
-
-    // Replacement doesn't change the count, so it's always allowed.
-    return true;
+    return ReplacementTicket{};
 }
 
 template<class K, class KH, class V> bool ConstraintCount<K, KH, V>::is_satisfied()
