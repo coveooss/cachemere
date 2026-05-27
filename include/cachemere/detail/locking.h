@@ -5,8 +5,12 @@
 
 namespace cachemere {
 
-/// @brief The locking strategy to use for the cache. This determines the type of mutex used for synchronization.
-enum class LockingStrategy : uint8_t { None, Mutex, TimedMutex };
+/// @brief Selects how a cache instance synchronizes access to its internal state.
+enum class LockingStrategy : uint8_t {
+    None,       //!< Disable synchronization entirely.
+    Mutex,      //!< Use a `std::recursive_mutex` for blocking lock acquisition.
+    TimedMutex  //!< Use a `std::recursive_timed_mutex` to enable timed lock acquisition.
+};
 
 namespace detail {
 

@@ -28,11 +28,15 @@ private:
 public:
     using CacheItem = cachemere::Item<Value>;
 
+    /// @brief Ticket describing an item tentatively removed from the policy.
+    /// @details Tickets let the cache roll back provisional evictions if an insertion is later rejected.
     struct Ticket {
         explicit Ticket(KeyRef key) : m_key{key}
         {
         }
 
+        /// @brief Get the key of the tentatively evicted item.
+        /// @return The cached key reference.
         [[nodiscard]] const Key& key() const
         {
             return m_key;
@@ -107,6 +111,8 @@ public:
         }
     }
 
+    /// @brief Remove and return the next victim according to the LRU ordering.
+    /// @return A ticket that can later be committed by the caller or restored with `rollback()`.
     [[nodiscard]] Ticket pop_victim()
     {
         assert(!m_keys.empty());
@@ -117,6 +123,8 @@ public:
         return Ticket{victim_key};
     }
 
+    /// @brief Restore a victim previously returned by `pop_victim()`.
+    /// @param ticket The ticket describing the victim to restore.
     void rollback(Ticket ticket)
     {
         assert(m_nodes.find(ticket.m_key) == m_nodes.end());

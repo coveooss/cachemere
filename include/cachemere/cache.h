@@ -65,13 +65,17 @@ public:
     using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, Locking>;
     using MutexType          = detail::MutexForT<Locking>;
     using LockGuard          = std::unique_lock<MutexType>;
+
+    /// @brief Result of a non-blocking or timed cache lookup.
     struct TryFindResult {
-        bool                 lock_acquired = false;
-        std::optional<Value> value;
+        bool                 lock_acquired = false;  //!< Whether the cache lock was acquired.
+        std::optional<Value> value;                  //!< The cached value when the lock was acquired and the key was found.
     };
+
+    /// @brief Result of a non-blocking or timed cache insertion attempt.
     struct TryInsertResult {
-        bool lock_acquired = false;
-        bool inserted      = false;
+        bool lock_acquired = false;  //!< Whether the cache lock was acquired.
+        bool inserted      = false;  //!< Whether the key/value pair was inserted after the lock was acquired.
     };
 
     /// @brief Simple constructor.
@@ -146,6 +150,7 @@ public:
     /// @param key The key to lookup.
     /// @param timeout The maximum amount of time to wait for the cache lock.
     /// @return A result indicating whether the lock was acquired and, if so, whether the key was found.
+    /// @note Only available when `Locking` is `LockingStrategy::TimedMutex`.
     template<typename KeyView, typename Rep, typename Period>
     TryFindResult try_find(const KeyView& key, const std::chrono::duration<Rep, Period>& timeout) const
         requires(detail::HasTimedLockingV<Locking>)
@@ -157,12 +162,14 @@ public:
         return TryFindResult{true, find_locked(key)};
     }
 
-    /// @brief Find a given key in cache returning the associated value when it exists, or inserting a new value if it doesn't.
+    /// @brief Find a given key in cache returning the associated value when it exists, or computing a candidate value when it does not.
     /// @tparam KeyView The type of the key used for retrieving items.
     /// @tparam Fn A factory function type, with signature `Value fn(const KeyView& key)`, used to generate the value to insert if the key is not in cache.
     /// @param key The key to lookup.
     /// @param fn The factory function to generate the value if the key is not in cache.
-    /// @return The value associated with the key.
+    /// @return The cached value when present, or the value returned by `fn`.
+    /// @details `fn` is invoked only after a cache miss while the cache lock is held.
+    ///          The computed value is inserted only if the configured insertion, eviction, and constraint policies accept it.
     template<typename KeyView, detail::traits::FactoryFn<KeyView, Value> Fn> Value find_or_insert(const KeyView& key, Fn&& fn)
     {
         const LockGuard guard{lock()};
@@ -235,6 +242,7 @@ public:
     /// @param value The value to store.
     /// @param timeout The maximum amount of time to wait for the cache lock.
     /// @return A result indicating whether the lock was acquired and, if so, whether the item was inserted.
+    /// @note Only available when `Locking` is `LockingStrategy::TimedMutex`.
     template<typename Rep, typename Period>
     TryInsertResult try_insert(Key key, Value value, const std::chrono::duration<Rep, Period>& timeout)
         requires(detail::HasTimedLockingV<Locking>)
@@ -307,7 +315,7 @@ public:
     }
 
     /// @brief Swaps the current cache with another cache of the same type.
-    /// @details Calls `std::terminate` if the cache runs in thread-safe mode and an exception is thrown while locking its mutex.
+    /// @details Calls `std::terminate` if locking is enabled and an exception is thrown while acquiring the cache mutexes.
     /// @param other The cache to swap this instance with.
     void swap(CacheType& other) noexcept
     {

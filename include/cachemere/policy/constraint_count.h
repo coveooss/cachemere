@@ -17,21 +17,29 @@ template<cachemere::detail::traits::Key Key, cachemere::detail::traits::HasherFo
     using CacheItem = Item<Value>;
 
 public:
+    /// @brief Tracks the evictions required before a candidate insertion satisfies the count constraint.
     class InsertionTicket
     {
         friend class ConstraintCount;
 
     public:
+        /// @brief Check whether the candidate could ever be inserted.
+        /// @return Whether the candidate remains admissible after evicting other items.
         [[nodiscard]] bool is_satisfiable() const
         {
             return m_satisfiable;
         }
 
+        /// @brief Check whether enough evictions have been registered.
+        /// @return Whether the insertion constraint is now satisfied.
         [[nodiscard]] bool is_satisfied() const
         {
             return m_count_freed >= m_count_to_free;
         }
 
+        /// @brief Register an item eviction against this ticket.
+        /// @param key The evicted key.
+        /// @param item The evicted item.
         void register_eviction([[maybe_unused]] const Key& key, [[maybe_unused]] const CacheItem& item)
         {
             ++m_count_freed;
@@ -47,19 +55,28 @@ public:
         size_t m_count_freed{};
     };
 
+    /// @brief Ticket describing a replacement under the count constraint.
+    /// @details Replacing an item does not change the item count, so this ticket is always satisfied.
     class ReplacementTicket
     {
     public:
+        /// @brief Check whether the replacement could ever be applied.
+        /// @return Always `true` for count-constrained replacements.
         [[nodiscard]] bool is_satisfiable() const
         {
             return true;
         }
 
+        /// @brief Check whether the replacement currently satisfies the constraint.
+        /// @return Always `true` for count-constrained replacements.
         [[nodiscard]] bool is_satisfied() const
         {
             return true;
         }
 
+        /// @brief Register an eviction against this ticket.
+        /// @param key The evicted key.
+        /// @param item The evicted item.
         void register_eviction([[maybe_unused]] const Key& key, [[maybe_unused]] const CacheItem& item)
         {
         }
@@ -76,12 +93,21 @@ public:
         m_count = 0;
     }
 
+    /// @brief Prepare a ticket describing how many evictions are required before an insertion can proceed.
+    /// @param key The candidate key.
+    /// @param item The candidate item.
+    /// @return A ticket that becomes satisfied as evictions are registered.
     [[nodiscard]] InsertionTicket prepare_insert(const Key& /* key */, const CacheItem& /* item */)
     {
         const size_t count_to_free = (m_count + 1 > m_maximum_count) ? ((m_count + 1) - m_maximum_count) : 0;
         return InsertionTicket{count_to_free, m_maximum_count > 0};
     }
 
+    /// @brief Prepare a ticket describing whether a replacement can proceed.
+    /// @param key The key being replaced.
+    /// @param old_item The current cached item.
+    /// @param new_item The replacement item.
+    /// @return A replacement ticket, which is always satisfied for count-constrained caches.
     [[nodiscard]] ReplacementTicket prepare_replace(const Key& /* key */, const CacheItem& /* old_item */, const CacheItem& /* new_item */)
     {
         return ReplacementTicket{};
