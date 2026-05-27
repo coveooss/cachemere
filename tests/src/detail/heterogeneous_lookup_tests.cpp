@@ -1,3 +1,7 @@
+#include <compare>
+#include <string>
+#include <string_view>
+
 #include <absl/hash/hash.h>
 #include <gtest/gtest.h>
 
@@ -17,6 +21,43 @@ TEST(TransparentEq, CanEqualSelf)
     EXPECT_TRUE(eq(val, std::string_view("asdf")));
     EXPECT_FALSE(eq(val, std::string_view("bing bong")));
     EXPECT_TRUE(eq(val, val.c_str()));
+}
+
+struct SpaceshipType {
+    std::string value;
+
+    std::strong_ordering operator<=>(const SpaceshipType& other) const
+    {
+        return value <=> other.value;
+    }
+};
+
+struct SpaceshipView {
+    std::string_view value;
+
+    std::strong_ordering operator<=>(const SpaceshipType& other) const
+    {
+        return value <=> other.value;
+    }
+};
+
+TEST(TransparentEq, CanEqualWithThreeWayComparison)
+{
+    using EqT = TransparentEq<SpaceshipType>;
+
+    EqT            eq;
+    SpaceshipType  val{"asdf"};
+    SpaceshipType  same{"asdf"};
+    SpaceshipType  other{"bing bong"};
+    SpaceshipView  view{"asdf"};
+    SpaceshipView  other_view{"bing bong"};
+
+    EXPECT_TRUE(eq(val, same));
+    EXPECT_FALSE(eq(val, other));
+    EXPECT_TRUE(eq(val, view));
+    EXPECT_FALSE(eq(val, other_view));
+    EXPECT_TRUE(eq(view, val));
+    EXPECT_FALSE(eq(other_view, val));
 }
 
 TEST(MultiHash, CanHashSingleType)
