@@ -2,41 +2,38 @@
 
 #include <random>
 
+#include <cachemere/detail/traits.h>
+
 namespace cachemere::policy::detail {
 
 /// @brief Functor used for generating a uniform sequence of numbers in a given value range for a given key.
 /// @tparam Key The type of the key to be used as seed.
 /// @tparam KeyHash The functor to use for turning the provided key into a seed for the internal
 ///                 pseudo-random number generator.
-template<typename Key, typename KeyHash> class HashMixer : private KeyHash
+template<typename Key, cachemere::detail::traits::HasherFor<Key> KeyHash> class HashMixer : private KeyHash
 {
 public:
     /// @brief Constructor.
     /// @param key The key to use to seed this instance.
     /// @param value_range The upper bound of the value range.
     ///                    This mixer will return values in the range `[0, value_range)`.
-    HashMixer(const Key& key, size_t value_range);
+    HashMixer(const Key& key, size_t value_range)
+     : KeyHash{},
+       m_rng{static_cast<std::minstd_rand::result_type>(KeyHash::operator()(key))},
+       m_value_range{value_range}
+    {
+    }
 
     /// @brief Generate the next value in the random sequence.
     /// @return The next value in the sequence.
-    [[nodiscard]] size_t operator()();
+    [[nodiscard]] size_t operator()()
+    {
+        return m_rng() % m_value_range;
+    }
 
 private:
     std::minstd_rand m_rng;
     size_t           m_value_range;
 };
-
-template<typename Key, typename KeyHash>
-HashMixer<Key, KeyHash>::HashMixer(const Key& key, size_t value_range)
- : KeyHash{},
-   m_rng{static_cast<std::minstd_rand::result_type>(KeyHash::operator()(key))},
-   m_value_range{value_range}
-{
-}
-
-template<typename Key, typename KeyHash> size_t HashMixer<Key, KeyHash>::operator()()
-{
-    return m_rng() % m_value_range;
-}
 
 }  // namespace cachemere::policy::detail
