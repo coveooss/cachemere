@@ -5,29 +5,30 @@ This page is meant to guide you through the implementation of custom policies.
 ## Shared Characteristics
 ### Construction Requirements
 Insertion and eviction policies _must_ be [default-constructible](http://www.cplusplus.com/reference/type_traits/is_default_constructible/). The constraint policy may take parameters, these parameters will be forwarded to the policy from the cache constructor.
+All policies must implement `void clear()`, which is called when the cache is cleared.
 ### Template Parameters
 Cache policies are templates, which must take exactly three template parameters: `typename Key`, `typename KeyHash`, and `typename Value`.
 If a policy needs additional parameterization, `cachemere::policy::bind` can be used for partial specialization, allowing use with the cache.
 ### Event Handlers
 The policies _may_ define the following event handlers to be notified of changes in the cache. These handlers do not all need to be implemented; a policy only needs to define the handlers that are relevant to its implementation. The cache will detect available handlers on its policies at compile-time, and will only call those that are defined.
-* `void on_insert(K& key, cachemere::detail::Item<V>& item)`
+* `void on_insert(const Key& key, const cachemere::Item<Value>& item)`
 
     Called immediately after a successful insertion in cache.
 
-* `void on_update(K& key, cachemere::detail::Item<V>& item)`
+* `void on_update(const Key& key, const cachemere::Item<Value>& old_item, const cachemere::Item<Value>& new_item)`
 
-    Called immediately after an insertion of an item that was already in cache (which has the effect of updating its value).
+    Called immediately after an insertion of an item that was already in cache, which has the effect of updating its value.
 
-* `void on_cache_hit(K& key, cachemere::detail::Item<V>& item)`
+* `void on_cache_hit(const Key& key, const cachemere::Item<Value>& item)`
 
     Called immediately after a cache hit (a successful call to `cachemere::Cache::find`).
 
-* `template<typename KeyType> void on_cache_miss(const KeyView& key)`
+* `template<typename KeyView> void on_cache_miss(const KeyView& key)`
 
-    Where `KeyType` is a type that hashes to the same value as its corresponding `Key` using `KeyHash`.
+    Where `KeyView` is a type that can be used to look up a `Key` with `KeyHash`.
     Called immediately after a cache miss (an unsuccessful call to `cachemere::Cache::find`).
 
-* `void on_evict(K& key)`
+* `void on_evict(const Key& key, const cachemere::Item<Value>& item)`
 
     Called immediately _before_ dropping the provided key from the cache. The call is done this way to allow policies to keep references to cached items
 instead of copies.
@@ -47,21 +48,32 @@ Policies do not need to take any steps to ensure thread-safety. The cache will p
 
 In addition to the shared requirements above, a constraint policy must implement the following methods in order to be valid:
 
-* `bool can_add(const Key& key, const Item<Value>& item)`
+* `InsertionTicket prepare_insert(const Key& key, const cachemere::Item<Value>& item)`
 
-    Should return `true` if the item can be inserted in the cache while still satisfying the constraint.
-    @note Returning `true` guarantees that the object matching the key will be inserted in cache.
+    Should return a ticket describing whether the item can be inserted immediately, after evictions, or not at all.
 
-* `bool can_replace(const Key& key, const Item<Value>& old_item, const Item<Value>& new_item)`
+* `ReplacementTicket prepare_replace(const Key& key, const cachemere::Item<Value>& old_item, const cachemere::Item<Value>& new_item)`
 
-    Should return `true` if the value associated with `key` can be changed from `old_item` to `new_item` while still
-    satisfying the constraint.
-    @note Returning `true` guarantees that the object matching the key will be updated.
+    Should return a ticket describing whether the value associated with `key` can be changed from `old_item` to `new_item` immediately, after evictions, or not at all.
 
 * `bool is_satisfied()`
 
     Should return `true` if the constraint is currently satisfied. The cache uses this method after a constraint update (e.g. a cache resize)
     to determine whether items should be evicted to make some room.
+
+The `InsertionTicket` and `ReplacementTicket` returned by a constraint policy must implement the following methods:
+
+* `bool is_satisfiable() const`
+
+    Should return `true` if the operation can eventually satisfy the constraint by evicting items.
+
+* `bool is_satisfied() const`
+
+    Should return `true` once enough capacity has been freed for the operation to proceed.
+
+* `void register_eviction(const Key& key, const cachemere::Item<Value>& item)`
+
+    Called for each tentative victim accepted by the insertion policy. The ticket should update its internal accounting using the evicted key and item.
 
 ## Insertion Policy
 
@@ -81,13 +93,13 @@ In addition to the shared requirements above, an insertion policy must implement
 
 In addition to the shared requirements above, an eviction policy must implement the following methods in order to be valid:
 
+* `Ticket pop_victim()`
 
-* `Iterator victim_begin() const`
-
-    Should return an iterator pointing to the first _key_ that should be evicted from the cache.
-    @warning Returning a key from this iterator does not guarantee that the item will be evicted.
+    Should tentatively remove and return the next victim from the eviction policy. `Ticket` must provide `const Key& key() const`.
+    @warning Returning a key from this method does not guarantee that the item will be evicted.
         The policy should only rely on event handlers to track which items are currently in cache.
+    @note If the tentative victim is committed, the eviction policy will not receive an `on_evict` callback for it.
 
-* `Iterator victim_end() const`
+* `void rollback(Ticket ticket)`
 
-    Should return an end iterator. Used to determine whether victim iteration is complete.
+    Should restore a victim previously returned by `pop_victim()`. The cache calls this when an insertion is abandoned after one or more tentative victims have been popped.
