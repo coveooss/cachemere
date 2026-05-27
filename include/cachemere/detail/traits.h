@@ -89,7 +89,7 @@ concept Key = std::movable<T> && std::move_constructible<T> && std::assignable_f
 };
 
 template<typename T, typename V>
-concept HasherFor = requires(T t, V v) {
+concept HasherFor = std::default_initializable<T> && requires(T t, V v) {
     { t(v) } -> std::convertible_to<size_t>;
 };
 
@@ -99,7 +99,7 @@ concept LookupKeyFor = HasherFor<KeyHash, KeyView> && requires(KeyHash hash, Key
 };
 
 template<typename T, typename V>
-concept MeasureFor = requires(T t, V v) {
+concept MeasureFor = std::default_initializable<T> && requires(T t, V v) {
     { t(v) } -> std::convertible_to<size_t>;
 };
 

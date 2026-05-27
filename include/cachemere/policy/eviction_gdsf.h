@@ -87,7 +87,7 @@ public:
     /// @param cardinality The expected cardinality of the set of items.
     void set_cardinality(uint32_t cardinality)
     {
-        m_frequency_sketch = detail::CountingBloomFilter<Key>{cardinality};
+        m_frequency_sketch = detail::CountingBloomFilter<KeyHash>{cardinality};
     }
 
     /// @brief Insertion event handler.
