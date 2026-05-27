@@ -2,8 +2,8 @@
 
 #include <cassert>
 
+#include <cachemere/concepts.h>
 #include <cachemere/item.h>
-#include <cachemere/detail/traits.h>
 
 namespace cachemere::policy {
 
@@ -12,7 +12,7 @@ namespace cachemere::policy {
 /// @tparam Key The type of the keys used to identify items in the cache.
 /// @tparam KeyHash The type of the hasher used to hash item keys.
 /// @tparam Value The type of the values stored in the cache.
-template<cachemere::detail::traits::Key Key, cachemere::detail::traits::HasherFor<Key> KeyHash, typename Value> class ConstraintCount
+template<CacheKey Key, HasherFor<Key> KeyHash, typename Value> class ConstraintCount
 {
     using CacheItem = Item<Value>;
 

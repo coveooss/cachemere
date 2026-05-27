@@ -24,6 +24,7 @@
 #    pragma warning(pop)
 #endif
 
+#include "concepts.h"
 #include "detail/locking.h"
 #include "detail/transparent_eq.h"
 #include "detail/traits.h"
@@ -47,15 +48,15 @@ namespace cachemere {
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
 /// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
-template<detail::traits::Key Key,
+template<CacheKey Key,
          typename Value,
          template<class, class, class> class InsertionPolicy,
          template<class, class, class> class EvictionPolicy,
          template<class, class, class> class ConstraintPolicy,
-         detail::traits::MeasureFor<Value> MeasureValue = measurement::Size<Value>,
-         detail::traits::MeasureFor<Key>   MeasureKey   = measurement::Size<Key>,
-         detail::traits::HasherFor<Key>    KeyHash      = absl::Hash<Key>,
-         LockingStrategy                   Locking      = LockingStrategy::Mutex>
+         MeasureFor<Value> MeasureValue = measurement::Size<Value>,
+         MeasureFor<Key>   MeasureKey   = measurement::Size<Key>,
+         HasherFor<Key>    KeyHash      = absl::Hash<Key>,
+         LockingStrategy   Locking      = LockingStrategy::Mutex>
 class Cache
 {
 public:
@@ -116,7 +117,7 @@ public:
     /// @tparam KeyView The type of the key used for retrieving items.
     /// @param key The key whose presence to test.
     /// @return Whether the key is in cache.
-    template<detail::traits::LookupKeyFor<Key, KeyHash> KeyView> bool contains(const KeyView& key) const
+    template<LookupKeyFor<Key, KeyHash> KeyView> bool contains(const KeyView& key) const
     {
         const LockGuard guard{lock()};
         return m_data.find(key) != m_data.end();
@@ -170,7 +171,7 @@ public:
     /// @return The cached value when present, or the value returned by `fn`.
     /// @details `fn` is invoked only after a cache miss while the cache lock is held.
     ///          The computed value is inserted only if the configured insertion, eviction, and constraint policies accept it.
-    template<typename KeyView, detail::traits::FactoryFn<KeyView, Value> Fn> Value find_or_insert(const KeyView& key, Fn&& fn)
+    template<typename KeyView, FactoryFn<KeyView, Value> Fn> Value find_or_insert(const KeyView& key, Fn&& fn)
     {
         const LockGuard guard{lock()};
 
@@ -190,7 +191,7 @@ public:
     ///          If the provided container has `size()` and `reserve()` methods, `collect_into` will reserve
     ///          the appropriate amount of space in the container before inserting.
     /// @param container The container in which to insert the items.
-    template<detail::traits::CacheContainer<Key, Value> C> void collect_into(C& container) const
+    template<CacheContainer<Key, Value> C> void collect_into(C& container) const
     {
         using namespace detail;
 
@@ -289,7 +290,7 @@ public:
     /// @param predicate_fn The predicate function.
     /// @tparam P The type of the predicate function.
     ///           The predicate should have the signature `bool fn(const Key& key, const Value& value)`.
-    template<detail::traits::PredicateFn<Key, Value> P> void retain(P predicate_fn)
+    template<PredicateFn<Key, Value> P> void retain(P predicate_fn)
     {
         const LockGuard guard{lock()};
         for (auto it = m_data.begin(); it != m_data.end();) {
@@ -306,7 +307,7 @@ public:
     /// @brief Apply a function to all objects in cache.
     /// @param unary_function The function to be applied to all items in cache.
     ///                       The function should have the signature `void fn(const Key& key, const Value& value)`.
-    template<detail::traits::UnaryFn<Key, Value> F> void for_each(F unary_function)
+    template<UnaryFn<Key, Value> F> void for_each(F unary_function)
     {
         const LockGuard guard{lock()};
         for (const auto& [key, value] : m_data) {
@@ -759,7 +760,7 @@ private:
     }
 };
 
-template<detail::traits::Key K,
+template<CacheKey K,
          class V,
          template<class, class, class> class I,
          template<class, class, class> class E,
