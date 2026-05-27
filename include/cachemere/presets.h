@@ -22,15 +22,13 @@ namespace memory {
 
 template<typename Key,
          typename Value,
-         template<class, class, class>
-         class InsertionPolicy,
-         template<class, class, class>
-         class EvictionPolicy,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
-using MemoryConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintMemory, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
+         template<class, class, class> class InsertionPolicy,
+         template<class, class, class> class EvictionPolicy,
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
+using MemoryConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintMemory, MeasureValue, MeasureKey, KeyHash, Locking>;
 
 /// @brief Least-Recently-Used Cache.
 /// @details Uses a linked list to order items from hottest (most recently accessed) to coldest (least recently accessed).
@@ -39,14 +37,14 @@ using MemoryConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
-/// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
-using LRUCache = MemoryConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
+using LRUCache = MemoryConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, KeyHash, Locking>;
 
 /// @brief TinyLFU Cache.
 /// @details Uses a combination of frequency sketches to gather a decent estimate of the access frequency of most keys.
@@ -56,14 +54,14 @@ using LRUCache = MemoryConstrainedCache<Key, Value, policy::InsertionAlways, pol
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
-/// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
-using TinyLFUCache = MemoryConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
+using TinyLFUCache = MemoryConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, KeyHash, Locking>;
 
 /// @brief Custom-Cost Cache.
 /// @details The use of this cache should be favored in scenarios where the cost of a cache miss varies greatly from one item to the next.
@@ -73,14 +71,14 @@ using TinyLFUCache = MemoryConstrainedCache<Key, Value, policy::InsertionTinyLFU
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
-/// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
          typename Cost,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
 using CustomCostCache = MemoryConstrainedCache<Key,
                                                Value,
                                                policy::InsertionAlways,
@@ -88,7 +86,7 @@ using CustomCostCache = MemoryConstrainedCache<Key,
                                                MeasureValue,
                                                MeasureKey,
                                                KeyHash,
-                                               ThreadSafe>;
+                                               Locking>;
 
 }  // namespace memory
 
@@ -97,15 +95,13 @@ namespace count {
 
 template<typename Key,
          typename Value,
-         template<class, class, class>
-         class InsertionPolicy,
-         template<class, class, class>
-         class EvictionPolicy,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
-using CountConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintCount, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
+         template<class, class, class> class InsertionPolicy,
+         template<class, class, class> class EvictionPolicy,
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
+using CountConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy, policy::ConstraintCount, MeasureValue, MeasureKey, KeyHash, Locking>;
 
 /// @brief Least-Recently-Used Cache.
 /// @details Uses a linked list to order items from hottest (most recently accessed) to coldest (least recently accessed).
@@ -114,14 +110,14 @@ using CountConstrainedCache = Cache<Key, Value, InsertionPolicy, EvictionPolicy,
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
-/// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
-using LRUCache = CountConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
+using LRUCache = CountConstrainedCache<Key, Value, policy::InsertionAlways, policy::EvictionLRU, MeasureValue, MeasureKey, KeyHash, Locking>;
 
 /// @brief TinyLFU Cache.
 /// @details Uses a combination of frequency sketches to gather a decent estimate of the access frequency of most keys.
@@ -131,14 +127,14 @@ using LRUCache = CountConstrainedCache<Key, Value, policy::InsertionAlways, poli
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
-/// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
-using TinyLFUCache = CountConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
+using TinyLFUCache = CountConstrainedCache<Key, Value, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU, MeasureValue, MeasureKey, KeyHash, Locking>;
 
 /// @brief Custom-Cost Cache.
 /// @details The use of this cache should be favored in scenarios where the cost of a cache miss varies greatly from one item to the next.
@@ -148,14 +144,14 @@ using TinyLFUCache = CountConstrainedCache<Key, Value, policy::InsertionTinyLFU,
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
-/// @tparam ThreadSafe Whether to protect this cache for concurrent access. (true by default)
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
          typename Cost,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
 using CustomCostCache = CountConstrainedCache<Key,
                                               Value,
                                               policy::InsertionAlways,
@@ -163,7 +159,7 @@ using CustomCostCache = CountConstrainedCache<Key,
                                               MeasureValue,
                                               MeasureKey,
                                               KeyHash,
-                                              ThreadSafe>;
+                                              Locking>;
 }  // namespace count
 
 }  // namespace cachemere::presets
