@@ -18,7 +18,6 @@
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
-#include <boost/hana.hpp>
 
 #ifdef _WIN32
 #    pragma warning(pop)
@@ -95,7 +94,7 @@ public:
     ///          If the provided container has `size()` and `reserve()` methods, `collect_into` will reserve
     ///          the appropriate amount of space in the container before inserting.
     /// @param container The container in which to insert the items.
-    template<typename C> void collect_into(C& container) const;
+    template<detail::traits::CacheContainer<Key, Value> C> void collect_into(C& container) const;
 
     /// @brief Insert a key/value pair in the cache.
     /// @details If the key is new, the key/value pair will be inserted.
@@ -340,28 +339,26 @@ template<class K,
          class SK,
          class KH,
          bool TS>
-template<class Container>
+template<detail::traits::CacheContainer<K, V> Container>
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::collect_into(Container& container) const
 {
     using namespace detail;
 
-    // Use emplace_back if container is a sequence container, or emplace if container is an associative container.
-    constexpr auto emplace_fn = boost::hana::if_(
-        traits::stl::has_emplace_back<Container, K, V>,
-        [](auto& seq_container, const auto& key, const auto& item) { seq_container.emplace_back(key, item.m_value); },
-        [](auto& assoc_container, const auto& key, const auto& item) { assoc_container.emplace(key, item.m_value); });
-
     LockGuard guard(lock());
 
     // Reserve space if the container has a reserve() method and a size method().
-    boost::hana::if_(
-        boost::hana::and_(traits::stl::has_reserve<Container>, traits::stl::has_size<Container>),
-        [&](auto& c) { c.reserve(c.size() + m_data.size()); },
-        [](auto&) {})(container);
+    if constexpr (traits::ReservableContainer<Container>) {
+        container.reserve(container.size() + m_data.size());
+    }
 
     // Copy the cache contents to the container.
     for (const auto& [key, cached_item] : m_data) {
-        emplace_fn(container, key, cached_item);
+        // Use emplace_back if container is a sequence container, or emplace if container is an associative container.
+        if constexpr (traits::SequenceContainer<Container, K, V>) {
+            container.emplace_back(key, cached_item.m_value);
+        } else {
+            container.emplace(key, cached_item.m_value);
+        }
     }
 }
 
@@ -518,8 +515,8 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::swap(CacheType& other) noexcept
         swap(m_hit_rate_acc, other.m_hit_rate_acc);
         swap(m_byte_hit_rate_acc, other.m_byte_hit_rate_acc);
     } catch (const std::system_error& e) {
-        // The only exception that can sensibly be thrown in the above block is a `system_error` when acquiring the mutexes of both caches (if the caches are
-        // running in thread-safe mode).
+        // The only exception that can sensibly be thrown in the above block is a `system_error` when acquiring the mutexes of both caches (if the caches
+        // are running in thread-safe mode).
         //
         // According to the [reference for std mutexes](https://en.cppreference.com/w/cpp/named_req/Mutex), this exception can be thrown for one of two
         // reasons:
@@ -949,14 +946,14 @@ template<class K,
          bool TS>
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_popped_victim(DataMapIt it)
 {
-    boost::hana::if_(
-        detail::traits::event::has_on_evict<K, KH, V, I>,
-        [&](auto& x) { return x.on_evict(it->first, it->second); },
-        [](auto&) {})(*m_insertion_policy);
-    boost::hana::if_(
-        detail::traits::event::has_on_evict<K, KH, V, C>,
-        [&](auto& x) { return x.on_evict(it->first, it->second); },
-        [](auto&) {})(*m_constraint_policy);
+    if constexpr (detail::traits::event::HasOnEvict<K, KH, V, I>) {
+        m_eviction_policy->on_evict(it->first, it->second);
+    }
+
+    if constexpr (detail::traits::event::HasOnEvict<K, KH, V, C>) {
+        m_constraint_policy->on_evict(it->first, it->second);
+    }
+
     m_data.erase(it);
 }
 
@@ -972,11 +969,17 @@ template<class K,
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_insert(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
-    boost::hana::if_(detail::traits::event::has_on_insert<K, KH, V, I>, [&](auto& x) { return x.on_insert(key, item); }, [](auto&) {})(*m_insertion_policy);
+    if constexpr (detail::traits::event::HasOnInsert<K, KH, V, I>) {
+        m_insertion_policy->on_insert(key, item);
+    }
 
-    boost::hana::if_(detail::traits::event::has_on_insert<K, KH, V, E>, [&](auto& x) { return x.on_insert(key, item); }, [](auto&) {})(*m_eviction_policy);
+    if constexpr (detail::traits::event::HasOnInsert<K, KH, V, E>) {
+        m_eviction_policy->on_insert(key, item);
+    }
 
-    boost::hana::if_(detail::traits::event::has_on_insert<K, KH, V, C>, [&](auto& x) { return x.on_insert(key, item); }, [](auto&) {})(*m_constraint_policy);
+    if constexpr (detail::traits::event::HasOnInsert<K, KH, V, C>) {
+        m_constraint_policy->on_insert(key, item);
+    }
 }
 
 template<class K,
@@ -991,20 +994,17 @@ template<class K,
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_update(const K& key, const CacheItem& old_item, const CacheItem& new_item) const
 {
     // Call event handler iif the method is defined in the policy.
-    boost::hana::if_(
-        detail::traits::event::has_on_update<K, KH, V, I>,
-        [&](auto& x) { return x.on_update(key, old_item, new_item); },
-        [](auto&) {})(*m_insertion_policy);
+    if constexpr (detail::traits::event::HasOnUpdate<K, KH, V, I>) {
+        m_insertion_policy->on_update(key, old_item, new_item);
+    }
 
-    boost::hana::if_(
-        detail::traits::event::has_on_update<K, KH, V, E>,
-        [&](auto& x) { return x.on_update(key, old_item, new_item); },
-        [](auto&) {})(*m_eviction_policy);
+    if constexpr (detail::traits::event::HasOnUpdate<K, KH, V, E>) {
+        m_eviction_policy->on_update(key, old_item, new_item);
+    }
 
-    boost::hana::if_(
-        detail::traits::event::has_on_update<K, KH, V, C>,
-        [&](auto& x) { return x.on_update(key, old_item, new_item); },
-        [](auto&) {})(*m_constraint_policy);
+    if constexpr (detail::traits::event::HasOnUpdate<K, KH, V, C>) {
+        m_constraint_policy->on_update(key, old_item, new_item);
+    }
 }
 
 template<class K,
@@ -1023,17 +1023,17 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_hit(const K& key, const Cach
     m_byte_hit_rate_acc(static_cast<uint32_t>(item.m_value_size));
 
     // Call event handler iif the method is defined in the policy.
-    boost::hana::if_(
-        detail::traits::event::has_on_cachehit<K, KH, V, I>,
-        [&](auto& x) { return x.on_cache_hit(key, item); },
-        [](auto&) {})(*m_insertion_policy);
+    if constexpr (detail::traits::event::HasOnCacheHit<K, KH, V, I>) {
+        m_insertion_policy->on_cache_hit(key, item);
+    }
 
-    boost::hana::if_(detail::traits::event::has_on_cachehit<K, KH, V, E>, [&](auto& x) { return x.on_cache_hit(key, item); }, [](auto&) {})(*m_eviction_policy);
+    if constexpr (detail::traits::event::HasOnCacheHit<K, KH, V, E>) {
+        m_eviction_policy->on_cache_hit(key, item);
+    }
 
-    boost::hana::if_(
-        detail::traits::event::has_on_cachehit<K, KH, V, C>,
-        [&](auto& x) { return x.on_cache_hit(key, item); },
-        [](auto&) {})(*m_constraint_policy);
+    if constexpr (detail::traits::event::HasOnCacheHit<K, KH, V, C>) {
+        m_constraint_policy->on_cache_hit(key, item);
+    }
 }
 
 template<class K,
@@ -1053,11 +1053,17 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_miss(const KeyView& key) con
     m_byte_hit_rate_acc(0);
 
     // Call event handler iif the method is defined in the policy.
-    boost::hana::if_(detail::traits::event::has_on_cachemiss<K, KH, V, I>, [&](auto& x) { return x.on_cache_miss(key); }, [](auto&) {})(*m_insertion_policy);
+    if constexpr (detail::traits::event::HasOnCacheMiss<K, KH, V, I>) {
+        m_insertion_policy->on_cache_miss(key);
+    }
 
-    boost::hana::if_(detail::traits::event::has_on_cachemiss<K, KH, V, E>, [&](auto& x) { return x.on_cache_miss(key); }, [](auto&) {})(*m_eviction_policy);
+    if constexpr (detail::traits::event::HasOnCacheMiss<K, KH, V, E>) {
+        m_eviction_policy->on_cache_miss(key);
+    }
 
-    boost::hana::if_(detail::traits::event::has_on_cachemiss<K, KH, V, C>, [&](auto& x) { return x.on_cache_miss(key); }, [](auto&) {})(*m_constraint_policy);
+    if constexpr (detail::traits::event::HasOnCacheMiss<K, KH, V, C>) {
+        m_constraint_policy->on_cache_miss(key);
+    }
 }
 
 template<class K,
@@ -1072,11 +1078,17 @@ template<class K,
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_evict(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
-    boost::hana::if_(detail::traits::event::has_on_evict<K, KH, V, I>, [&](auto& x) { return x.on_evict(key, item); }, [](auto&) {})(*m_insertion_policy);
+    if constexpr (detail::traits::event::HasOnEvict<K, KH, V, I>) {
+        m_insertion_policy->on_evict(key, item);
+    }
 
-    boost::hana::if_(detail::traits::event::has_on_evict<K, KH, V, E>, [&](auto& x) { return x.on_evict(key, item); }, [](auto&) {})(*m_eviction_policy);
+    if constexpr (detail::traits::event::HasOnEvict<K, KH, V, E>) {
+        m_eviction_policy->on_evict(key, item);
+    }
 
-    boost::hana::if_(detail::traits::event::has_on_evict<K, KH, V, C>, [&](auto& x) { return x.on_evict(key, item); }, [](auto&) {})(*m_constraint_policy);
+    if constexpr (detail::traits::event::HasOnEvict<K, KH, V, C>) {
+        m_constraint_policy->on_evict(key, item);
+    }
 }
 
 template<class K,
