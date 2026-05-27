@@ -2,7 +2,7 @@
 
 #include <random>
 
-#include <cachemere/detail/traits.h>
+#include <cachemere/concepts.h>
 
 namespace cachemere::policy::detail {
 
@@ -10,7 +10,7 @@ namespace cachemere::policy::detail {
 /// @tparam Key The type of the key to be used as seed.
 /// @tparam KeyHash The functor to use for turning the provided key into a seed for the internal
 ///                 pseudo-random number generator.
-template<typename Key, cachemere::detail::traits::HasherFor<Key> KeyHash> class HashMixer : private KeyHash
+template<typename Key, HasherFor<Key> KeyHash> class HashMixer : private KeyHash
 {
 public:
     /// @brief Constructor.

@@ -43,18 +43,32 @@ decltype(auto) with_deref_maybe(const std::unique_ptr<T, D>& object, F&& fn)
 }  // namespace detail
 
 /// @brief Get the size of an object via a user-defined `size()` method.
+/// @details Raw pointers, `std::shared_ptr`, and `std::unique_ptr` are dereferenced before calling `size()`.
+///          Pointer-like arguments must not be null.
 template<typename T> struct Size {
+    /// @brief Measure an object or pointer-like wrapper around an object.
+    /// @param object The object to measure.
+    /// @return The result of calling `size()` on the referenced object.
     template<typename V> size_t operator()(const V& object) const;
 };
 
 /// @brief Get the size of an object via `sizeof()`.
+/// @details Returns `sizeof(T)` regardless of the wrapper type passed to `operator()`.
 template<typename T> struct SizeOf {
+    /// @brief Return `sizeof(T)`.
+    /// @param object Unused measurement input.
+    /// @return `sizeof(T)`.
     template<typename V> size_t operator()(const V& object) const;
 };
 
 /// @brief Get the size of an object via a user-defined `capacity()` method.
+/// @details Raw pointers, `std::shared_ptr`, and `std::unique_ptr` are dereferenced before calling `capacity()`.
+///          Small capacities are rounded up to better approximate typical dynamic allocation behavior.
 template<typename T> struct CapacityDynamicallyAllocated {
 public:
+    /// @brief Measure the dynamically allocated capacity of an object.
+    /// @param object The object to measure.
+    /// @return The object's capacity, rounded up for small allocations.
     template<typename V> size_t operator()(const V& object) const;
 
 private:

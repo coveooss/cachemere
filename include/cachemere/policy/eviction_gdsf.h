@@ -7,13 +7,15 @@
 
 #include <absl/container/btree_map.h>
 
+#include <cachemere/concepts.h>
 #include <cachemere/item.h>
-#include <cachemere/detail/traits.h>
 
 #include "detail/counting_bloom_filter.h"
 
 namespace cachemere::policy {
 
+/// @brief Constraint for cost functors used by `EvictionGDSF`.
+/// @details A valid cost functor accepts a key and cached item and returns a value convertible to `uint64_t`.
 template<typename T, typename Key, typename Value>
 concept CostFn = requires(T t, Key key, Item<Value> item) {
     { t(key, item) } -> std::convertible_to<uint64_t>;
@@ -30,7 +32,7 @@ concept CostFn = requires(T t, Key key, Item<Value> item) {
 /// @tparam Cost A functor taking a a `Key&` and a `const Item<Value>&` returning the cost to load this item in cache.
 //          The cost must not exceed 2^64 and should ideally be quite a bit below this limit since the cost of the item is added to the
 //          policy's internal 64-bit clock on every insertion.
-template<cachemere::detail::traits::Key Key, cachemere::detail::traits::HasherFor<Key> KeyHash, typename Value, CostFn<Key, Value> Cost> class EvictionGDSF
+template<CacheKey Key, HasherFor<Key> KeyHash, typename Value, CostFn<Key, Value> Cost> class EvictionGDSF
 {
 private:
     using KeyRef = std::reference_wrapper<const Key>;
@@ -60,6 +62,8 @@ public:
         {
         }
 
+        /// @brief Get the key of the tentatively evicted item.
+        /// @return The cached key reference.
         const Key& key() const
         {
             return m_entry.m_key;
@@ -144,6 +148,9 @@ public:
         m_iterator_map.erase(keyref_and_it);
     }
 
+    /// @brief Remove and return the next victim according to the GDSF ordering.
+    /// @details The internal clock is advanced as part of the tentative eviction and can be restored with `rollback()`.
+    /// @return A ticket that can later be committed by the caller or restored with `rollback()`.
     Ticket pop_victim()
     {
         assert(!m_priority_set.empty());
@@ -159,6 +166,8 @@ public:
         return Ticket{std::move(victim_entry), previous_clock};
     }
 
+    /// @brief Restore a victim previously returned by `pop_victim()`.
+    /// @param ticket The ticket describing the victim to restore.
     void rollback(Ticket ticket)
     {
         const Key& victim_key = ticket.key();

@@ -7,8 +7,8 @@
 
 #include <absl/container/flat_hash_map.h>
 
+#include <cachemere/concepts.h>
 #include <cachemere/item.h>
-#include <cachemere/detail/traits.h>
 
 namespace cachemere::policy {
 
@@ -22,7 +22,7 @@ namespace cachemere::policy {
 /// @tparam Key The type of the keys used to identify items in the cache.
 /// @tparam KeyHash The type of the hasher used to hash item keys.
 /// @tparam Value The type of the values stored in the cache.
-template<cachemere::detail::traits::Key Key, cachemere::detail::traits::HasherFor<Key> KeyHash, typename Value> class EvictionSegmentedLRU
+template<CacheKey Key, HasherFor<Key> KeyHash, typename Value> class EvictionSegmentedLRU
 {
 private:
     using KeyRef    = std::reference_wrapper<const Key>;
@@ -32,11 +32,15 @@ private:
 public:
     using CacheItem = cachemere::Item<Value>;
 
+    /// @brief Ticket describing an item tentatively removed from one of the S-LRU segments.
+    /// @details Tickets retain the segment information needed to roll back a provisional eviction.
     struct Ticket {
         Ticket(KeyRef key, bool from_probation) : m_key{key}, m_from_probation{from_probation}
         {
         }
 
+        /// @brief Get the key of the tentatively evicted item.
+        /// @return The cached key reference.
         [[nodiscard]] const Key& key() const
         {
             return m_key;
@@ -136,6 +140,9 @@ public:
         }
     }
 
+    /// @brief Remove and return the next victim according to the S-LRU ordering.
+    /// @details Victims are taken from the probation segment first, then from the protected segment when probation is empty.
+    /// @return A ticket that can later be committed by the caller or restored with `rollback()`.
     [[nodiscard]] Ticket pop_victim()
     {
         if (!m_probation_list.empty()) {
@@ -144,6 +151,8 @@ public:
         return pop_victim_from_protected();
     }
 
+    /// @brief Restore a victim previously returned by `pop_victim()`.
+    /// @param ticket The ticket describing the victim to restore.
     void rollback(Ticket ticket)
     {
         if (ticket.m_from_probation) {
