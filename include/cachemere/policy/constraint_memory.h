@@ -3,8 +3,8 @@
 #include <cassert>
 #include <functional>
 
+#include <cachemere/concepts.h>
 #include <cachemere/item.h>
-#include <cachemere/detail/traits.h>
 
 namespace cachemere::policy {
 
@@ -13,26 +13,34 @@ namespace cachemere::policy {
 /// @tparam Key The type of the keys used to identify items in the cache.
 /// @tparam KeyHash The type of the hasher used to hash item keys.
 /// @tparam Value The type of the values stored in the cache.
-template<cachemere::detail::traits::Key Key, cachemere::detail::traits::HasherFor<Key> KeyHash, typename Value> class ConstraintMemory
+template<CacheKey Key, HasherFor<Key> KeyHash, typename Value> class ConstraintMemory
 {
     using CacheItem = Item<Value>;
 
 public:
+    /// @brief Tracks the memory that must be freed before a new item can be inserted.
     class InsertionTicket
     {
         friend class ConstraintMemory;
 
     public:
+        /// @brief Check whether the candidate could ever be inserted.
+        /// @return Whether the candidate item can fit within the configured memory budget.
         [[nodiscard]] bool is_satisfiable() const
         {
             return m_satisfiable;
         }
 
+        /// @brief Check whether enough memory has been freed.
+        /// @return Whether the insertion constraint is now satisfied.
         [[nodiscard]] bool is_satisfied() const
         {
             return m_memory_freed >= m_memory_to_free;
         }
 
+        /// @brief Register an item eviction against this ticket.
+        /// @param key The evicted key.
+        /// @param item The evicted item.
         void register_eviction([[maybe_unused]] const Key& key, const CacheItem& item)
         {
             m_memory_freed += item.m_total_size;
@@ -48,22 +56,30 @@ public:
         size_t m_memory_freed{};
     };
 
+    /// @brief Tracks the memory that must be freed before an existing item can be replaced.
     class ReplacementTicket
     {
         friend class ConstraintMemory;
 
     public:
+        /// @brief Check whether the candidate could ever be inserted.
+        /// @return Whether the replacement item can fit within the configured memory budget.
         [[nodiscard]] bool is_satisfiable() const
         {
             return m_satisfiable;
         }
 
+        /// @brief Check whether enough memory has been freed.
+        /// @return Whether the replacement constraint is now satisfied.
         [[nodiscard]] bool is_satisfied() const
         {
             const size_t required_memory_to_free = m_evicted_original_key ? m_memory_to_free_with_insert : m_memory_to_free_with_replace;
             return m_memory_freed >= required_memory_to_free;
         }
 
+        /// @brief Register an item eviction against this ticket.
+        /// @param key The evicted key.
+        /// @param item The evicted item.
         void register_eviction(const Key& key, const CacheItem& item)
         {
             if (!m_evicted_original_key && key == m_original_key.get()) {
@@ -103,11 +119,10 @@ public:
         m_memory = 0;
     }
 
-    /// @brief Determines whether an insertion candidate can be added into the cache.
-    /// @details That is, whether the constraint would still be satisfied after inserting the candidate.
+    /// @brief Prepare a ticket describing how much memory must be freed before an insertion can proceed.
     /// @param key The key of the insertion candidate.
     /// @param item The candidate item.
-    /// @return Whether the item can be added in cache.
+    /// @return A ticket that becomes satisfied as evictions are registered.
     [[nodiscard]] InsertionTicket prepare_insert(const Key& /* key */, const CacheItem& item)
     {
         const size_t memory_to_free = (m_memory + item.m_total_size > m_maximum_memory) ? ((m_memory + item.m_total_size) - m_maximum_memory) : 0;

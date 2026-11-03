@@ -20,6 +20,15 @@ namespace cachemere::presets {
 /// @brief Memory-constrained cache presets.
 namespace memory {
 
+/// @brief Alias for caches constrained by total memory usage.
+/// @tparam Key The cache key type.
+/// @tparam Value The cache value type.
+/// @tparam InsertionPolicy The insertion policy template.
+/// @tparam EvictionPolicy The eviction policy template.
+/// @tparam MeasureValue A functor returning the size of a cache value.
+/// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A callable type returning a hash of a key.
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
          template<class, class, class> class InsertionPolicy,
@@ -93,6 +102,15 @@ using CustomCostCache = MemoryConstrainedCache<Key,
 /// @brief Count-constrained cache presets.
 namespace count {
 
+/// @brief Alias for caches constrained by item count.
+/// @tparam Key The cache key type.
+/// @tparam Value The cache value type.
+/// @tparam InsertionPolicy The insertion policy template.
+/// @tparam EvictionPolicy The eviction policy template.
+/// @tparam MeasureValue A functor returning the size of a cache value.
+/// @tparam MeasureKey A functor returning the size of a cache key.
+/// @tparam KeyHash A callable type returning a hash of a key.
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
          template<class, class, class> class InsertionPolicy,
