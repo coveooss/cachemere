@@ -13,11 +13,22 @@ TEST(BloomFilter, BasicAdd)
     ASSERT_TRUE(filter.maybe_contains("hello world"));
 }
 
+// Unlike `absl::Hash`, which is seeded differently in each process, this hash gives the same false positives on every run.
+struct SplitMix64Hash {
+    size_t operator()(uint32_t value) const
+    {
+        uint64_t z = value + 0x9e3779b97f4a7c15ULL;
+        z          = (z ^ (z >> 30U)) * 0xbf58476d1ce4e5b9ULL;
+        z          = (z ^ (z >> 27U)) * 0x94d049bb133111ebULL;
+        return static_cast<size_t>(z ^ (z >> 31U));
+    }
+};
+
 TEST(BloomFilter, FalsePositiveRate)
 {
     const uint32_t cardinality = 100;
 
-    BloomFilter<absl::Hash<uint32_t>> filter{cardinality};
+    BloomFilter<SplitMix64Hash> filter{cardinality};
 
     for (uint32_t i = 0; i < cardinality; ++i) {
         filter.add(i);

@@ -28,7 +28,8 @@ private:
     {
         if constexpr (requires { lhs == rhs; }) {
             return lhs == rhs;
-        } else if constexpr (requires { lhs <=> rhs; }) {
+        } else {
+            // With neither `==` nor `<=>`, this fails to compile instead of returning nothing.
             return (lhs <=> rhs) == 0;
         }
     }

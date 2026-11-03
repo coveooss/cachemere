@@ -1,7 +1,9 @@
 #pragma once
 
 #include <concepts>
+#include <string_view>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 
 #include "detail/traits.h"
@@ -52,6 +54,9 @@ private:
             h = H::combine_contiguous(std::move(h), key.c_str(), key.size());
         } else if constexpr (detail::traits::BasicStringView<T>) {
             h = H::combine_contiguous(std::move(h), key.data(), key.size());
+        } else if constexpr (std::is_same_v<T, const char*>) {
+            // Hash C strings by content, like the strings and string views they compare equal to.
+            HashTuple(h, key == nullptr ? std::string_view{} : std::string_view{key});
         } else {
             h = H::combine(std::move(h), key);
         }
