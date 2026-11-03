@@ -1,53 +1,39 @@
 {
-  "name": "cachemere",
-  "version-semver": "0.3.0",
-  "dependencies": [
-    {
-      "name": "abseil",
-      "version>=": "20220623.1",
-      "features": [
-        "cxx17"
-      ]
+    "name": "cachemere",
+    "version-semver": "0.3.0",
+    "dependencies": [
+        {
+            "name": "abseil",
+            "version>=": "20220623.1",
+            "features": ["cxx17"]
+        },
+        {
+            "name": "vcpkg-cmake",
+            "version>=": "2021-02-28",
+            "host": true,
+            "$comment": "This transitive dependency needs to be specified explicitly."
+        },
+        {
+            "name": "vcpkg-cmake-config",
+            "version>=": "2021-02-26",
+            "host": true,
+            "$comment": "This transitive dependency needs to be specified explicitly."
+        }
+    ],
+    "default-features": ["boost"],
+    "features": {
+        "boost": {
+            "description": "Use boost from vcpkg",
+            "dependencies": ["boost-accumulators", "boost-dynamic-bitset"]
+        },
+        "tests": {
+            "description": "The unit tests",
+            "dependencies": ["gtest"]
+        },
+        "benchmarks": {
+            "description": "The accuracy and performance benchmarks",
+            "dependencies": ["benchmark", "gtest", "tbb"]
+        }
     },
-    {
-      "name": "vcpkg-cmake",
-      "version>=": "2021-02-28",
-      "host": true,
-      "$comment": "This transitive dependency needs to be specified explicitly."
-    },
-    {
-      "name": "vcpkg-cmake-config",
-      "version>=": "2021-02-26",
-      "host": true,
-      "$comment": "This transitive dependency needs to be specified explicitly."
-    }
-  ],
-  "default-features": [
-    "boost"
-  ],
-  "features": {
-    "boost": {
-      "description": "Use boost from vcpkg",
-      "dependencies": [
-        "boost-accumulators",
-        "boost-dynamic-bitset",
-        "boost-hana"
-      ]
-    },
-    "tests": {
-      "description": "The unit tests",
-      "dependencies": [
-        "gtest"
-      ]
-    },
-    "benchmarks": {
-      "description": "The accuracy and performance benchmarks",
-      "dependencies": [
-        "benchmark",
-        "gtest",
-        "tbb"
-      ]
-    }
-  },
-  "builtin-baseline": "3304e4ed22ae8e2a586ec4399c7d933f09475331"
+    "builtin-baseline": "3304e4ed22ae8e2a586ec4399c7d933f09475331"
 }
