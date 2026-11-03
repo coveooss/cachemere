@@ -87,6 +87,7 @@ target_sources(cachemere
         INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/cache.h>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/composite_key.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/hash.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/item.h>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/cachemere/measurement.h>

@@ -87,6 +87,14 @@ public:
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
     template<typename KeyView> std::optional<Value> find(const KeyView& key) const;
 
+    /// @brief Find a given key in cache returning the associated value when it exists, or inserting a new value if it doesn't.
+    /// @tparam KeyView The type of the key used for retrieving items.
+    /// @tparam Fn A factory function type, with signature `Value fn(const KeyView& key)`, used to generate the value to insert if the key is not in cache.
+    /// @param key The key to lookup.
+    /// @param fn The factory function to generate the value if the key is not in cache.
+    /// @return The value associated with the key.
+    template<typename KeyView, detail::traits::FactoryFn<KeyView, Value> Fn> Value find_or_insert(const KeyView& key, Fn&& fn);
+
     /// @brief Copy the cache contents in the provided container.
     /// @details The container should conform to either of the STL's interfaces for associative
     ///          containers or for sequence containers.
@@ -328,6 +336,33 @@ std::optional<V> Cache<K, V, I, E, C, SV, SK, KH, TS>::find(const KeyView& key) 
 
     on_cache_miss(key);
     return std::nullopt;
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
+template<typename KeyView, detail::traits::FactoryFn<KeyView, V> Fn>
+V Cache<K, V, I, E, C, SV, SK, KH, TS>::find_or_insert(const KeyView& key, Fn&& fn)
+{
+    LockGuard guard(lock());
+
+    auto key_and_item = m_data.find(key);
+    if (key_and_item != m_data.end()) {
+        on_cache_hit(key_and_item->first, key_and_item->second);
+        return key_and_item->second.m_value;
+    }
+
+    on_cache_miss(key);
+
+    V value = fn(key);
+    insert(K(key), value);
+    return value;
 }
 
 template<class K,
@@ -947,7 +982,7 @@ template<class K,
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_popped_victim(DataMapIt it)
 {
     if constexpr (detail::traits::event::HasOnEvict<K, KH, V, I>) {
-        m_eviction_policy->on_evict(it->first, it->second);
+        m_insertion_policy->on_evict(it->first, it->second);
     }
 
     if constexpr (detail::traits::event::HasOnEvict<K, KH, V, C>) {

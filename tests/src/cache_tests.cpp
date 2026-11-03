@@ -122,6 +122,33 @@ TYPED_TEST(CacheTest, SingleThread)
     EXPECT_GT(hit_rate, 0.8);
 }
 
+TYPED_TEST(CacheTest, FindOrInsertCachesFactoryResult)
+{
+    auto cache = TestFixture::new_cache(150);
+
+    uint32_t factory_call_count = 0;
+
+    const auto inserted = cache->find_or_insert(7, [&](const uint32_t& key) {
+        ++factory_call_count;
+        return Point3D{key, key, key};
+    });
+
+    EXPECT_EQ(inserted, (Point3D{7, 7, 7}));
+    EXPECT_EQ(factory_call_count, 1);
+
+    const auto fetched = cache->find(7);
+    ASSERT_TRUE(fetched.has_value());
+    EXPECT_EQ(*fetched, inserted);
+
+    const auto cached = cache->find_or_insert(7, [&](const uint32_t&) {
+        ++factory_call_count;
+        return Point3D{99, 99, 99};
+    });
+
+    EXPECT_EQ(cached, inserted);
+    EXPECT_EQ(factory_call_count, 1);
+}
+
 TYPED_TEST(CacheTest, MultiThreadLong)
 {
     const size_t item_count          = 10000;

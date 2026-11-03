@@ -23,6 +23,7 @@ target_sources(cachemere_tests
         src/measurement_tests.cpp
         src/event_dispatch_tests.cpp
         src/detail/heterogeneous_lookup_tests.cpp
+        src/detail/composite_key_tests.cpp
         src/policy/constraint_count_tests.cpp
         src/policy/constraint_memory_tests.cpp
         src/policy/eviction_lru_tests.cpp

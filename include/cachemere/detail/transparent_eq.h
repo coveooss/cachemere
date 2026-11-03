@@ -1,7 +1,5 @@
 #pragma once
 
-#include <absl/hash/hash.h>
-
 namespace cachemere::detail {
 
 template<typename Key> struct TransparentEq {
@@ -10,19 +8,29 @@ template<typename Key> struct TransparentEq {
 
     bool operator()(const Key& a, const Key& b) const
     {
-        return a == b;
+        return equal(a, b);
     }
 
     template<typename KeyView> bool operator()(const Key& a, const KeyView& b) const
     {
-        // We only require operator==(const Key&) to be defined on the KeyView.
-        return b == a;
+        // We only require equality or three-way comparison against `Key` to be defined on the KeyView.
+        return equal(b, a);
     }
 
     template<typename KeyView> bool operator()(const KeyView& a, const Key& b) const
     {
-        // We only require operator==(const Key&) to be defined on the KeyView.
-        return a == b;
+        // We only require equality or three-way comparison against `Key` to be defined on the KeyView.
+        return equal(a, b);
+    }
+
+private:
+    template<typename Lhs, typename Rhs> static bool equal(const Lhs& lhs, const Rhs& rhs)
+    {
+        if constexpr (requires { lhs == rhs; }) {
+            return lhs == rhs;
+        } else if constexpr (requires { lhs <=> rhs; }) {
+            return (lhs <=> rhs) == 0;
+        }
     }
 };
 
