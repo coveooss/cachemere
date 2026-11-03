@@ -7,6 +7,7 @@
 #include <utility>
 
 #include <cachemere/item.h>
+#include <cachemere/detail/transparent_eq.h>
 
 namespace cachemere::detail::traits {
 
@@ -81,5 +82,35 @@ concept HasOnEvict = requires(P<K, KH, V> policy, K key, Item<V> item) {
 };
 
 }  // namespace event
+
+template<typename T>
+concept Key = std::movable<T> && std::move_constructible<T> && std::assignable_from<T&, T&&> && requires(T t) {
+    { t == t } -> std::convertible_to<bool>;
+};
+
+template<typename T, typename V>
+concept HasherFor = std::default_initializable<T> && requires(T t, V v) {
+    { t(v) } -> std::convertible_to<size_t>;
+};
+
+template<typename KeyView, typename Key, typename KeyHash>
+concept LookupKeyFor = HasherFor<KeyHash, KeyView> && requires(KeyHash hash, KeyView key_view, Key key) {
+    { TransparentEq<Key>{}(key, key_view) } -> std::same_as<bool>;
+};
+
+template<typename T, typename V>
+concept MeasureFor = std::default_initializable<T> && requires(T t, V v) {
+    { t(v) } -> std::convertible_to<size_t>;
+};
+
+template<typename T, typename Key, typename Value>
+concept PredicateFn = requires(T t, Key key, Value value) {
+    { t(key, value) } -> std::same_as<bool>;
+};
+
+template<typename T, typename Key, typename Value>
+concept UnaryFn = requires(T t, Key key, Value value) {
+    { t(key, value) } -> std::same_as<void>;
+};
 
 }  // namespace cachemere::detail::traits

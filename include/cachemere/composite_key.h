@@ -37,7 +37,7 @@ private:
     template<typename H, typename T> static void HashTuple(H& h, const T& key)
     {
         if constexpr (detail::traits::BasicString<T>) {
-            h = H::combine_contiguous(std::move(h), key.data(), key.size());
+            h = H::combine_contiguous(std::move(h), key.c_str(), key.size());
         } else if constexpr (detail::traits::BasicStringView<T>) {
             h = H::combine_contiguous(std::move(h), key.data(), key.size());
         } else {
