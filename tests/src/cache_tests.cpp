@@ -1,8 +1,10 @@
 #include <gtest/gtest.h>
 
-#include <list>
 #include <atomic>
+#include <chrono>
 #include <functional>
+#include <future>
+#include <list>
 #include <map>
 #include <memory>
 #include <random>
@@ -51,6 +53,36 @@ using MemoryCustomCostCache = presets::memory::CustomCostCache<uint32_t, Point3D
 using CountLRUCache        = presets::count::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 using CountTinyLFUCache    = presets::count::TinyLFUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
 using CountCustomCostCache = presets::count::CustomCostCache<uint32_t, Point3D, RandomCost, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>>;
+using TimedMemoryLRUCache  = Cache<uint32_t,
+                                   Point3D,
+                                   policy::InsertionAlways,
+                                   policy::EvictionLRU,
+                                   policy::ConstraintMemory,
+                                   measurement::SizeOf<Point3D>,
+                                   measurement::SizeOf<uint32_t>,
+                                   absl::Hash<uint32_t>,
+                                   LockingStrategy::TimedMutex>;
+
+template<typename BaseCache> class LockExposingCache : public BaseCache
+{
+public:
+    using BaseCache::BaseCache;
+    using BaseCache::lock;
+};
+
+using TryMemoryLRUCache      = LockExposingCache<MemoryLRUCache>;
+using TimedTryMemoryLRUCache = LockExposingCache<TimedMemoryLRUCache>;
+
+template<typename CacheT>
+concept HasTimedTryFind = requires(CacheT cache) { cache.try_find(uint32_t{}, std::chrono::milliseconds{1}); };
+
+template<typename CacheT>
+concept HasTimedTryInsert = requires(CacheT cache) { cache.try_insert(uint32_t{}, Point3D{1, 1, 1}, std::chrono::milliseconds{1}); };
+
+static_assert(!HasTimedTryFind<TryMemoryLRUCache>);
+static_assert(!HasTimedTryInsert<TryMemoryLRUCache>);
+static_assert(HasTimedTryFind<TimedTryMemoryLRUCache>);
+static_assert(HasTimedTryInsert<TimedTryMemoryLRUCache>);
 
 template<typename CacheT> class CacheTest : public testing::Test
 {
@@ -147,6 +179,114 @@ TYPED_TEST(CacheTest, FindOrInsertCachesFactoryResult)
 
     EXPECT_EQ(cached, inserted);
     EXPECT_EQ(factory_call_count, 1);
+}
+
+TEST(CacheTryTest, TryFindAndTryInsertWithoutContention)
+{
+    TryMemoryLRUCache cache{150};
+
+    const auto missing = cache.try_find(7);
+    EXPECT_TRUE(missing.lock_acquired);
+    EXPECT_FALSE(missing.value.has_value());
+
+    const auto inserted = cache.try_insert(7, Point3D{7, 7, 7});
+    EXPECT_TRUE(inserted.lock_acquired);
+    EXPECT_TRUE(inserted.inserted);
+
+    const auto found = cache.try_find(7);
+    EXPECT_TRUE(found.lock_acquired);
+    ASSERT_TRUE(found.value.has_value());
+    EXPECT_EQ(*found.value, (Point3D{7, 7, 7}));
+}
+
+TEST(CacheTryTest, TryInsertReportsConstraintRejection)
+{
+    TryMemoryLRUCache cache{sizeof(uint32_t)};
+
+    const auto result = cache.try_insert(1, Point3D{1, 1, 1});
+    EXPECT_TRUE(result.lock_acquired);
+    EXPECT_FALSE(result.inserted);
+}
+
+TEST(CacheTryTest, TryOperationsFailWhenLockIsUnavailable)
+{
+    TryMemoryLRUCache        cache{150};
+    std::promise<void>       locked_promise;
+    std::shared_future<void> locked_future(locked_promise.get_future());
+    std::promise<void>       release_promise;
+    std::shared_future<void> release_future(release_promise.get_future());
+
+    std::thread holder([&]() {
+        auto guard = cache.lock();
+        locked_promise.set_value();
+        release_future.wait();
+    });
+
+    locked_future.wait();
+
+    const auto find_result = cache.try_find(7);
+    EXPECT_FALSE(find_result.lock_acquired);
+    EXPECT_FALSE(find_result.value.has_value());
+
+    const auto insert_result = cache.try_insert(7, Point3D{7, 7, 7});
+    EXPECT_FALSE(insert_result.lock_acquired);
+    EXPECT_FALSE(insert_result.inserted);
+
+    release_promise.set_value();
+    holder.join();
+}
+
+TEST(CacheTryTest, TimedTryOperationsTimeoutWhenLockStaysUnavailable)
+{
+    TimedTryMemoryLRUCache   cache{150};
+    std::promise<void>       locked_promise;
+    std::shared_future<void> locked_future(locked_promise.get_future());
+    std::promise<void>       release_promise;
+    std::shared_future<void> release_future(release_promise.get_future());
+
+    std::thread holder([&]() {
+        auto guard = cache.lock();
+        locked_promise.set_value();
+        release_future.wait();
+    });
+
+    locked_future.wait();
+
+    const auto find_result = cache.try_find(7, std::chrono::milliseconds{10});
+    EXPECT_FALSE(find_result.lock_acquired);
+    EXPECT_FALSE(find_result.value.has_value());
+
+    const auto insert_result = cache.try_insert(7, Point3D{7, 7, 7}, std::chrono::milliseconds{10});
+    EXPECT_FALSE(insert_result.lock_acquired);
+    EXPECT_FALSE(insert_result.inserted);
+
+    release_promise.set_value();
+    holder.join();
+}
+
+TEST(CacheTryTest, TimedTryOperationsSucceedWhenLockBecomesAvailableBeforeTimeout)
+{
+    TimedTryMemoryLRUCache   cache{150};
+    std::promise<void>       locked_promise;
+    std::shared_future<void> locked_future(locked_promise.get_future());
+
+    std::thread holder([&]() {
+        auto guard = cache.lock();
+        locked_promise.set_value();
+        std::this_thread::sleep_for(std::chrono::milliseconds{20});
+    });
+
+    locked_future.wait();
+
+    const auto find_result = cache.try_find(7, std::chrono::milliseconds{100});
+    EXPECT_TRUE(find_result.lock_acquired);
+    EXPECT_FALSE(find_result.value.has_value());
+
+    const auto insert_result = cache.try_insert(7, Point3D{7, 7, 7}, std::chrono::milliseconds{100});
+    EXPECT_TRUE(insert_result.lock_acquired);
+    EXPECT_TRUE(insert_result.inserted);
+
+    holder.join();
 }
 
 TYPED_TEST(CacheTest, MultiThreadLong)
@@ -401,7 +541,7 @@ TEST(CacheTest, NoKeyCopyOnImportConstruction)
 TEST(CacheTest, SingleThreadSwapDoesntThrow)
 {
     using SingleThreadCache =
-        presets::memory::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>, absl::Hash<uint32_t>, false>;
+        presets::memory::LRUCache<uint32_t, Point3D, measurement::SizeOf<Point3D>, measurement::SizeOf<uint32_t>, absl::Hash<uint32_t>, LockingStrategy::None>;
 
     SingleThreadCache cache_a{10 * sizeof(Point3D)};
     SingleThreadCache cache_b{10 * sizeof(Point3D)};

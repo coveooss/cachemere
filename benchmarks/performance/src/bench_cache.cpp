@@ -7,6 +7,7 @@
 #include <absl/hash/hash.h>
 
 #include "cachemere.h"
+#include "cachemere/detail/locking.h"
 
 using namespace cachemere;
 
@@ -19,9 +20,9 @@ struct Cost {
 
 template<typename Key, typename KeyHash, typename Value> using TestGDSF = policy::EvictionGDSF<Key, KeyHash, Value, Cost>;
 
-#define CACHEMERE_POLICY_BENCH(test, insertion, eviction)                                                                        \
-    BENCHMARK_TEMPLATE(test, insertion, eviction, true)->ArgsProduct({{1, 1000, 10000, 100000}})->Complexity()->UseManualTime(); \
-    BENCHMARK_TEMPLATE(test, insertion, eviction, false)->ArgsProduct({{1, 1000, 10000, 100000}})->Complexity()->UseManualTime()
+#define CACHEMERE_POLICY_BENCH(test, insertion, eviction)                                                                                          \
+    BENCHMARK_TEMPLATE(test, insertion, eviction, LockingStrategy::Mutex)->ArgsProduct({{1, 1000, 10000, 100000}})->Complexity()->UseManualTime(); \
+    BENCHMARK_TEMPLATE(test, insertion, eviction, LockingStrategy::None)->ArgsProduct({{1, 1000, 10000, 100000}})->Complexity()->UseManualTime()
 
 #define CACHEMERE_BENCH(test)                                                             \
     CACHEMERE_POLICY_BENCH(test, policy::InsertionAlways, policy::EvictionLRU);           \
@@ -31,7 +32,7 @@ template<typename Key, typename KeyHash, typename Value> using TestGDSF = policy
     CACHEMERE_POLICY_BENCH(test, policy::InsertionTinyLFU, policy::EvictionSegmentedLRU); \
     CACHEMERE_POLICY_BENCH(test, policy::InsertionTinyLFU, TestGDSF)
 
-template<template<class, class, class> class I, template<class, class, class> class E, bool ThreadSafe>
+template<template<class, class, class> class I, template<class, class, class> class E, LockingStrategy Locking>
 using BenchCache = Cache<std::string,
                          std::string,
                          I,
@@ -40,7 +41,7 @@ using BenchCache = Cache<std::string,
                          measurement::CapacityDynamicallyAllocated<std::string>,
                          measurement::CapacityDynamicallyAllocated<std::string>,
                          absl::Hash<std::string>,
-                         ThreadSafe>;
+                         Locking>;
 
 template<class C> std::unique_ptr<C> setup(size_t item_count)
 {
@@ -62,11 +63,11 @@ template<class C> std::unique_ptr<C> setup(size_t item_count)
     return cache;
 }
 
-template<template<class, class, class> class Insertion, template<class, class, class> class Eviction, bool ThreadSafe>
+template<template<class, class, class> class Insertion, template<class, class, class> class Eviction, LockingStrategy Locking>
 void cache_insert(benchmark::State& state)
 {
     const size_t previous_insertions = state.range(0);
-    auto         cache               = setup<BenchCache<Insertion, Eviction, ThreadSafe>>(previous_insertions);
+    auto         cache               = setup<BenchCache<Insertion, Eviction, Locking>>(previous_insertions);
 
     for (auto _ : state) {
         const std::string key = "key";
@@ -81,15 +82,16 @@ void cache_insert(benchmark::State& state)
         state.SetIterationTime(elapsed_seconds.count());
     }
 
-    state.SetComplexityN(previous_insertions);
+    state.SetComplexityN(static_cast<int64_t>(previous_insertions));
 }
 
 CACHEMERE_BENCH(cache_insert);
 
-template<template<class, class, class> class Insertion, template<class, class, class> class Eviction, bool ThreadSafe> void cache_find(benchmark::State& state)
+template<template<class, class, class> class Insertion, template<class, class, class> class Eviction, LockingStrategy Locking>
+void cache_find(benchmark::State& state)
 {
     const size_t previous_insertions = state.range(0);
-    auto         cache               = setup<BenchCache<Insertion, Eviction, ThreadSafe>>(previous_insertions);
+    auto         cache               = setup<BenchCache<Insertion, Eviction, Locking>>(previous_insertions);
 
     for (auto _ : state) {
         const auto start = std::chrono::high_resolution_clock::now();

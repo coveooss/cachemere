@@ -1,9 +1,11 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <type_traits>
 #include <vector>
 
 #include <absl/container/node_hash_map.h>
@@ -23,10 +25,11 @@
 #    pragma warning(pop)
 #endif
 
-#include "item.h"
-#include "measurement.h"
+#include "detail/locking.h"
 #include "detail/transparent_eq.h"
 #include "detail/traits.h"
+#include "item.h"
+#include "measurement.h"
 
 /// @brief Root namespace
 namespace cachemere {
@@ -44,24 +47,33 @@ namespace cachemere {
 /// @tparam MeasureValue A functor returning the size of a cache value.
 /// @tparam MeasureKey A functor returning the size of a cache key.
 /// @tparam KeyHash A default-constructible callable type returning a hash of a key. Defaults to `absl::Hash<Key>`.
-/// @tparam ThreadSafe Whether to enable locking. When true, all cache operations will be protected by a lock. `true` by default.
+/// @tparam Locking The locking strategy used to protect cache operations. Defaults to `LockingStrategy::Mutex`.
 template<typename Key,
          typename Value,
          template<class, class, class> class InsertionPolicy,
          template<class, class, class> class EvictionPolicy,
          template<class, class, class> class ConstraintPolicy,
-         typename MeasureValue = measurement::Size<Value>,
-         typename MeasureKey   = measurement::Size<Key>,
-         typename KeyHash      = absl::Hash<Key>,
-         bool ThreadSafe       = true>
+         typename MeasureValue   = measurement::Size<Value>,
+         typename MeasureKey     = measurement::Size<Key>,
+         typename KeyHash        = absl::Hash<Key>,
+         LockingStrategy Locking = LockingStrategy::Mutex>
 class Cache
 {
 public:
     using MyInsertionPolicy  = InsertionPolicy<Key, KeyHash, Value>;
     using MyEvictionPolicy   = EvictionPolicy<Key, KeyHash, Value>;
     using MyConstraintPolicy = ConstraintPolicy<Key, KeyHash, Value>;
-    using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe>;
-    using LockGuard          = std::unique_lock<std::recursive_mutex>;
+    using CacheType          = Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, Locking>;
+    using MutexType          = detail::MutexForT<Locking>;
+    using LockGuard          = std::unique_lock<MutexType>;
+    struct TryFindResult {
+        bool                 lock_acquired = false;
+        std::optional<Value> value;
+    };
+    struct TryInsertResult {
+        bool lock_acquired = false;
+        bool inserted      = false;
+    };
 
     /// @brief Simple constructor.
     /// @param args Arguments to forward to the constraint policy constructor.
@@ -87,6 +99,24 @@ public:
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
     template<typename KeyView> std::optional<Value> find(const KeyView& key) const;
 
+    /// @brief Try to find a given key in cache without blocking for the cache lock.
+    /// @tparam KeyView The type of the key used for retrieving items.
+    /// @param key The key to lookup.
+    /// @return A result indicating whether the lock was acquired and, if so, whether the key was found.
+    template<typename KeyView> TryFindResult try_find(const KeyView& key) const;
+
+    /// @brief Try to find a given key in cache, waiting for up to the provided timeout to acquire the lock.
+    /// @tparam KeyView The type of the key used for retrieving items.
+    /// @param key The key to lookup.
+    /// @param timeout The maximum amount of time to wait for the cache lock.
+    /// @return A result indicating whether the lock was acquired and, if so, whether the key was found.
+    template<typename KeyView,
+             typename Rep,
+             typename Period,
+             LockingStrategy TimedLocking                                  = Locking,
+             std::enable_if_t<detail::HasTimedLockingV<TimedLocking>, int> = 0>
+    TryFindResult try_find(const KeyView& key, const std::chrono::duration<Rep, Period>& timeout) const;
+
     /// @brief Find a given key in cache returning the associated value when it exists, or inserting a new value if it doesn't.
     /// @tparam KeyView The type of the key used for retrieving items.
     /// @tparam Fn A factory function type, with signature `Value fn(const KeyView& key)`, used to generate the value to insert if the key is not in cache.
@@ -111,6 +141,20 @@ public:
     /// @param value The value to store.
     /// @return Whether the item was inserted in cache.
     bool insert(Key key, Value value);
+
+    /// @brief Try to insert a key/value pair in the cache without blocking for the cache lock.
+    /// @param key The key to associate with the value.
+    /// @param value The value to store.
+    /// @return A result indicating whether the lock was acquired and, if so, whether the item was inserted.
+    TryInsertResult try_insert(Key key, Value value);
+
+    /// @brief Try to insert a key/value pair in the cache, waiting for up to the provided timeout to acquire the lock.
+    /// @param key The key to associate with the value.
+    /// @param value The value to store.
+    /// @param timeout The maximum amount of time to wait for the cache lock.
+    /// @return A result indicating whether the lock was acquired and, if so, whether the item was inserted.
+    template<typename Rep, typename Period, LockingStrategy TimedLocking = Locking, std::enable_if_t<detail::HasTimedLockingV<TimedLocking>, int> = 0>
+    TryInsertResult try_insert(Key key, Value value, const std::chrono::duration<Rep, Period>& timeout);
 
     /// @brief Remove a key and its value from the cache.
     /// @details If the key is not present in cache, no operation is taken.
@@ -192,8 +236,11 @@ public:
     void statistics_window_size(uint32_t window_size);
 
 protected:
-    LockGuard                       lock() const;
-    LockGuard                       lock(std::defer_lock_t defer_lock_tag) const;
+    LockGuard lock() const;
+    LockGuard try_lock() const;
+    LockGuard lock(std::defer_lock_t defer_lock_tag) const;
+    template<typename Rep, typename Period, LockingStrategy TimedLocking = Locking, std::enable_if_t<detail::HasTimedLockingV<TimedLocking>, int> = 0>
+    LockGuard                       try_lock(const std::chrono::duration<Rep, Period>& timeout) const;
     std::pair<LockGuard, LockGuard> lock_pair(CacheType& other) const;
 
     template<typename C> void import(C& collection);
@@ -222,15 +269,17 @@ private:
     MeasureKey   m_measure_key;
     MeasureValue m_measure_value;
 
-    mutable std::recursive_mutex m_mutex;
-    DataMap                      m_data;
+    mutable MutexType m_mutex;
+    DataMap           m_data;
 
     mutable MeanAccumulator m_hit_rate_acc;
     mutable MeanAccumulator m_byte_hit_rate_acc;
 
-    template<class ConstraintTicket> bool collect_evictions(const Key& candidate_key, ConstraintTicket& ticket);
-    bool                                  check_insert(const Key& candidate_key, const CacheItem& item);
-    bool                                  check_replace(const Key& candidate_key, const CacheItem& old_item, const CacheItem& new_item);
+    template<typename KeyView> std::optional<Value> find_locked(const KeyView& key) const;
+    bool                                            insert_locked(Key key, Value value);
+    template<class ConstraintTicket> bool           collect_evictions(const Key& candidate_key, ConstraintTicket& ticket);
+    bool                                            check_insert(const Key& candidate_key, const CacheItem& item);
+    bool                                            check_replace(const Key& candidate_key, const CacheItem& old_item, const CacheItem& new_item);
 
     void insert_or_update(Key&& key, CacheItem&& value);
     void remove(DataMapIt it);
@@ -251,8 +300,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void swap(Cache<K, V, I, E, C, SV, SK, KH, TS>& lhs, Cache<K, V, I, E, C, SV, SK, KH, TS>& rhs) noexcept;
+         LockingStrategy L>
+void swap(Cache<K, V, I, E, C, SV, SK, KH, L>& lhs, Cache<K, V, I, E, C, SV, SK, KH, L>& rhs) noexcept;
 
 template<typename Key,
          typename Value,
@@ -262,9 +311,9 @@ template<typename Key,
          typename MeasureValue,
          typename MeasureKey,
          typename KeyHash,
-         bool ThreadSafe>
+         LockingStrategy Locking>
 template<typename... Args>
-Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, ThreadSafe>::Cache(Args... args)
+Cache<Key, Value, InsertionPolicy, EvictionPolicy, ConstraintPolicy, MeasureValue, MeasureKey, KeyHash, Locking>::Cache(Args... args)
  : m_insertion_policy(std::make_unique<MyInsertionPolicy>()),
    m_eviction_policy(std::make_unique<MyEvictionPolicy>()),
    m_constraint_policy(std::make_unique<MyConstraintPolicy>(std::forward<Args>(args)...)),
@@ -283,9 +332,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<typename Coll, typename... Args>
-Cache<K, V, I, E, C, SV, SK, KH, TS>::Cache(Coll& collection, std::tuple<Args...> args)
+Cache<K, V, I, E, C, SV, SK, KH, L>::Cache(Coll& collection, std::tuple<Args...> args)
  : m_insertion_policy(std::make_unique<MyInsertionPolicy>()),
    m_eviction_policy(std::make_unique<MyEvictionPolicy>()),
    m_constraint_policy(std::move(
@@ -306,9 +355,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<typename KeyView>
-inline bool Cache<K, V, I, E, C, SV, SK, KH, TS>::contains(const KeyView& key) const
+inline bool Cache<K, V, I, E, C, SV, SK, KH, L>::contains(const KeyView& key) const
 {
     LockGuard guard(lock());
     return m_data.find(key) != m_data.end();
@@ -322,12 +371,10 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<typename KeyView>
-std::optional<V> Cache<K, V, I, E, C, SV, SK, KH, TS>::find(const KeyView& key) const
+std::optional<V> Cache<K, V, I, E, C, SV, SK, KH, L>::find_locked(const KeyView& key) const
 {
-    LockGuard guard(lock());
-
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
         on_cache_hit(key_and_item->first, key_and_item->second);
@@ -346,22 +393,74 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
+template<typename KeyView>
+std::optional<V> Cache<K, V, I, E, C, SV, SK, KH, L>::find(const KeyView& key) const
+{
+    LockGuard guard(lock());
+    return find_locked(key);
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         LockingStrategy L>
+template<typename KeyView>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::try_find(const KeyView& key) const -> TryFindResult
+{
+    LockGuard guard(try_lock());
+    if (!guard.owns_lock()) {
+        return TryFindResult{false, std::nullopt};
+    }
+
+    return TryFindResult{true, find_locked(key)};
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         LockingStrategy L>
+template<typename KeyView, typename Rep, typename Period, LockingStrategy TimedLocking, std::enable_if_t<detail::HasTimedLockingV<TimedLocking>, int>>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::try_find(const KeyView& key, const std::chrono::duration<Rep, Period>& timeout) const -> TryFindResult
+{
+    LockGuard guard(try_lock(timeout));
+    if (!guard.owns_lock()) {
+        return TryFindResult{false, std::nullopt};
+    }
+
+    return TryFindResult{true, find_locked(key)};
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         LockingStrategy L>
 template<typename KeyView, detail::traits::FactoryFn<KeyView, V> Fn>
-V Cache<K, V, I, E, C, SV, SK, KH, TS>::find_or_insert(const KeyView& key, Fn&& fn)
+V Cache<K, V, I, E, C, SV, SK, KH, L>::find_or_insert(const KeyView& key, Fn&& fn)
 {
     LockGuard guard(lock());
 
-    auto key_and_item = m_data.find(key);
-    if (key_and_item != m_data.end()) {
-        on_cache_hit(key_and_item->first, key_and_item->second);
-        return key_and_item->second.m_value;
+    if (const auto found = find_locked(key); found.has_value()) {
+        return *found;
     }
 
-    on_cache_miss(key);
-
     V value = fn(key);
-    insert(K(key), value);
+    insert_locked(K(key), value);
     return value;
 }
 
@@ -373,9 +472,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<detail::traits::CacheContainer<K, V> Container>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::collect_into(Container& container) const
+void Cache<K, V, I, E, C, SV, SK, KH, L>::collect_into(Container& container) const
 {
     using namespace detail;
 
@@ -405,11 +504,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-bool Cache<K, V, I, E, C, SV, SK, KH, TS>::insert(K key, V value)
+         LockingStrategy L>
+bool Cache<K, V, I, E, C, SV, SK, KH, L>::insert_locked(K key, V value)
 {
-    LockGuard guard(lock());
-
     const auto key_size   = static_cast<size_t>(m_measure_key(key));
     const auto value_size = static_cast<size_t>(m_measure_value(value));
 
@@ -443,8 +540,62 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-bool Cache<K, V, I, E, C, SV, SK, KH, TS>::remove(const K& key)
+         LockingStrategy L>
+bool Cache<K, V, I, E, C, SV, SK, KH, L>::insert(K key, V value)
+{
+    LockGuard guard(lock());
+    return insert_locked(std::move(key), std::move(value));
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         LockingStrategy L>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::try_insert(K key, V value) -> TryInsertResult
+{
+    LockGuard guard(try_lock());
+    if (!guard.owns_lock()) {
+        return TryInsertResult{false, false};
+    }
+
+    return TryInsertResult{true, insert_locked(std::move(key), std::move(value))};
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         LockingStrategy L>
+template<typename Rep, typename Period, LockingStrategy TimedLocking, std::enable_if_t<detail::HasTimedLockingV<TimedLocking>, int>>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::try_insert(K key, V value, const std::chrono::duration<Rep, Period>& timeout) -> TryInsertResult
+{
+    LockGuard guard(try_lock(timeout));
+    if (!guard.owns_lock()) {
+        return TryInsertResult{false, false};
+    }
+
+    return TryInsertResult{true, insert_locked(std::move(key), std::move(value))};
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         LockingStrategy L>
+bool Cache<K, V, I, E, C, SV, SK, KH, L>::remove(const K& key)
 {
     LockGuard guard(lock());
 
@@ -464,8 +615,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::clear()
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::clear()
 {
     LockGuard guard(lock());
 
@@ -487,9 +638,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<class P>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::retain(P predicate_fn)
+void Cache<K, V, I, E, C, SV, SK, KH, L>::retain(P predicate_fn)
 {
     LockGuard guard(lock());
 
@@ -512,9 +663,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<class F>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::for_each(F unary_function)
+void Cache<K, V, I, E, C, SV, SK, KH, L>::for_each(F unary_function)
 {
     LockGuard guard(lock());
     for (const auto& [key, value] : m_data) {
@@ -530,8 +681,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::swap(CacheType& other) noexcept
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::swap(CacheType& other) noexcept
 {
     try {
         // Acquire both cache locks.
@@ -575,8 +726,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline size_t Cache<K, V, I, E, C, SV, SK, KH, TS>::number_of_items() const
+         LockingStrategy L>
+inline size_t Cache<K, V, I, E, C, SV, SK, KH, L>::number_of_items() const
 {
     LockGuard guard(lock());
     return m_data.size();
@@ -590,9 +741,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<typename... Args>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::update_constraint(Args... args)
+void Cache<K, V, I, E, C, SV, SK, KH, L>::update_constraint(Args... args)
 {
     LockGuard guard(lock());
     m_constraint_policy->update(std::forward<Args>(args)...);
@@ -618,8 +769,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::insertion_policy() -> MyInsertionPolicy&
+         LockingStrategy L>
+inline auto Cache<K, V, I, E, C, SV, SK, KH, L>::insertion_policy() -> MyInsertionPolicy&
 {
     return *m_insertion_policy;
 }
@@ -632,8 +783,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::insertion_policy() const -> const MyInsertionPolicy&
+         LockingStrategy L>
+inline auto Cache<K, V, I, E, C, SV, SK, KH, L>::insertion_policy() const -> const MyInsertionPolicy&
 {
     return *m_insertion_policy;
 }
@@ -646,8 +797,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::eviction_policy() -> MyEvictionPolicy&
+         LockingStrategy L>
+inline auto Cache<K, V, I, E, C, SV, SK, KH, L>::eviction_policy() -> MyEvictionPolicy&
 {
     return *m_eviction_policy;
 }
@@ -660,8 +811,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::eviction_policy() const -> const MyEvictionPolicy&
+         LockingStrategy L>
+inline auto Cache<K, V, I, E, C, SV, SK, KH, L>::eviction_policy() const -> const MyEvictionPolicy&
 {
     return *m_eviction_policy;
 }
@@ -674,8 +825,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::constraint_policy() -> MyConstraintPolicy&
+         LockingStrategy L>
+inline auto Cache<K, V, I, E, C, SV, SK, KH, L>::constraint_policy() -> MyConstraintPolicy&
 {
     return *m_constraint_policy;
 }
@@ -688,8 +839,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline auto Cache<K, V, I, E, C, SV, SK, KH, TS>::constraint_policy() const -> const MyConstraintPolicy&
+         LockingStrategy L>
+inline auto Cache<K, V, I, E, C, SV, SK, KH, L>::constraint_policy() const -> const MyConstraintPolicy&
 {
     return *m_constraint_policy;
 }
@@ -702,8 +853,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline double Cache<K, V, I, E, C, SV, SK, KH, TS>::hit_rate() const
+         LockingStrategy L>
+inline double Cache<K, V, I, E, C, SV, SK, KH, L>::hit_rate() const
 {
     return boost::accumulators::rolling_mean(m_hit_rate_acc);
 }
@@ -716,8 +867,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline double Cache<K, V, I, E, C, SV, SK, KH, TS>::byte_hit_rate() const
+         LockingStrategy L>
+inline double Cache<K, V, I, E, C, SV, SK, KH, L>::byte_hit_rate() const
 {
     return boost::accumulators::rolling_mean(m_byte_hit_rate_acc);
 }
@@ -730,8 +881,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline uint32_t Cache<K, V, I, E, C, SV, SK, KH, TS>::statistics_window_size() const
+         LockingStrategy L>
+inline uint32_t Cache<K, V, I, E, C, SV, SK, KH, L>::statistics_window_size() const
 {
     return m_statistics_window_size;
 }
@@ -744,8 +895,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-inline void Cache<K, V, I, E, C, SV, SK, KH, TS>::statistics_window_size(uint32_t window_size)
+         LockingStrategy L>
+inline void Cache<K, V, I, E, C, SV, SK, KH, L>::statistics_window_size(uint32_t window_size)
 {
     m_statistics_window_size = window_size;
 
@@ -761,16 +912,11 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-auto Cache<K, V, I, E, C, SV, SK, KH, TS>::lock() const -> LockGuard
+         LockingStrategy L>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::lock() const -> LockGuard
 {
-    if constexpr (TS) {
-        LockGuard guard{m_mutex};
-        return guard;
-    } else {
-        LockGuard guard;
-        return guard;
-    }
+    LockGuard guard{m_mutex};
+    return guard;
 }
 
 template<class K,
@@ -781,16 +927,11 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-auto Cache<K, V, I, E, C, SV, SK, KH, TS>::lock([[maybe_unused]] std::defer_lock_t defer_lock_tag) const -> LockGuard
+         LockingStrategy L>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::try_lock() const -> LockGuard
 {
-    if constexpr (TS) {
-        LockGuard guard{m_mutex, defer_lock_tag};
-        return guard;
-    } else {
-        LockGuard guard;
-        return guard;
-    }
+    LockGuard guard{m_mutex, std::try_to_lock};
+    return guard;
 }
 
 template<class K,
@@ -801,15 +942,45 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-auto Cache<K, V, I, E, C, SV, SK, KH, TS>::lock_pair(CacheType& other) const -> std::pair<LockGuard, LockGuard>
+         LockingStrategy L>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::lock([[maybe_unused]] std::defer_lock_t defer_lock_tag) const -> LockGuard
+{
+    LockGuard guard{m_mutex, defer_lock_tag};
+    return guard;
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         LockingStrategy L>
+template<typename Rep, typename Period, LockingStrategy TimedLocking, std::enable_if_t<detail::HasTimedLockingV<TimedLocking>, int>>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::try_lock(const std::chrono::duration<Rep, Period>& timeout) const -> LockGuard
+{
+    LockGuard                   guard{m_mutex, std::defer_lock};
+    [[maybe_unused]] const bool locked = guard.try_lock_for(timeout);
+    return guard;
+}
+
+template<class K,
+         class V,
+         template<class, class, class> class I,
+         template<class, class, class> class E,
+         template<class, class, class> class C,
+         class SV,
+         class SK,
+         class KH,
+         LockingStrategy L>
+auto Cache<K, V, I, E, C, SV, SK, KH, L>::lock_pair(CacheType& other) const -> std::pair<LockGuard, LockGuard>
 {
     LockGuard my_guard    = lock(std::defer_lock);
     LockGuard other_guard = other.lock(std::defer_lock);
 
-    if constexpr (TS) {  // std::lock throws if any of the guards don't refer to a mutex.
-        std::lock(my_guard, other_guard);
-    }
+    std::lock(my_guard, other_guard);
 
     return std::make_pair<LockGuard, LockGuard>(std::move(my_guard), std::move(other_guard));
 }
@@ -822,9 +993,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<class Coll>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::import(Coll& collection)
+void Cache<K, V, I, E, C, SV, SK, KH, L>::import(Coll& collection)
 {
     LockGuard guard(lock());
 
@@ -849,9 +1020,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<class ConstraintTicket>
-bool Cache<K, V, I, E, C, SV, SK, KH, TS>::collect_evictions(const K& candidate_key, ConstraintTicket& ticket)
+bool Cache<K, V, I, E, C, SV, SK, KH, L>::collect_evictions(const K& candidate_key, ConstraintTicket& ticket)
 {
     std::vector<std::pair<typename MyEvictionPolicy::Ticket, DataMapIt>> keys_to_evict;
 
@@ -890,8 +1061,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-bool Cache<K, V, I, E, C, SV, SK, KH, TS>::check_insert(const K& key, const CacheItem& item)
+         LockingStrategy L>
+bool Cache<K, V, I, E, C, SV, SK, KH, L>::check_insert(const K& key, const CacheItem& item)
 {
     auto insertion_ticket = m_constraint_policy->prepare_insert(key, item);
 
@@ -915,8 +1086,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-bool Cache<K, V, I, E, C, SV, SK, KH, TS>::check_replace(const K& key, const CacheItem& old_item, const CacheItem& new_item)
+         LockingStrategy L>
+bool Cache<K, V, I, E, C, SV, SK, KH, L>::check_replace(const K& key, const CacheItem& old_item, const CacheItem& new_item)
 {
     auto replacement_ticket = m_constraint_policy->prepare_replace(key, old_item, new_item);
 
@@ -939,8 +1110,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::insert_or_update(K&& key, CacheItem&& item)
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::insert_or_update(K&& key, CacheItem&& item)
 {
     auto key_and_item = m_data.find(key);
     if (key_and_item != m_data.end()) {
@@ -963,8 +1134,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove(DataMapIt it)
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::remove(DataMapIt it)
 {
     on_evict(it->first, it->second);
     m_data.erase(it);
@@ -978,8 +1149,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_popped_victim(DataMapIt it)
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::remove_popped_victim(DataMapIt it)
 {
     if constexpr (detail::traits::event::HasOnEvict<K, KH, V, I>) {
         m_insertion_policy->on_evict(it->first, it->second);
@@ -1000,8 +1171,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_insert(const K& key, const CacheItem& item) const
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::on_insert(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
     if constexpr (detail::traits::event::HasOnInsert<K, KH, V, I>) {
@@ -1025,8 +1196,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_update(const K& key, const CacheItem& old_item, const CacheItem& new_item) const
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::on_update(const K& key, const CacheItem& old_item, const CacheItem& new_item) const
 {
     // Call event handler iif the method is defined in the policy.
     if constexpr (detail::traits::event::HasOnUpdate<K, KH, V, I>) {
@@ -1050,8 +1221,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_hit(const K& key, const CacheItem& item) const
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::on_cache_hit(const K& key, const CacheItem& item) const
 {
     // Update the cache hit rate accumulators.
     m_hit_rate_acc(1);
@@ -1079,9 +1250,9 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
+         LockingStrategy L>
 template<class KeyView>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_miss(const KeyView& key) const
+void Cache<K, V, I, E, C, SV, SK, KH, L>::on_cache_miss(const KeyView& key) const
 {
     // Update the cache hit rate accumulators.
     m_hit_rate_acc(0);
@@ -1109,8 +1280,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_evict(const K& key, const CacheItem& item) const
+         LockingStrategy L>
+void Cache<K, V, I, E, C, SV, SK, KH, L>::on_evict(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
     if constexpr (detail::traits::event::HasOnEvict<K, KH, V, I>) {
@@ -1134,8 +1305,8 @@ template<class K,
          class SV,
          class SK,
          class KH,
-         bool TS>
-void swap(Cache<K, V, I, E, C, SV, SK, KH, TS>& lhs, Cache<K, V, I, E, C, SV, SK, KH, TS>& rhs) noexcept
+         LockingStrategy L>
+void swap(Cache<K, V, I, E, C, SV, SK, KH, L>& lhs, Cache<K, V, I, E, C, SV, SK, KH, L>& rhs) noexcept
 {
     lhs.swap(rhs);
 }
