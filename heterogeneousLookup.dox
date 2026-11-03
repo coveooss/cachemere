@@ -33,11 +33,8 @@ using CacheT = cachemere::presets::memory::LRUCache<CompositeKey,
 
 
 bool contains(const CacheT& cache, std::string_view a, const std::string_view b, const std::string_view c) {
-    // We need allocate three strings to construct the key.
-    const std::string a_str{a};
-    const std::string b_str{b};
-    const std::string c_str{c};
-    const CompositeKey key{std::move(a_str), std::move(b_str), std::move(c_str)};
+    // We need to allocate three strings to construct the key.
+    const CompositeKey key{std::string{a}, std::string{b}, std::string{c}};
 
     // Only to use a reference to it.
     return cache.find(key).has_value();
@@ -109,5 +106,50 @@ int main() {
     }
 
     return 0;
+}
+```
+
+## Requirements on the Key View
+
+* The hasher passed to the cache must hash the key view and the key it compares equal to the same way.
+  `cachemere::MultiHash` combines the hashers of both types into a single hasher.
+* The key view must be comparable to the key, either with `operator==` or with `operator<=>`.
+  A key view that is neither is rejected at compile time by the `cachemere::LookupKeyFor` concept.
+* `find_or_insert()` inserts a key built from the key view on a miss, so it also requires the key to be constructible from
+  the key view.
+
+## Heterogeneous Lookup with `cachemere::CompositeKey` (Cachemere >= 0.4)
+
+`cachemere::CompositeKey` does all of the above for you: composite keys compare equal component-wise, hash strings, string views and
+C strings by content, and an owning key can be built from a view.
+
+```cpp
+#include <string>
+#include <string_view>
+#include <cachemere.h>
+
+using Key     = cachemere::CompositeKey<std::string, std::string, std::string>;
+using KeyView = cachemere::CompositeKey<std::string_view, std::string_view, std::string_view>;
+
+using MultiHasher = cachemere::MultiHash<Key, absl::Hash<Key>, KeyView, absl::Hash<KeyView>>;
+using Value       = std::string;
+
+using CacheT = cachemere::presets::memory::LRUCache<Key,
+                                                    Value,
+                                                    cachemere::measurement::CapacityDynamicallyAllocated<Value>,
+                                                    cachemere::measurement::Size<Key>,
+                                                    MultiHasher>;
+
+int main() {
+    CacheT cache{1024 * 1024 * 1024};
+    cache.insert({"a", "b", "c"}, "some_value");
+
+    // Lookups don't allocate.
+    const bool found = cache.contains(KeyView{"a", "b", "c"});
+
+    // On a miss, the key is built from the view, and the value from the factory.
+    const Value value = cache.find_or_insert(KeyView{"d", "e", "f"}, [](const KeyView&) { return Value{"computed"}; });
+
+    return found && value == "computed" ? 0 : 1;
 }
 ```

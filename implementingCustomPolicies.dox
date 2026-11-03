@@ -95,11 +95,17 @@ In addition to the shared requirements above, an eviction policy must implement 
 
 * `Ticket pop_victim()`
 
-    Should tentatively remove and return the next victim from the eviction policy. `Ticket` must provide `const Key& key() const`.
+    Should tentatively remove and return the next victim from the eviction policy. `Ticket` must provide `const Key& key() const`,
+    and should be nothrow move-constructible.
     @warning Returning a key from this method does not guarantee that the item will be evicted.
         The policy should only rely on event handlers to track which items are currently in cache.
     @note If the tentative victim is committed, the eviction policy will not receive an `on_evict` callback for it.
+        `on_evict` is only called for items removed with `Cache::remove()` or `Cache::retain()`.
+    @note The cache never calls `pop_victim()` when every cached item is already a tentative victim, so the policy is never asked
+        for a victim while it is empty.
 
 * `void rollback(Ticket ticket)`
 
-    Should restore a victim previously returned by `pop_victim()`. The cache calls this when an insertion is abandoned after one or more tentative victims have been popped.
+    Should restore a victim previously returned by `pop_victim()`, at the position it was popped from. The cache calls this when an
+    insertion is abandoned after one or more tentative victims have been popped: because the insertion policy refused a victim, because
+    the constraint can't be satisfied, or because an exception was thrown. Victims are rolled back in the reverse order they were popped.

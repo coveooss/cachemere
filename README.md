@@ -10,6 +10,37 @@ as well as a comprehensive set of primitives for building custom caching solutio
 
 ## Getting Started
 
+### Requirements
+
+* A C++20 compiler: the cache and its policies are constrained with concepts.
+* [Abseil](https://abseil.io/) and [Boost](https://www.boost.org/) (Accumulators and Dynamic Bitset).
+* CMake 3.20 or later to build the tests and benchmarks.
+
+### Upgrading from 0.3
+
+Cachemere 0.4 has these breaking changes:
+
+* **C++20 is required** (0.3 needed C++17): the template parameters are constrained with concepts, which replace Boost.Hana.
+  Boost.Hana is no longer a dependency, and the `cachemere` CMake target now requires `cxx_std_20`.
+* **The `bool ThreadSafe` template parameter is replaced by `LockingStrategy Locking`**, on `cachemere::Cache` and on the presets:
+  * `ThreadSafe = true` becomes `LockingStrategy::Mutex` (still the default).
+  * `ThreadSafe = false` becomes `LockingStrategy::None`.
+  * `LockingStrategy::TimedMutex` is new: see `try_find()` and `try_insert()` below.
+* **The policy interfaces changed.** Custom policies need to be migrated:
+  * Eviction policies: `victim_begin()` and `victim_end()` are replaced by `Ticket pop_victim()` and `void rollback(Ticket)`.
+    The cache pops victims until the constraint is satisfied, then commits them, or rolls all of them back if the insertion is abandoned.
+    A committed victim doesn't get an `on_evict()` call anymore: eviction policies only get `on_evict()` for `remove()` and `retain()`.
+  * Constraint policies: `can_add()` and `can_replace()` are replaced by `prepare_insert()` and `prepare_replace()`, which return
+    tickets with `is_satisfiable()`, `is_satisfied()` and `register_eviction()`.
+  * Insertion policies are unchanged.
+
+  See [Implementing Custom Policies](https://coveooss.github.io/cachemere/implementingCustomPolicies.html) for the details.
+* **The `.hpp` implementation headers are removed**: every method is now defined in its `.h` header. Include the `.h` headers, or `cachemere.h`.
+* **Keys must satisfy the `cachemere::CacheKey` concept**: move-constructible and comparable with `==`. They don't need to be copyable or assignable.
+* **Visitors, predicates and factories are checked by concepts**: `for_each()` takes a visitor callable with `const Key&` and `const Value&`
+  (its result is ignored), `retain()` a predicate whose result converts to `bool`, and `find_or_insert()` a factory whose result converts to `Value`.
+* **Caches are neither copyable nor movable**, whatever the locking strategy, as in 0.3. Use `swap()` to exchange the contents of two caches.
+
 ### Documentation Highlights
 
 #### Custom Keys
@@ -23,14 +54,25 @@ Like `std::map`, `cachemere::Cache` supports heterogeneous lookup. Take a look
 at [the documentation on heterogeneous lookup](https://coveooss.github.io/cachemere/heterogeneousLookup.html) for more
 details and usage instructions.
 
+#### Locking
+
+By default, every cache operation is protected by a `std::recursive_mutex`. The last template parameter of
+`cachemere::Cache` and of the presets selects another `cachemere::LockingStrategy`:
+
+* `LockingStrategy::Mutex` (default): blocking operations, plus `try_find()` and `try_insert()`, which return
+  immediately when another thread holds the lock.
+* `LockingStrategy::TimedMutex`: also adds `try_find()` and `try_insert()` overloads that wait for up to a timeout.
+* `LockingStrategy::None`: no locking at all, for caches used by a single thread.
+
 ### TinyLFU Cache Example
 
 ```cpp
 #include <cstdint>
+#include <iostream>
 #include <optional>
 #include <string>
 
-#include <cachemere/cachemere.h>
+#include <cachemere.h>
 
 using Key = int;
 using Value = std::string;
@@ -48,11 +90,17 @@ int main()
     const size_t max_cache_size_bytes = 150;
     MyCache cache(max_cache_size_bytes);
 
-    const bool inserted = cache.insert(42, "the answer to life, the universe, and everything");
+    if (!cache.insert(42, "the answer to life, the universe, and everything")) {
+        std::cout << "The cache refused the item" << std::endl;
+    }
 
     if (std::optional<std::string> value = cache.find(42)) {
         std::cout << "Got value for key: " << *value << std::endl;
     }
+
+    // Look the key up, and only compute the value on a miss.
+    const std::string value = cache.find_or_insert(7, [](const Key& key) { return std::to_string(key); });
+    std::cout << "Value for key 7: " << value << std::endl;
 
     return 0;
 }

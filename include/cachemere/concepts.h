@@ -11,8 +11,9 @@
 namespace cachemere {
 
 /// @brief Constraint for types usable as cache keys.
+/// @details Keys are moved into the cache and compared with `==`. They don't need to be copyable or assignable.
 template<typename T>
-concept CacheKey = std::move_constructible<T> && requires(T t) {
+concept CacheKey = std::move_constructible<T> && requires(const T& t) {
     { t == t } -> std::convertible_to<bool>;
 };
 
@@ -36,7 +37,7 @@ concept MeasureFor = std::default_initializable<T> && requires(T t, V v) {
 
 /// @brief Constraint for factory functors used to create a value from a key.
 template<typename T, typename K, typename V>
-concept FactoryFn = requires(T t, K key) {
+concept FactoryFn = requires(T& t, const K& key) {
     { t(key) } -> std::convertible_to<V>;
 };
 
@@ -45,15 +46,15 @@ template<typename T, typename... Args>
 concept CacheContainer = detail::traits::SequenceContainer<T, Args...> || detail::traits::AssociativeContainer<T, Args...>;
 
 /// @brief Constraint for cache predicates accepting a key and value.
+/// @details The predicate is called with const references, and its result must be convertible to `bool`.
 template<typename T, typename K, typename V>
-concept PredicateFn = requires(T t, K key, V value) {
+concept PredicateFn = requires(T& t, const K& key, const V& value) {
     { t(key, value) } -> std::convertible_to<bool>;
 };
 
 /// @brief Constraint for cache visitors accepting a key and value.
+/// @details The visitor is called with const references, and its result, if any, is ignored.
 template<typename T, typename K, typename V>
-concept UnaryFn = requires(T t, K key, V value) {
-    { t(key, value) };
-};
+concept UnaryFn = requires(T& t, const K& key, const V& value) { t(key, value); };
 
 }  // namespace cachemere

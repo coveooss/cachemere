@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -113,6 +114,12 @@ public:
         import(collection);
     }
 
+    // The policies keep references to the cached keys, so a cache can't be copied or moved: use `swap()` instead.
+    Cache(const Cache&)            = delete;
+    Cache(Cache&&)                 = delete;
+    Cache& operator=(const Cache&) = delete;
+    Cache& operator=(Cache&&)      = delete;
+
     /// @brief Check whether a given key is stored in the cache.
     /// @tparam KeyView The type of the key used for retrieving items.
     /// @param key The key whose presence to test.
@@ -127,7 +134,7 @@ public:
     /// @tparam KeyView The type of the key used for retrieving items.
     /// @param key The key to lookup.
     /// @return The value if `key` is in cache, `std::nullopt` otherwise.
-    template<typename KeyView> std::optional<Value> find(const KeyView& key) const
+    template<LookupKeyFor<Key, KeyHash> KeyView> std::optional<Value> find(const KeyView& key) const
     {
         const LockGuard guard{lock()};
         return find_locked(key);
@@ -137,7 +144,7 @@ public:
     /// @tparam KeyView The type of the key used for retrieving items.
     /// @param key The key to lookup.
     /// @return A result indicating whether the lock was acquired and, if so, whether the key was found.
-    template<typename KeyView> TryFindResult try_find(const KeyView& key) const
+    template<LookupKeyFor<Key, KeyHash> KeyView> TryFindResult try_find(const KeyView& key) const
     {
         const LockGuard guard{try_lock()};
         if (!guard.owns_lock()) {
@@ -152,7 +159,7 @@ public:
     /// @param timeout The maximum amount of time to wait for the cache lock.
     /// @return A result indicating whether the lock was acquired and, if so, whether the key was found.
     /// @note Only available when `Locking` is `LockingStrategy::TimedMutex`.
-    template<typename KeyView, typename Rep, typename Period>
+    template<LookupKeyFor<Key, KeyHash> KeyView, typename Rep, typename Period>
     TryFindResult try_find(const KeyView& key, const std::chrono::duration<Rep, Period>& timeout) const
         requires(detail::HasTimedLockingV<Locking>)
     {
@@ -166,12 +173,14 @@ public:
     /// @brief Find a given key in cache returning the associated value when it exists, or computing a candidate value when it does not.
     /// @tparam KeyView The type of the key used for retrieving items.
     /// @tparam Fn A factory function type, with signature `Value fn(const KeyView& key)`, used to generate the value to insert if the key is not in cache.
-    /// @param key The key to lookup.
+    /// @param key The key to lookup. On a miss, the inserted key is constructed from it, so `Key` must be constructible from `KeyView`.
     /// @param fn The factory function to generate the value if the key is not in cache.
     /// @return The cached value when present, or the value returned by `fn`.
     /// @details `fn` is invoked only after a cache miss while the cache lock is held.
     ///          The computed value is inserted only if the configured insertion, eviction, and constraint policies accept it.
-    template<typename KeyView, FactoryFn<KeyView, Value> Fn> Value find_or_insert(const KeyView& key, Fn&& fn)
+    template<LookupKeyFor<Key, KeyHash> KeyView, FactoryFn<KeyView, Value> Fn>
+        requires(std::constructible_from<Key, const KeyView&>)
+    Value find_or_insert(const KeyView& key, Fn&& fn)
     {
         const LockGuard guard{lock()};
 
@@ -180,7 +189,7 @@ public:
         }
 
         Value value = fn(key);
-        insert_locked(Key(key), value);
+        insert_locked(static_cast<Key>(key), value);
         return value;
     }
 
@@ -226,33 +235,39 @@ public:
     }
 
     /// @brief Try to insert a key/value pair in the cache without blocking for the cache lock.
+    /// @details The key and value are only consumed once the lock is acquired: when it isn't, they are left untouched and can be
+    ///          used for another attempt.
     /// @param key The key to associate with the value.
     /// @param value The value to store.
     /// @return A result indicating whether the lock was acquired and, if so, whether the item was inserted.
-    TryInsertResult try_insert(Key key, Value value)
+    template<typename K = Key, typename V = Value>
+        requires(std::constructible_from<Key, K&&> && std::constructible_from<Value, V&&>)
+    TryInsertResult try_insert(K&& key, V&& value)
     {
         const LockGuard guard{try_lock()};
         if (!guard.owns_lock()) {
             return TryInsertResult{false, false};
         }
-        return TryInsertResult{true, insert_locked(std::move(key), std::move(value))};
+        return TryInsertResult{true, insert_locked(static_cast<Key>(std::forward<K>(key)), static_cast<Value>(std::forward<V>(value)))};
     }
 
     /// @brief Try to insert a key/value pair in the cache, waiting for up to the provided timeout to acquire the lock.
+    /// @details The key and value are only consumed once the lock is acquired: when it isn't, they are left untouched and can be
+    ///          used for another attempt.
     /// @param key The key to associate with the value.
     /// @param value The value to store.
     /// @param timeout The maximum amount of time to wait for the cache lock.
     /// @return A result indicating whether the lock was acquired and, if so, whether the item was inserted.
     /// @note Only available when `Locking` is `LockingStrategy::TimedMutex`.
-    template<typename Rep, typename Period>
-    TryInsertResult try_insert(Key key, Value value, const std::chrono::duration<Rep, Period>& timeout)
-        requires(detail::HasTimedLockingV<Locking>)
+    template<typename Rep, typename Period, typename K = Key, typename V = Value>
+        requires(detail::HasTimedLockingV<Locking> && std::constructible_from<Key, K&&> && std::constructible_from<Value, V&&>)
+    TryInsertResult try_insert(K&& key, V&& value, const std::chrono::duration<Rep, Period>& timeout)
     {
         const LockGuard guard{try_lock(timeout)};
         if (!guard.owns_lock()) {
             return TryInsertResult{false, false};
         }
-        return TryInsertResult{true, insert_locked(std::move(key), std::move(value))};
+        return TryInsertResult{true, insert_locked(static_cast<Key>(std::forward<K>(key)), static_cast<Value>(std::forward<V>(value)))};
     }
 
     /// @brief Remove a key and its value from the cache.
@@ -366,7 +381,7 @@ public:
 
     /// @brief Update the cache constraint.
     /// @details Forwards the update to the constraint and evicts items from the cache until the
-    ///          constraint is satisfied.
+    ///          constraint is satisfied, or until the cache is empty.
     /// @param args Arguments to forward to the `Constraint::update()` .
     template<typename... Args> void update_constraint(Args... args)
     {
@@ -383,7 +398,8 @@ public:
             remove_popped_victim(key_and_item);
         }
 
-        assert(m_constraint_policy->is_satisfied());
+        // Only a constraint that can't be satisfied even by an empty cache can end up unsatisfied here.
+        assert(m_data.empty() || m_constraint_policy->is_satisfied());
     }
 
     /// @brief Get a reference to the insertion policy used by the cache.

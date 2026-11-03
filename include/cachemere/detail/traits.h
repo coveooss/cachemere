@@ -29,6 +29,22 @@ template<class CharT, class Traits> struct is_basic_string_view<std::basic_strin
 template<class T>
 concept BasicStringView = is_basic_string_view<std::remove_cvref_t<T>>::value;
 
+template<typename T> struct is_char : std::false_type {};
+
+template<> struct is_char<char> : std::true_type {};
+
+template<> struct is_char<wchar_t> : std::true_type {};
+
+template<> struct is_char<char8_t> : std::true_type {};
+
+template<> struct is_char<char16_t> : std::true_type {};
+
+template<> struct is_char<char32_t> : std::true_type {};
+
+// A pointer to a null-terminated string, such as `const char*`.
+template<typename T>
+concept CString = std::is_pointer_v<std::remove_cvref_t<T>> && is_char<std::remove_cv_t<std::remove_pointer_t<std::remove_cvref_t<T>>>>::value;
+
 template<typename T, typename... Args>
 concept SequenceContainer = requires(T t, Args... args) {
     { t.emplace_back(args...) };
