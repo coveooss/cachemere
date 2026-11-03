@@ -5,11 +5,12 @@ This page is meant to guide you through the usage of a custom key with a cache.
 
 ## Key Requirements
 
-* Must have both a move constructor and a move assignment operator.
+* Must be move-constructible.
 * Must implement equality operator (`bool operator==(const Self&) const;`).
 * Must be hashable by the hasher passed as template parameter to the cache (by default, `absl::Hash<Key>`).
 
-The key does _not_ need to be copyable.
+These requirements are checked by the `cachemere::CacheKey` concept.
+The key does _not_ need to be copyable, nor assignable: keys with `const` members are fine.
 
 ## Usage Example
 
@@ -24,9 +25,7 @@ struct ComplexKey {
     std::string first;
     std::string second;
 
-    bool operator==(const ComplexKey& other) const {
-        return
-    }
+    bool operator==(const ComplexKey& other) const = default;
 
     /// Override for the type to be hashable by `absl::Hash`.
     template<typename H> friend H AbslHashValue(H h, const ComplexKey& s)
@@ -35,17 +34,18 @@ struct ComplexKey {
     }
 
     /// For use with cachemere::measurement::CapacityDynamicallyAllocated.
-    size_t capacity() const {
+    size_t capacity() const
+    {
         return first.capacity() + second.capacity();
     }
 };
 
-usig ValueT = int;
+using ValueT = int;
 
 using Cache = cachemere::presets::memory::LRUCache<ComplexKey,
                                                    ValueT,
-                                                   cachemere::measurement::SizeOf,
-                                                   cachemere::measurement::CapacityDynamicallyAllocated>;
+                                                   cachemere::measurement::SizeOf<ValueT>,
+                                                   cachemere::measurement::CapacityDynamicallyAllocated<ComplexKey>>;
 ```
 
 ### With a custom hasher
@@ -59,28 +59,53 @@ struct ComplexKey {
     std::string first;
     std::string second;
 
-    bool operator==(const ComplexKey& other) const {
-        return
-    }
+    bool operator==(const ComplexKey& other) const = default;
 
     /// For use with cachemere::measurement::CapacityDynamicallyAllocated.
-    size_t capacity() const {
+    size_t capacity() const
+    {
         return first.capacity() + second.capacity();
     }
 };
 
-
 struct VeryBadHash {
-    size_t operator(const ComplexKey&) {
+    size_t operator()(const ComplexKey&) const
+    {
         return 0;
     }
 };
 
-usig ValueT = int;
+using ValueT = int;
 
 using Cache = cachemere::presets::memory::LRUCache<ComplexKey,
                                                    ValueT,
-                                                   cachemere::measurement::SizeOf,
-                                                   cachemere::measurement::CapacityDynamicallyAllocated,
+                                                   cachemere::measurement::SizeOf<ValueT>,
+                                                   cachemere::measurement::CapacityDynamicallyAllocated<ComplexKey>,
                                                    VeryBadHash>;
 ```
+
+### With `cachemere::CompositeKey`
+
+`cachemere::CompositeKey` builds a key out of several components, and takes care of equality and hashing.
+Its `size()` sums the sizes of its components, so the default `cachemere::measurement::Size` measures it.
+
+```cpp
+#include <cstdint>
+#include <string>
+
+#include <cachemere.h>
+
+using Key   = cachemere::CompositeKey<std::string, std::uint32_t>;
+using Cache = cachemere::presets::memory::LRUCache<Key, std::string>;
+
+int main()
+{
+    Cache cache{1024};
+    cache.insert({"user", 42U}, "some value");
+
+    return cache.contains(Key{"user", 42U}) ? 0 : 1;
+}
+```
+
+Strings, string views and C strings are hashed by content: a `CompositeKey` of `std::string_view` can look up a
+`CompositeKey` of `std::string`, see \ref heterogeneousLookup "Heterogeneous Lookup".

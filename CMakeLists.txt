@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_BENCHMARKS "Build benchmarks" OFF)
@@ -37,6 +37,9 @@ find_package(Boost 1.65 REQUIRED)
 find_package(absl CONFIG REQUIRED)
 
 add_library(cachemere INTERFACE)
+
+# The headers use concepts: consumers need at least C++20.
+target_compile_features(cachemere INTERFACE cxx_std_20)
 
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"))
   add_compile_options("-Wall" "-Wextra")
