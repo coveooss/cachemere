@@ -173,7 +173,9 @@ public:
         const Key& victim_key = ticket.key();
         assert(m_iterator_map.find(std::ref(victim_key)) == m_iterator_map.end());
 
-        const auto it = m_priority_set.emplace(std::move(ticket.m_entry));
+        // Put the victim back in front of the entries sharing its coefficient, so that a rollback keeps the eviction order.
+        const auto hint = m_priority_set.lower_bound(ticket.m_entry);
+        const auto it   = m_priority_set.emplace_hint(hint, std::move(ticket.m_entry));
         m_iterator_map.emplace(std::ref(victim_key), it);
 
         assert(m_clock >= ticket.m_previous_clock);

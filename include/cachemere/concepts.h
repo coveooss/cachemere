@@ -12,7 +12,7 @@ namespace cachemere {
 
 /// @brief Constraint for types usable as cache keys.
 template<typename T>
-concept CacheKey = std::movable<T> && std::move_constructible<T> && std::assignable_from<T&, T&&> && requires(T t) {
+concept CacheKey = std::move_constructible<T> && requires(T t) {
     { t == t } -> std::convertible_to<bool>;
 };
 
@@ -47,13 +47,13 @@ concept CacheContainer = detail::traits::SequenceContainer<T, Args...> || detail
 /// @brief Constraint for cache predicates accepting a key and value.
 template<typename T, typename K, typename V>
 concept PredicateFn = requires(T t, K key, V value) {
-    { t(key, value) } -> std::same_as<bool>;
+    { t(key, value) } -> std::convertible_to<bool>;
 };
 
 /// @brief Constraint for cache visitors accepting a key and value.
 template<typename T, typename K, typename V>
 concept UnaryFn = requires(T t, K key, V value) {
-    { t(key, value) } -> std::same_as<void>;
+    { t(key, value) };
 };
 
 }  // namespace cachemere

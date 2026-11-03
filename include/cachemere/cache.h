@@ -373,7 +373,7 @@ public:
         const LockGuard guard{lock()};
         m_constraint_policy->update(std::forward<Args>(args)...);
 
-        while (!m_constraint_policy->is_satisfied()) {
+        while (!m_constraint_policy->is_satisfied() && !m_data.empty()) {
             auto eviction_ticket = m_eviction_policy->pop_victim();
             auto key_and_item    = m_data.find(eviction_ticket.key());
 
@@ -583,26 +583,51 @@ private:
 
     template<typename ConstraintTicket> bool collect_evictions(const Key& candidate_key, ConstraintTicket& ticket)
     {
+        // Popped victims stay in `keys_to_evict` until the evictions are committed, so that the eviction policy can get all of
+        // them back if the insertion is refused or if anything throws.
         std::vector<std::pair<typename MyEvictionPolicy::Ticket, DataMapIt>> keys_to_evict;
 
-        while (!ticket.is_satisfied()) {
-            auto eviction_ticket = m_eviction_policy->pop_victim();
-            auto key_and_item    = m_data.find(eviction_ticket.key());
-
-            // If this trips, the eviction policy recommended the eviction of a key not in cache: the eviction policy and the
-            // cache are out of sync.
-            assert(key_and_item != m_data.end());
-
-            if (!m_insertion_policy->should_replace(key_and_item->first, candidate_key)) {
-                m_eviction_policy->rollback(std::move(eviction_ticket));
-                for (auto it = keys_to_evict.rbegin(); it != keys_to_evict.rend(); ++it) {
-                    m_eviction_policy->rollback(std::move(it->first));
-                }
-                return false;
+        const auto rollback_victims = [&]() {
+            for (auto it = keys_to_evict.rbegin(); it != keys_to_evict.rend(); ++it) {
+                m_eviction_policy->rollback(std::move(it->first));
             }
+        };
 
-            ticket.register_eviction(key_and_item->first, key_and_item->second);
-            keys_to_evict.emplace_back(std::move(eviction_ticket), key_and_item);
+        bool refused = false;
+        try {
+            while (!ticket.is_satisfied()) {
+                if (keys_to_evict.size() == m_data.size()) {
+                    // Every cached item is already a victim: the eviction policy has no victim left.
+                    refused = true;
+                    break;
+                }
+
+                // Grow the vector before popping, so that a failed allocation can't lose a popped victim.
+                if (keys_to_evict.size() == keys_to_evict.capacity()) {
+                    keys_to_evict.reserve(2 * keys_to_evict.capacity() + 1);
+                }
+                auto& [eviction_ticket, key_and_item] = keys_to_evict.emplace_back(m_eviction_policy->pop_victim(), m_data.end());
+                key_and_item                          = m_data.find(eviction_ticket.key());
+
+                // If this trips, the eviction policy recommended the eviction of a key not in cache: the eviction policy and the
+                // cache are out of sync.
+                assert(key_and_item != m_data.end());
+
+                if (!m_insertion_policy->should_replace(key_and_item->first, candidate_key)) {
+                    refused = true;
+                    break;
+                }
+
+                ticket.register_eviction(key_and_item->first, key_and_item->second);
+            }
+        } catch (...) {
+            rollback_victims();
+            throw;
+        }
+
+        if (refused) {
+            rollback_victims();
+            return false;
         }
 
         for (auto& [_, key_and_item] : keys_to_evict) {
