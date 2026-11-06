@@ -63,6 +63,13 @@ In addition to the shared requirements above, a constraint policy must implement
     Should return `true` if the constraint is currently satisfied. The cache uses this method after a constraint update (e.g. a cache resize)
     to determine whether items should be evicted to make some room.
 
+A constraint policy _may_ also expire items, like `cachemere::policy::ConstraintTimeToLive`:
+
+* `bool is_expired(const Key& key) const`
+
+    Should return `true` if the item associated with `key` expired. On each insertion and in `cachemere::Cache::remove_expired`,
+    the cache removes the next victims of the eviction policy for as long as they are expired.
+
 ## Insertion Policy
 
 In addition to the shared requirements above, an insertion policy must implement the following methods in order to be valid:

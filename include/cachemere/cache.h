@@ -131,6 +131,11 @@ public:
     ///                       The function should have the signature `void fn(const Key& key, const Value& value)`.
     template<typename F> void for_each(F unary_function);
 
+    /// @brief Remove the items that expired according to the constraint policy.
+    /// @details Insertions also remove them. Call this before a `find` that shouldn't return an expired item.
+    ///          Does nothing when the constraint policy doesn't expire items.
+    void remove_expired();
+
     /// @brief Swaps the current cache with another cache of the same type.
     /// @details Calls `std::terminate` if the cache runs in thread-safe mode and an exception is thrown while locking its mutex.
     /// @param other The cache to swap this instance with.
@@ -231,6 +236,7 @@ private:
 
     void insert_or_update(Key&& key, CacheItem&& value);
     void remove(DataMapIt it);
+    void remove_expired_locked();
 
     void                            on_insert(const Key& key, const CacheItem& item) const;
     void                            on_update(const Key& key, const CacheItem& old_item, const CacheItem& new_item) const;

@@ -148,6 +148,7 @@ template<class K,
 bool Cache<K, V, I, E, C, SV, SK, KH, TS>::insert(K key, V value)
 {
     LockGuard guard(lock());
+    remove_expired_locked();
 
     const auto key_size   = static_cast<size_t>(m_measure_key(key));
     const auto value_size = static_cast<size_t>(m_measure_value(value));
@@ -271,6 +272,24 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::for_each(F unary_function)
     for (const auto& [key, value] : m_data) {
         unary_function(key, value.m_value);
     }
+}
+
+template<class K,
+         class V,
+         template<class, class, class>
+         class I,
+         template<class, class, class>
+         class E,
+         template<class, class, class>
+         class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
+void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_expired()
+{
+    LockGuard guard(lock());
+    remove_expired_locked();
 }
 
 template<class K,
@@ -834,6 +853,30 @@ template<class K,
          class SK,
          class KH,
          bool TS>
+void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_expired_locked()
+{
+    // Remove the next victims while they are expired: with a LRU eviction policy, the least recently used item expires first.
+    if constexpr (detail::traits::constraint::has_is_expired<K, KH, V, C>) {
+        auto victim_it = m_eviction_policy->victim_begin();
+        while (victim_it != m_eviction_policy->victim_end() && m_constraint_policy->is_expired(*victim_it)) {
+            remove(m_data.find(*victim_it));
+            victim_it = m_eviction_policy->victim_begin();
+        }
+    }
+}
+
+template<class K,
+         class V,
+         template<class, class, class>
+         class I,
+         template<class, class, class>
+         class E,
+         template<class, class, class>
+         class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_insert(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
@@ -917,6 +960,11 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_hit(const K& key, const Cach
         detail::traits::event::has_on_cachehit<K, KH, V, E>,
         [&](auto& x) { return x.on_cache_hit(key, item); },
         [](auto&) {})(*m_eviction_policy);
+
+    boost::hana::if_(
+        detail::traits::event::has_on_cachehit<K, KH, V, C>,
+        [&](auto& x) { return x.on_cache_hit(key, item); },
+        [](auto&) {})(*m_constraint_policy);
 }
 
 template<class K,
