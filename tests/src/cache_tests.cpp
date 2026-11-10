@@ -465,3 +465,49 @@ TEST(CacheTest, ContainsHeterogeneousLookup)
 
     EXPECT_TRUE(cache.contains(key_view));
 }
+
+// LRU eviction policy that counts the cache hits it's notified of.
+template<typename Key, typename KeyHash, typename Value> class HitCountingEvictionLRU : public policy::EvictionLRU<Key, KeyHash, Value>
+{
+public:
+    void on_cache_hit(const Key& key, const Item<Value>& item)
+    {
+        ++m_cache_hits;
+        policy::EvictionLRU<Key, KeyHash, Value>::on_cache_hit(key, item);
+    }
+
+    size_t m_cache_hits = 0;
+};
+
+// Count constraint policy that counts the cache hits it's notified of.
+template<typename Key, typename KeyHash, typename Value> class HitCountingConstraintCount : public policy::ConstraintCount<Key, KeyHash, Value>
+{
+public:
+    using policy::ConstraintCount<Key, KeyHash, Value>::ConstraintCount;
+
+    void on_cache_hit(const Key& /* key */, const Item<Value>& /* item */)
+    {
+        ++m_cache_hits;
+    }
+
+    size_t m_cache_hits = 0;
+};
+
+TEST(CacheTest, CacheHitNotifiesEachPolicyOnce)
+{
+    using TestCache = Cache<uint32_t,
+                            Point3D,
+                            policy::InsertionAlways,
+                            HitCountingEvictionLRU,
+                            HitCountingConstraintCount,
+                            measurement::SizeOf<Point3D>,
+                            measurement::SizeOf<uint32_t>>;
+
+    TestCache cache{10};
+    cache.insert(1, Point3D{1, 1, 1});
+
+    EXPECT_TRUE(cache.find(1).has_value());
+
+    EXPECT_EQ(cache.eviction_policy().m_cache_hits, 1);
+    EXPECT_EQ(cache.constraint_policy().m_cache_hits, 1);
+}

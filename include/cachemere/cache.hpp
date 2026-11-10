@@ -957,11 +957,6 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_hit(const K& key, const Cach
         [](auto&) {})(*m_eviction_policy);
 
     boost::hana::if_(
-        detail::traits::event::has_on_cachehit<K, KH, V, E>,
-        [&](auto& x) { return x.on_cache_hit(key, item); },
-        [](auto&) {})(*m_eviction_policy);
-
-    boost::hana::if_(
         detail::traits::event::has_on_cachehit<K, KH, V, C>,
         [&](auto& x) { return x.on_cache_hit(key, item); },
         [](auto&) {})(*m_constraint_policy);
