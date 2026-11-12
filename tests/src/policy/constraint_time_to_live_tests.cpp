@@ -123,6 +123,31 @@ TEST(ConstraintTimeToLive, NextExpiredIsTheLeastRecentlyUsedExpiredKey)
     EXPECT_EQ(constraint.next_expired(), nullptr);
 }
 
+TEST(ConstraintTimeToLive, CopiesTrackTheirOwnItems)
+{
+    TestConstraint original{100ms};
+    const uint32_t first  = 1;
+    const uint32_t second = 2;
+    original.on_insert(first, TestItem{4, 1, 4});
+    ManualClock::advance(50ms);
+    original.on_insert(second, TestItem{4, 2, 4});
+
+    // The cache copies its constraint to try out evictions, so the copies must not share the original's state.
+    TestConstraint copy{original};
+    TestConstraint assigned{1ms};
+    assigned = original;
+
+    copy.on_cache_hit(first, TestItem{4, 1, 4});
+    copy.on_evict(second, TestItem{4, 2, 4});
+    assigned.on_evict(first, TestItem{4, 1, 4});
+
+    ManualClock::advance(51ms);
+    EXPECT_EQ(copy.next_expired(), nullptr);
+    EXPECT_EQ(assigned.next_expired(), nullptr);
+    EXPECT_EQ(original.next_expired(), &first);
+    EXPECT_FALSE(original.is_expired(second));
+}
+
 TEST(ConstraintTimeToLive, NeverLimitsSize)
 {
     TestConstraint constraint{100ms};

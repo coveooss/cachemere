@@ -33,6 +33,17 @@ public:
     /// @param time_to_live How long items can stay in cache without being used.
     explicit BasicConstraintTimeToLive(Duration time_to_live);
 
+    /// @brief Copy constructor.
+    /// @details The cache copies its constraint to try out evictions. The copy tracks the same items in its own use order.
+    BasicConstraintTimeToLive(const BasicConstraintTimeToLive& other);
+
+    /// @brief Copy assignment operator.
+    /// @details The copy tracks the same items in its own use order.
+    BasicConstraintTimeToLive& operator=(const BasicConstraintTimeToLive& other);
+
+    BasicConstraintTimeToLive(BasicConstraintTimeToLive&& other)            = delete;
+    BasicConstraintTimeToLive& operator=(BasicConstraintTimeToLive&& other) = delete;
+
     /// @brief Clears the policy.
     void clear();
 

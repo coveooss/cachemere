@@ -8,6 +8,7 @@ on:
 
 jobs:
   unit:
+    name: unit (${{ matrix.config.name }})
     strategy:
       matrix:
         config:
