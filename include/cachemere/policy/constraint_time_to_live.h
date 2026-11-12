@@ -4,6 +4,8 @@
 #include <cassert>
 #include <chrono>
 #include <functional>
+#include <list>
+#include <utility>
 
 #include <absl/container/flat_hash_map.h>
 
@@ -13,7 +15,7 @@ namespace cachemere::policy {
 
 /// @brief Time-to-live constraint.
 /// @details An item expires once the time-to-live has passed since it was last inserted, updated, or hit.
-///          The cache removes expired items on each insertion and in `Cache::remove_expired()`.
+///          The cache removes expired items on each insertion and in `Cache::remove_expired()`, whatever its eviction policy.
 ///          This constraint doesn't limit the size of the cache.
 /// @tparam Key The type of the keys used to identify items in the cache.
 /// @tparam KeyHash The type of the hasher used to hash item keys.
@@ -48,6 +50,10 @@ public:
     /// @return Whether the time-to-live has passed since the item was last used.
     [[nodiscard]] bool is_expired(const Key& key) const;
 
+    /// @brief Get the next expired item to remove.
+    /// @return The key of the least recently used item if it expired, `nullptr` otherwise.
+    [[nodiscard]] const Key* next_expired() const;
+
     /// @brief Insertion event handler. Starts the time-to-live of the item.
     void on_insert(const Key& key, const CacheItem& item);
 
@@ -61,8 +67,14 @@ public:
     void on_evict(const Key& key, const CacheItem& item);
 
 private:
-    Duration                                                            m_time_to_live;
-    absl::flat_hash_map<KeyRef, TimePoint, KeyHash, std::equal_to<Key>> m_last_used;
+    using UseOrder = std::list<std::pair<KeyRef, TimePoint>>;
+
+    [[nodiscard]] bool has_expired(TimePoint last_used) const;
+    void               mark_used(const Key& key);
+
+    Duration m_time_to_live;
+    UseOrder m_use_order;  // The keys with the time they were last used, most recently used first.
+    absl::flat_hash_map<KeyRef, typename UseOrder::iterator, KeyHash, std::equal_to<Key>> m_nodes;
 };
 
 /// @brief Time-to-live constraint measuring time with `std::chrono::steady_clock`.

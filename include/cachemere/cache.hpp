@@ -855,12 +855,10 @@ template<class K,
          bool TS>
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_expired_locked()
 {
-    // Remove the next victims while they are expired: with a LRU eviction policy, the least recently used item expires first.
-    if constexpr (detail::traits::constraint::has_is_expired<K, KH, V, C>) {
-        auto victim_it = m_eviction_policy->victim_begin();
-        while (victim_it != m_eviction_policy->victim_end() && m_constraint_policy->is_expired(*victim_it)) {
-            remove(m_data.find(*victim_it));
-            victim_it = m_eviction_policy->victim_begin();
+    // The constraint policy picks the expired items to remove, since the eviction order can differ from the expiration order.
+    if constexpr (detail::traits::constraint::has_next_expired<K, KH, V, C>) {
+        for (const K* key = m_constraint_policy->next_expired(); key != nullptr; key = m_constraint_policy->next_expired()) {
+            remove(m_data.find(*key));
         }
     }
 }

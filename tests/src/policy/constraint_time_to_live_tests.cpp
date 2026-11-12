@@ -11,6 +11,7 @@
 #include "cachemere/policy/bind.h"
 #include "cachemere/policy/constraint_time_to_live.h"
 #include "cachemere/policy/eviction_lru.h"
+#include "cachemere/policy/eviction_segmented_lru.h"
 #include "cachemere/policy/insertion_always.h"
 
 using namespace cachemere;
@@ -72,16 +73,54 @@ TEST(ConstraintTimeToLive, UpdateAndCacheHitRestartTimeToLive)
     const uint32_t key = 1;
     constraint.on_insert(key, TestItem{4, 42, 4});
 
+    // The update restarts the time-to-live, so the item outlives the time-to-live of its insertion.
     ManualClock::advance(60ms);
     constraint.on_update(key, TestItem{4, 42, 4}, TestItem{4, 43, 4});
     ManualClock::advance(60ms);
-    constraint.on_cache_hit(key, TestItem{4, 43, 4});
+    EXPECT_FALSE(constraint.is_expired(key));
 
+    // The cache hit restarts it again, so the item outlives the time-to-live of the update.
+    constraint.on_cache_hit(key, TestItem{4, 43, 4});
     ManualClock::advance(100ms);
     EXPECT_FALSE(constraint.is_expired(key));
 
     ManualClock::advance(1ms);
     EXPECT_TRUE(constraint.is_expired(key));
+}
+
+TEST(ConstraintTimeToLive, LongestTimeToLiveNeverExpires)
+{
+    TestConstraint constraint{ManualClock::duration::max()};
+    const uint32_t key = 1;
+
+    // Insert after the clock's epoch, so the expiration time is past the clock's range.
+    ManualClock::advance(1ms);
+    constraint.on_insert(key, TestItem{4, 42, 4});
+
+    ManualClock::advance(1ms);
+    EXPECT_FALSE(constraint.is_expired(key));
+    EXPECT_EQ(constraint.next_expired(), nullptr);
+}
+
+TEST(ConstraintTimeToLive, NextExpiredIsTheLeastRecentlyUsedExpiredKey)
+{
+    TestConstraint constraint{100ms};
+    const uint32_t first  = 1;
+    const uint32_t second = 2;
+    constraint.on_insert(first, TestItem{4, 1, 4});
+    ManualClock::advance(50ms);
+    constraint.on_insert(second, TestItem{4, 2, 4});
+
+    ManualClock::advance(50ms);
+    EXPECT_EQ(constraint.next_expired(), nullptr);
+
+    // The hit makes the first key the most recently used, so the second one expires first.
+    constraint.on_cache_hit(first, TestItem{4, 1, 4});
+    ManualClock::advance(51ms);
+    EXPECT_EQ(constraint.next_expired(), &second);
+
+    constraint.on_evict(second, TestItem{4, 2, 4});
+    EXPECT_EQ(constraint.next_expired(), nullptr);
 }
 
 TEST(ConstraintTimeToLive, NeverLimitsSize)
@@ -178,5 +217,30 @@ TEST(TimeToLiveCache, RemoveExpiredRemovesOnlyExpiredItems)
     cache.remove_expired();
     EXPECT_FALSE(cache.find(1).has_value());
     EXPECT_EQ(cache.number_of_items(), 1u);
+    EXPECT_TRUE(cache.contains(2));
+}
+
+TEST(TimeToLiveCache, ExpiredItemsAreRemovedWhateverTheEvictionOrder)
+{
+    Cache<uint32_t,
+          uint32_t,
+          policy::InsertionAlways,
+          policy::EvictionSegmentedLRU,
+          policy::bind<policy::BasicConstraintTimeToLive, ManualClock>::ttype,
+          measurement::SizeOf<uint32_t>,
+          measurement::SizeOf<uint32_t>>
+        cache{100ms};
+    cache.eviction_policy().set_protected_segment_size(1);
+
+    // The hit moves 1 to the protected segment, so segmented LRU would evict 2 from the probation segment before 1.
+    ASSERT_TRUE(cache.insert(1, 1));
+    EXPECT_TRUE(cache.find(1).has_value());
+    ManualClock::advance(50ms);
+    ASSERT_TRUE(cache.insert(2, 2));
+    ManualClock::advance(51ms);
+
+    // 1 expired, 2 didn't.
+    cache.remove_expired();
+    EXPECT_FALSE(cache.contains(1));
     EXPECT_TRUE(cache.contains(2));
 }

@@ -65,10 +65,10 @@ In addition to the shared requirements above, a constraint policy must implement
 
 A constraint policy _may_ also expire items, like `cachemere::policy::ConstraintTimeToLive`:
 
-* `bool is_expired(const Key& key) const`
+* `const Key* next_expired() const`
 
-    Should return `true` if the item associated with `key` expired. On each insertion and in `cachemere::Cache::remove_expired`,
-    the cache removes the next victims of the eviction policy for as long as they are expired.
+    Should return the key of an expired item, or `nullptr` if no item expired. On each insertion and in `cachemere::Cache::remove_expired`,
+    the cache removes the returned item and calls this method again, until it returns `nullptr`.
 
 ## Insertion Policy
 
