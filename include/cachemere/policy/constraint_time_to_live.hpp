@@ -5,6 +5,31 @@ BasicConstraintTimeToLive<K, KH, V, Clock>::BasicConstraintTimeToLive(Duration t
 {
 }
 
+template<class K, class KH, class V, class Clock>
+BasicConstraintTimeToLive<K, KH, V, Clock>::BasicConstraintTimeToLive(const BasicConstraintTimeToLive& other)
+ : m_time_to_live{other.m_time_to_live},
+   m_use_order{other.m_use_order}
+{
+    // The other policy's nodes point in its own use order, so they're rebuilt to point in the copied one.
+    m_nodes.reserve(m_use_order.size());
+    for (auto it = m_use_order.begin(); it != m_use_order.end(); ++it) {
+        m_nodes.emplace(it->first, it);
+    }
+}
+
+template<class K, class KH, class V, class Clock>
+auto BasicConstraintTimeToLive<K, KH, V, Clock>::operator=(const BasicConstraintTimeToLive& other) -> BasicConstraintTimeToLive&
+{
+    if (this != &other) {
+        // Swapping keeps the copy's nodes pointing in the use order this policy takes over, and leaves this policy unchanged if the copy throws.
+        BasicConstraintTimeToLive copy{other};
+        m_time_to_live = copy.m_time_to_live;
+        m_use_order.swap(copy.m_use_order);
+        m_nodes.swap(copy.m_nodes);
+    }
+    return *this;
+}
+
 template<class K, class KH, class V, class Clock> void BasicConstraintTimeToLive<K, KH, V, Clock>::clear()
 {
     m_use_order.clear();
