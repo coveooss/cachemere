@@ -56,6 +56,15 @@ constexpr auto has_on_evict = boost::hana::is_valid(
 
 }  // namespace event
 
+// Traits for constraint policies.
+namespace constraint {
+
+template<typename K, typename KH, typename V, template<class, class, class> typename P>
+constexpr auto has_next_expired =
+    boost::hana::is_valid([](auto& policy_t) -> decltype(boost::hana::traits::declval(policy_t).next_expired()) {})(boost::hana::type_c<P<K, KH, V>>);
+
+}  // namespace constraint
+
 }  // namespace cachemere::detail::traits
 
 #endif

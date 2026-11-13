@@ -2,6 +2,7 @@
 
 #include "cachemere/policy/constraint_count.h"
 #include "cachemere/policy/constraint_memory.h"
+#include "cachemere/policy/constraint_time_to_live.h"
 
 #include "cachemere/policy/eviction_lru.h"
 #include "cachemere/policy/eviction_gdsf.h"

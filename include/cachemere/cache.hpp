@@ -148,6 +148,7 @@ template<class K,
 bool Cache<K, V, I, E, C, SV, SK, KH, TS>::insert(K key, V value)
 {
     LockGuard guard(lock());
+    remove_expired_locked();
 
     const auto key_size   = static_cast<size_t>(m_measure_key(key));
     const auto value_size = static_cast<size_t>(m_measure_value(value));
@@ -271,6 +272,24 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::for_each(F unary_function)
     for (const auto& [key, value] : m_data) {
         unary_function(key, value.m_value);
     }
+}
+
+template<class K,
+         class V,
+         template<class, class, class>
+         class I,
+         template<class, class, class>
+         class E,
+         template<class, class, class>
+         class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
+void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_expired()
+{
+    LockGuard guard(lock());
+    remove_expired_locked();
 }
 
 template<class K,
@@ -834,6 +853,28 @@ template<class K,
          class SK,
          class KH,
          bool TS>
+void Cache<K, V, I, E, C, SV, SK, KH, TS>::remove_expired_locked()
+{
+    // The constraint policy picks the expired items to remove, since the eviction order can differ from the expiration order.
+    if constexpr (detail::traits::constraint::has_next_expired<K, KH, V, C>) {
+        for (const K* key = m_constraint_policy->next_expired(); key != nullptr; key = m_constraint_policy->next_expired()) {
+            remove(m_data.find(*key));
+        }
+    }
+}
+
+template<class K,
+         class V,
+         template<class, class, class>
+         class I,
+         template<class, class, class>
+         class E,
+         template<class, class, class>
+         class C,
+         class SV,
+         class SK,
+         class KH,
+         bool TS>
 void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_insert(const K& key, const CacheItem& item) const
 {
     // Call event handler iif the method is defined in the policy.
@@ -914,9 +955,9 @@ void Cache<K, V, I, E, C, SV, SK, KH, TS>::on_cache_hit(const K& key, const Cach
         [](auto&) {})(*m_eviction_policy);
 
     boost::hana::if_(
-        detail::traits::event::has_on_cachehit<K, KH, V, E>,
+        detail::traits::event::has_on_cachehit<K, KH, V, C>,
         [&](auto& x) { return x.on_cache_hit(key, item); },
-        [](auto&) {})(*m_eviction_policy);
+        [](auto&) {})(*m_constraint_policy);
 }
 
 template<class K,
