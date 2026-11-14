@@ -3,11 +3,21 @@ on:
   push:
     branches: main
 
+permissions:
+  contents: read
+
 jobs:
   docs:
+    permissions:
+      contents: write  # for Git to git push
     runs-on: ubuntu-20.04
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: audit
+
       - uses: actions/checkout@v2
         with:
           submodules: true
